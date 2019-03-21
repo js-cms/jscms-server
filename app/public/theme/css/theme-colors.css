@@ -1,0 +1,111 @@
+.recentcomments a {
+    display: inline !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* Theme Colors */
+.site-title a:hover,
+.site-header .search-icon:hover span,
+.site-header .search-icon:hover span:before,
+.sf-menu li a:hover,
+.sf-menu li li a:hover,
+.sf-menu li.sfHover a,
+.sf-menu li.current-menu-item a,
+.sf-menu li.current-menu-item a:hover,
+article.hentry .edit-link a,
+.author-box a,
+.page-content a,
+.entry-content a,
+.comment-author a,
+.comment-content a,
+.comment-reply-title small a:hover,
+.sidebar .widget a,
+.site-footer .widget a,
+#back-top a span,
+#site-bottom a:hover {
+    color: #ffbe02;
+}
+
+button,
+.btn,
+input[type="submit"],
+input[type="reset"],
+input[type="button"],
+#back-top a:hover span {
+    background-color: #ffbe02;
+}
+
+.entry-category a,
+.header-search .search-input:focus,
+.sidebar .widget_search input[type='search']:focus,
+#back-top a span {
+    border-color: #f1b406;
+}
+
+.entry-category a {
+    color: #f1b406 !important;
+    transition: background-color 0.3s;
+}
+
+.entry-category a:hover {
+    background-color: #f1b406;
+    color: #fff !important;
+}
+
+a:hover,
+.sidebar .widget a:hover,
+.site-footer .widget a:hover,
+.entry-title a:hover,
+.author-box a:hover,
+.page-content a:hover,
+.entry-content a:hover,
+.content-list .entry-title a:hover,
+article.hentry .edit-link a:hover,
+.comment-content a:hover,
+.pagination .page-numbers:hover,
+.pagination .page-numbers.current,
+.single #primary .sticky-breadcrumbs .entry-comment a,
+.entry-meta a:hover {
+    color: #ff4c4c;
+}
+
+.sidebar-2 #left-nav li a:hover,
+.sidebar-2 #left-nav li.current-cat a,
+.sidebar-2 #left-nav li.current-menu-item a,
+.sidebar-2 #left-nav li.categories h3,
+.search .sidebar-2 #left-nav li.menu-item-home a,
+.single .sidebar-2 #left-nav li.menu-item-home a,
+.author .sidebar-2 #left-nav li.menu-item-home a,
+.tag .sidebar-2 #left-nav li.menu-item-home a,
+.sidebar .widget .widget-title:before {
+    background-color: #ff4c4c;
+}
+
+.slicknav_nav {
+    border-color: #ff4c4c
+}
+
+.bx-wrapper .bx-pager.bx-default-pager a:hover,
+.bx-wrapper .bx-pager.bx-default-pager a.active,
+.bx-wrapper .bx-pager.bx-default-pager a:focus {
+    background-color: #ffbe02;
+}
+
+.header-search {
+    border-top-color: #ffbe02;
+}
+
+/* Hide sidebar on mobile devices */
+@media only screen and (max-width: 959px) {
+    #secondary {
+        display: none;
+    }
+}
+
+/* Hide footer widgets on mobile devices */
+@media only screen and (max-width: 959px) {
+    .footer-columns {
+        display: none;
+    }
+}

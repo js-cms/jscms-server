@@ -1,0 +1,80 @@
+
+/* 容器 <div> - 需要定位下拉内容 */
+.dropdown {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    
+    /* 下拉按钮样式 */
+    .dropbtn {
+        border: 1px solid #e2e2e2;
+        text-align: left;
+        overflow: hidden;
+        border-radius: 3px;
+        box-shadow: inset 0 1px 1px rgba(200,200,200,0.3);
+        color: #666;
+        background-color: #fff;
+        font-size: 13px;
+        height: 27px;
+        line-height: 23px;
+        width: 100%;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    /* 下拉内容 (默认隐藏) */
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        z-index: 11;
+        width: 200px;
+        border-bottom-left-radius: 3px;
+        border-bottom-right-radius: 3px;
+        box-sizing: border-box;
+        color: #333;
+        background-color: #fff;
+        border: 1px solid #e2e2e2;
+        border-top: 0;
+        max-height: 300px;
+        overflow: hidden;
+        overflow-y: auto;
+        box-shadow: 0 2px 5px 0 rgba(200,200,200,0.6);
+
+        a.cate-name {
+            img {
+                position: relative;
+                top: 3px;
+                border-radius: 3px;
+                width: 18px;
+                height: 18px;
+            }
+        }
+
+        a {
+            color: black;
+            padding: 8px 12px;
+            text-decoration: none;
+            display: block;
+            border-bottom: 1px solid #e2e2e2;
+
+            &:hover {
+                color: #2b6dad;
+                background-color: #f1f1f1
+            }
+
+
+        }
+    }
+
+    &:hover {
+        .dropdown-content {
+            display: block;
+        }
+
+        .dropbtn {
+            border: 1px solid #2865a1;
+            color: #2865a1;
+        }
+    }
+}
+ 

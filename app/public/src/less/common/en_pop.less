@@ -1,0 +1,47 @@
+.en-content-warp {
+    position: fixed;
+    z-index: 1000;
+    width: 602px;
+    height: calc(100vh - 120px);
+    top: 60px;
+    right: 1px;
+    border: 1px solid #efefef;
+    background-color: #fff;
+    border-radius: 4px;
+    border-bottom: 1px solid #e2e2e2;
+    box-sizing: border-box;
+    padding: 16px;
+    box-shadow: 0px 0px 5px #e2e2e2;
+    animation-duration: 0.3s !important;
+
+
+    .pngicon-close {
+        cursor: pointer;
+        height: 30px;
+        width: 33.5px;
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background-size: 100% 100%;
+        background-image: url(/public/images/pngicon-close.png);
+    }
+
+    .loading-warp {
+        height: 100%;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+}
+
+@media screen and (max-width: 900px) {
+    .en-content-warp {
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        padding: 10px;
+    }
+}

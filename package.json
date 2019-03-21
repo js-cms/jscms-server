@@ -1,0 +1,69 @@
+{
+  "name": "jscms",
+  "version": "0.0.1",
+  "description": "jscms-cn",
+  "private": true,
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cheerio": "^1.0.0-rc.2",
+    "egg": "^2.2.1",
+    "egg-alinode": "^2.0.1",
+    "egg-cors": "^2.1.1",
+    "egg-mongoose": "^3.1.0",
+    "egg-passport": "^2.0.1",
+    "egg-passport-local": "^1.2.1",
+    "egg-redis": "^2.0.0",
+    "egg-scripts": "^2.5.0",
+    "egg-validate": "^1.0.0",
+    "egg-view-ejs": "^2.0.0",
+    "flyio": "^0.6.0",
+    "fs-extra": "^7.0.0",
+    "lodash": "^4.17.10",
+    "markdown-it": "^8.4.1",
+    "marked": "^0.6.1",
+    "moment": "^2.22.2",
+    "nodemailer": "^4.6.7",
+    "nodemailer-smtp-transport": "^2.7.4",
+    "uuid": "^3.3.2",
+    "validator": "^10.7.1",
+    "xss-filters": "^1.2.7"
+  },
+  "devDependencies": {
+    "autod": "^3.0.1",
+    "autod-egg": "^1.0.0",
+    "egg-bin": "^4.3.5",
+    "egg-ci": "^1.8.0",
+    "egg-mock": "^3.14.0",
+    "eslint": "^4.11.0",
+    "eslint-config-egg": "^6.0.0",
+    "jscms-server-build": "^0.0.2",
+    "pump": "^3.0.0",
+    "reqman": "^0.0.3",
+    "webstorm-disable-index": "^1.2.0"
+  },
+  "engines": {
+    "node": ">=8.9.0"
+  },
+  "scripts": {
+    "start": "egg-scripts start --daemon --title=egg-server-jscms --port=7011",
+    "stop": "egg-scripts stop --title=egg-server-jscms --port=7011",
+    "dev": "egg-bin dev --port=7011",
+    "debug": "egg-bin debug",
+    "test": "npm run lint -- --fix && npm run test-local",
+    "test-local": "egg-bin test",
+    "cov": "egg-bin cov",
+    "lint": "eslint .",
+    "ci": "npm run lint && npm run cov",
+    "autod": "autod",
+    "build": "jscms-server-build"
+  },
+  "ci": {
+    "version": "8"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:js-cms/jscms-server.git"
+  },
+  "author": "zhibing <17560235@qq.com>",
+  "license": "MIT"
+}

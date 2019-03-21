@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class=" js flexbox canvas canvastext webgl no-touch geolocation postmessage websqldatabase indexeddb hashchange history draganddrop websockets rgba hsla multiplebgs backgroundsize borderimage borderradius boxshadow textshadow opacity cssanimations csscolumns cssgradients cssreflections csstransforms csstransforms3d csstransitions fontface generatedcontent video audio localstorage sessionstorage webworkers applicationcache svg inlinesvg smil svgclippaths">
+
+<% include ../common/head.html %>
+
+<body class="home blog wp-custom-logo hfeed">
+    <div id="page" class="site">
+
+        <% include ../common/top-menu.html %>
+
+        <div id="content" class="site-content container three-col-layout  clear">
+
+            <div id="primary" class="content-area clear">
+
+                <% include ../common/left-nav.html %>
+
+                <div class="right-col">
+                    <div id="featured-content" class="clear">
+                        <% if ( majorArticles.length ) { %>
+                        <div class="featured-left">
+                            <ul class="bxslider">
+                                <% majorArticles.forEach(function(article, index) { %>
+                                <li class="featured-slide hentry">
+                                    <a class="thumbnail-link" href="/<%-article.serialNumber%>.html">
+                                        <div class="thumbnail-wrap">
+                                            <img width="574" height="321" src="<%-article.poster%>" class="attachment-zimeiti_1_featured_large_thumb size-zimeiti_1_featured_large_thumb wp-post-image"
+                                                alt="<%-article.title%>" sizes="(max-width: 574px) 100vw, 574px" />
+                                        </div><!-- .thumbnail-wrap -->
+                                        <div class="gradient"></div>
+                                    </a>
+                                    <div class="entry-header clear">
+                                        <h2 class="entry-title">
+                                            <a href="/133.html">
+                                                <%-article.title%>
+                                            </a>
+                                        </h2>
+                                    </div><!-- .entry-header -->
+                                </li><!-- .featured-slide .hentry -->
+                                <% }) %>
+                            </ul><!-- .bxslider -->
+                            <div class="ribbon"><span>置顶文章</span></div>
+                        </div><!-- .featured-left -->
+                        <% } %>
+                        <div class="featured-right">
+                            <% if ( secondaryArticles[0] ) { %>
+                            <div class="featured-small ">
+                                <a class="thumbnail-link" href="/<%-secondaryArticles[0].serialNumber%>.html">
+                                    <div class="thumbnail-wrap">
+                                        <img src="<%-secondaryArticles[0].poster%>" 
+                                            class="attachment-zimeiti_1_featured_small_thumb size-zimeiti_1_featured_small_thumb wp-post-image"
+                                            alt="" 
+                                        />
+                                    </div><!-- .thumbnail-wrap -->
+                                    <div class="gradient"></div>
+                                    <div class="entry-header clear">
+                                        <h2 class="entry-title">
+                                            <%-secondaryArticles[0].title%>
+                                        </h2>
+                                    </div><!-- .entry-header -->
+                                </a>
+                            </div><!-- .featured-small -->
+                            <% } %>
+                            <% if ( secondaryArticles[1] ) { %>
+                            <div class="featured-small last">
+                                <a class="thumbnail-link" href="/<%-secondaryArticles[1].serialNumber%>.html">
+                                    <div class="thumbnail-wrap">
+                                        <img 
+                                            src="<%-secondaryArticles[1].poster%>"
+                                            class="attachment-zimeiti_1_featured_small_thumb size-zimeiti_1_featured_small_thumb wp-post-image"
+                                            alt="" 
+                                        />
+                                    </div><!-- .thumbnail-wrap -->
+                                    <div class="gradient"></div>
+                                    <div class="entry-header clear">
+                                        <h2 class="entry-title"><%-secondaryArticles[1].title%></h2>
+                                    </div><!-- .entry-header -->
+                                </a>
+                            </div><!-- .featured-small -->
+                            <% } %>
+                        </div><!-- .featured-right -->
+
+                    </div><!-- #featured-content -->
+
+                    <main id="main" class="site-main clear">
+
+                        <div id="recent-content" class="content-list">
+                            <% articles.forEach(function(article, index) { %>
+                            <div id="post-<%-article.serialNumber%>" class="clear post-<%-article.serialNumber%> post type-post status-publish format-standard has-post-thumbnail hentry">
+
+                                <a class="thumbnail-link" href="/<%-article.serialNumber%>.html">
+                                    <div class="thumbnail-wrap">
+                                        <img width="280" src="<%-article.poster%>" class="attachment-zimeiti_1_list_thumb size-zimeiti_1_list_thumb wp-post-image"
+                                            alt="<%-article.title%>">
+                                    </div><!-- .thumbnail-wrap -->
+                                </a>
+
+                                <div class="entry-overview">
+
+                                    <h2 class="entry-title"><a href="/<%-article.serialNumber%>.html">
+                                            <%-article.title%></a></h2>
+
+                                    <div class="entry-summary">
+                                        <%-article.description%>
+                                    </div><!-- .entry-summary -->
+
+                                    <div class="entry-meta">
+                                        <span class="entry-category">
+                                            <a href="/<%-article.categoryId.alias%>.html">
+                                                <%-article.categoryId.name%></a>
+                                        </span><!-- .entry-category -->
+
+                                        <span class="entry-author">
+
+                                            <a href="/author/<%-article.userId.nickname%>.html">
+
+                                                <img alt="<%-article.userId.nickname%>" src="<%-article.userId.avatar%>"
+                                                    srcset="<%-article.userId.avatar%>" class="avatar avatar-<%-article.serialNumber%> photo"
+                                                    height="80" width="80">
+                                                <%-article.userId.nickname%>
+                                            </a>
+                                        </span><!-- .entry-author -->
+
+                                        <span class="entry-date">
+                                            <%-helper.toDate(article.updateTime, 2)%>
+                                        </span><!-- .entry-date -->
+
+                                        <span class="meta-right">
+                                            <span class="entry-views">
+                                                <span class="view-count">
+                                                    <%-article.visNumber%> </span> 浏览</span>
+                                            <span class="entry-comment">
+                                                <a href="/<%-article.serialNumber%>.html#comments" class="comments-link">
+                                                    <%-article.commentCount%> 评论</a>
+                                            </span>
+
+                                        </span><!-- .meta-right -->
+
+                                    </div><!-- .entry-meta -->
+                                </div><!-- .entry-overview -->
+
+                            </div><!-- #post-<%-article.serialNumber%> -->
+                            <% }) %>
+                        </div><!-- #recent-content -->
+
+                    </main><!-- .site-main -->
+
+                    <nav class="navigation pagination" role="navigation">
+                        <h2 class="screen-reader-text">文章导航</h2>
+                        <div class="nav-links">
+                            <% if ( pagination.current > pagination.start ) { %>
+                            <a class="next page-numbers" href="/<%-pagination.prefix%>-<%-pagination.start%>.html">首页</a>
+                            <% } else { %>
+                            <a class="next page-numbers invalid" href="javascript:void(0);">首页</a>
+                            <% } %>
+                            <% pagination.pages.forEach(function(page, index) { %>
+                            <% if ( page.isCurrent ) { %>
+                            <span aria-current="page" class="page-numbers current">
+                                <%-page.num%></span>
+                            <% } else { %>
+                            <a class="page-numbers" href="/<%-pagination.prefix%>-<%-page.num%>.html">
+                                <%-page.num%></a>
+                            <% } %>
+                            <% }) %>
+                            <% if ( pagination.current < pagination.end ) { %>
+                            <a class="next page-numbers" href="/<%-pagination.prefix%>-<%-pagination.end%>.html">尾页</a>
+                            <% } else { %>
+                            <a class="next page-numbers invalid" href="javascript:void(0);">尾页</a>
+                            <% } %>
+                        </div>
+                    </nav>
+                </div><!-- .right-col -->
+            </div><!-- #primary -->
+
+            <% include ../common/right-aside.html %>
+
+        </div><!-- #content .site-content -->
+
+        <% include ../common/foot.html %>
+
+</body>
+
+</html>

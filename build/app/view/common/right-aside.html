@@ -1,0 +1,49 @@
+<aside id="secondary" class="widget-area sidebar">
+    <div id="zimeiti_1-views-2" class="widget widget-zimeiti_1-views widget_posts_thumbnail">
+        <h2 class="widget-title">浏览最多的文章</h2>
+        <ul>
+            <% publicData.hotArticlesRes.forEach(function(article, index) { %>
+            <li class="clear">
+                <a href="/<%-article.serialNumber%>.html" rel="bookmark">
+                    <div class="thumbnail-wrap">
+                        <img width="120" height="80" src="<%-article.poster%>"
+                            class="attachment-zimeiti_1_widget_post_thumb size-zimeiti_1_widget_post_thumb wp-post-image"
+                            alt="<%-article.title%>">
+                    </div>
+                </a>
+                <div class="entry-wrap">
+                    <a href="/<%-article.serialNumber%>.html" rel="bookmark"><%-article.title%></a>
+                    <div class="entry-meta">
+                        <div class="entry-date"><%-helper.toDate(article.updateTime, 2)%></div>
+                        <div class="entry-views">浏览 <%-article.visNumber%></div> 
+                    </div>
+                </div>
+            </li>
+            <% }) %>
+        </ul>
+    </div>
+
+    <div id="zimeiti_1-popular-2" class="widget widget-zimeiti_1-popular widget_posts_thumbnail">
+        <h2 class="widget-title">评论最多的文章</h2>
+        <ul>
+            <% publicData.commentArticlesRes.forEach(function(article, index) { %>
+            <li class="clear">
+                <a href="/<%-article.serialNumber%>.html" rel="bookmark">
+                    <div class="thumbnail-wrap">
+                        <img width="120" height="80" src="<%-article.poster%>"
+                            class="attachment-zimeiti_1_widget_post_thumb size-zimeiti_1_widget_post_thumb wp-post-image"
+                            alt="<%-article.title%>">
+                    </div>
+                </a>
+                <div class="entry-wrap">
+                    <a href="/<%-article.serialNumber%>.html" rel="bookmark"><%-article.title%></a>
+                    <div class="entry-meta">
+                        <div class="entry-date"><%-helper.toDate(article.updateTime, 2)%></div>
+                        <div class="entry-views">评论 <%-article.commentCount%></div> 
+                    </div>
+                </div>
+            </li>
+            <% }) %>
+        </ul>
+    </div>
+</aside><!-- #secondary -->

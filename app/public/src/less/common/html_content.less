@@ -1,0 +1,68 @@
+
+.htmlContent {
+    font-size: 15px;
+
+    img {
+        &.ui_qtext_image {
+            cursor: pointer;
+            cursor: -webkit-zoom-in;
+            cursor: zoom-in;
+        }
+    }
+
+    .ui_qtext_image_placeholder {
+        display: none;
+    }
+
+    img {
+        border-radius: 3px;
+        max-width: 100%;
+        margin-bottom: 1em;
+    }
+
+    blockquote {
+        color: #666;
+        border-left: 2px solid #e2e2e2;
+        padding-left: 1em;
+        font-size: 15px;
+        margin-left: 20px;
+    }
+
+    .publicLi() {
+        position: relative;
+        font-size: 15px;
+        margin-left: 2em;
+        padding-bottom: .7em;
+    }
+
+    ul {
+        list-style: disc;
+        li {
+            .publicLi
+        }
+    }
+
+    ol {
+        list-style-type: decimal;
+        li {
+            .publicLi
+        }
+    }
+
+    a {
+        color: #2b6dad;
+
+        &:hover{
+            text-decoration: underline;
+        }
+    }
+    
+    p {
+        display: block;
+        margin-bottom: 1em;
+        font-size: 15px;
+        line-height: 1.6;
+        word-wrap: break-word;
+        color: #333;
+    }
+}
