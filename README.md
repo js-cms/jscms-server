@@ -1,6 +1,6 @@
 # jscms-server
 
-jscms-server，jscms服务端，基于阿里的eggjs开发。
+jscms-server，jscms服务端，基于阿里的 [eggjs](https://github.com/eggjs/egg) 开发。
 
 ## 等待完善
 
@@ -11,9 +11,8 @@ jscms-server，jscms服务端，基于阿里的eggjs开发。
 1. 标签页 （完成
 1. 评论系统 （完成
 1. 搜索系统（完成
-1. 刺梨指数
 1. 链接全部替换为绝对路径
 1. 后台logo替换
 1. 搜索记录 （完成
 1. 访问记录 （完成
-1. 404页面
+1. 404页面 （完成

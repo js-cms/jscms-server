@@ -1,6 +1,6 @@
 'use strict';
 
-const Page = require('../public_model/Page.js')
+const Page = require('../modelman/Page.js')
 
 module.exports = app => {
     const mongoose = app.mongoose;
