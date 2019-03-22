@@ -1,0 +1,125 @@
+<!DOCTYPE html><html><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1"><link rel=icon href=icon.ico><title>D2Admin</title><style>html, body, #app {
+        height: 100%;
+        margin: 0px;
+        padding: 0px;
+      }
+      .d2-app-loading-group {
+        height: 100%;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        background: linear-gradient(to bottom, rgba(255,255,255,0.15) 0%, rgba(0,0,0,0.15) 100%), radial-gradient(at top center, rgba(255,255,255,0.40) 0%, rgba(0,0,0,0.40) 120%) #989898; 
+        background-blend-mode: multiply,multiply;
+      }
+      .d2-app-loading-title {
+        color: #FFF;
+        font-weight: bold;
+        font-size: 14px;
+        margin-top: 40px;
+        margin-bottom: 10px;
+        letter-spacing: 0.2em;
+      }
+      .d2-app-loading-sub-title {
+        color: #FFF;
+        font-size: 10px;
+        margin-bottom: 10px;
+      }
+      .d2-app-loading-sub-info {
+        color: #FFF;
+        font-size: 10px;
+        opacity: .8;
+        margin-bottom: 4px;
+      }
+      .d2-app-loading-btn {
+        text-decoration: none;
+        display: inline-block;
+        line-height: 1;
+        white-space: nowrap;
+        cursor: pointer;
+        background: #fff;
+        border: 1px solid #dcdfe6;
+        border-color: #dcdfe6;
+        color: #606266;
+        -webkit-appearance: none;
+        text-align: center;
+        box-sizing: border-box;
+        outline: none;
+        margin: 0;
+        transition: .1s;
+        font-weight: 500;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+        padding: 12px 20px;
+        font-size: 14px;
+        border-radius: 4px;
+        /* 圆角 */
+        padding: 7px 15px;
+        border-radius: 20px;
+        font-size: 12px;
+      }
+      .d2-app-loading-grid {
+        width: 30px;
+        height: 30px;
+      }
+      .d2-app-loading-grid .d2-app-loading {
+        width: 10px;
+        height: 10px;
+        background-color: #FFF;
+        float: left;
+        -webkit-animation: d2-app-loading-grid-scale-delay 1.3s infinite ease-in-out;
+                animation: d2-app-loading-grid-scale-delay 1.3s infinite ease-in-out; 
+      }
+      .d2-app-loading-grid .d2-app-loading1 {
+        border-top-left-radius: 4px;
+        -webkit-animation-delay: 0.2s;
+                animation-delay: 0.2s; }
+      .d2-app-loading-grid .d2-app-loading2 {
+        -webkit-animation-delay: 0.3s;
+                animation-delay: 0.3s; }
+      .d2-app-loading-grid .d2-app-loading3 {
+        border-top-right-radius: 4px;
+        -webkit-animation-delay: 0.4s;
+                animation-delay: 0.4s; }
+      .d2-app-loading-grid .d2-app-loading4 {
+        -webkit-animation-delay: 0.1s;
+                animation-delay: 0.1s; }
+      .d2-app-loading-grid .d2-app-loading5 {
+        -webkit-animation-delay: 0.2s;
+                animation-delay: 0.2s; }
+      .d2-app-loading-grid .d2-app-loading6 {
+        -webkit-animation-delay: 0.3s;
+                animation-delay: 0.3s; }
+      .d2-app-loading-grid .d2-app-loading7 {
+        border-bottom-left-radius: 4px;
+        -webkit-animation-delay: 0s;
+                animation-delay: 0s; }
+      .d2-app-loading-grid .d2-app-loading8 {
+        -webkit-animation-delay: 0.1s;
+                animation-delay: 0.1s; }
+      .d2-app-loading-grid .d2-app-loading9 {
+        border-bottom-right-radius: 4px;
+        -webkit-animation-delay: 0.2s;
+                animation-delay: 0.2s; }
+
+      @-webkit-keyframes d2-app-loading-grid-scale-delay {
+        0%, 70%, 100% {
+          -webkit-transform: scale3D(1, 1, 1);
+                  transform: scale3D(1, 1, 1);
+        } 35% {
+          -webkit-transform: scale3D(0, 0, 1);
+                  transform: scale3D(0, 0, 1); 
+        }
+      }
+
+      @keyframes d2-app-loading-grid-scale-delay {
+        0%, 70%, 100% {
+          -webkit-transform: scale3D(1, 1, 1);
+                  transform: scale3D(1, 1, 1);
+        } 35% {
+          -webkit-transform: scale3D(0, 0, 1);
+                  transform: scale3D(0, 0, 1);
+        } 
+      }</style><script src=script/ua-parser.min.js></script><script src=script/ua.js></script><link href=css/chunk-0912.72a64a0a.css rel=prefetch><link href=css/chunk-0a71.f692b82e.css rel=prefetch><link href=css/chunk-1154.93363ce2.css rel=prefetch><link href=css/chunk-25a6.adcb4fc6.css rel=prefetch><link href=css/chunk-262a.6e02cd31.css rel=prefetch><link href=css/chunk-28b3.fc49d08b.css rel=prefetch><link href=css/chunk-2b68.d2498b86.css rel=prefetch><link href=css/chunk-3bfe.a40bdfff.css rel=prefetch><link href=css/chunk-45fd.de56747a.css rel=prefetch><link href=css/chunk-487b.b36b8ed9.css rel=prefetch><link href=css/chunk-4d90.dc408984.css rel=prefetch><link href=css/chunk-4eb5.4315f912.css rel=prefetch><link href=css/chunk-4ece.117ba65d.css rel=prefetch><link href=css/chunk-5245.c055b766.css rel=prefetch><link href=css/chunk-5700.2ce1f37d.css rel=prefetch><link href=css/chunk-5834.3c015c83.css rel=prefetch><link href=css/chunk-5f6f.dd7a2647.css rel=prefetch><link href=css/chunk-64da.75dc17b4.css rel=prefetch><link href=css/chunk-68c4.a9e9983c.css rel=prefetch><link href=css/chunk-850e.6c404802.css rel=prefetch><link href=css/chunk-cfe4.3bfb3951.css rel=prefetch><link href=css/chunk-f25b.4091f810.css rel=prefetch><link href=css/chunk-fe94.61bad720.css rel=prefetch><link href=js/0e54.199e4ce0.js rel=prefetch><link href=js/4d51.7b3be7f7.js rel=prefetch><link href=js/bd3b.45603226.js rel=prefetch><link href=js/cb65.842bb244.js rel=prefetch><link href=js/ce4d.7167ef0d.js rel=prefetch><link href=js/chunk-0912.3250a141.js rel=prefetch><link href=js/chunk-0a71.291db08d.js rel=prefetch><link href=js/chunk-1154.f0d90e33.js rel=prefetch><link href=js/chunk-1877.a9345dc2.js rel=prefetch><link href=js/chunk-1ca8.fda02487.js rel=prefetch><link href=js/chunk-25a6.7d335eec.js rel=prefetch><link href=js/chunk-262a.a2b2bb70.js rel=prefetch><link href=js/chunk-28b3.f3ec04b7.js rel=prefetch><link href=js/chunk-29cf.ca4940c8.js rel=prefetch><link href=js/chunk-2b68.84bdf5fb.js rel=prefetch><link href=js/chunk-32ca.941755aa.js rel=prefetch><link href=js/chunk-3bfe.d44e9eb4.js rel=prefetch><link href=js/chunk-45fd.d95daf47.js rel=prefetch><link href=js/chunk-487b.7f218dfc.js rel=prefetch><link href=js/chunk-4d90.b50f1e04.js rel=prefetch><link href=js/chunk-4e06.7ec9b44d.js rel=prefetch><link href=js/chunk-4eb5.fada23d5.js rel=prefetch><link href=js/chunk-4ece.95e0c242.js rel=prefetch><link href=js/chunk-5245.90af8c90.js rel=prefetch><link href=js/chunk-54c4.00ca6356.js rel=prefetch><link href=js/chunk-5700.23d1983a.js rel=prefetch><link href=js/chunk-5834.3e24a933.js rel=prefetch><link href=js/chunk-5f6f.0aa9d051.js rel=prefetch><link href=js/chunk-64da.e3a09d5a.js rel=prefetch><link href=js/chunk-68c4.1aebf90e.js rel=prefetch><link href=js/chunk-850e.2ea4997e.js rel=prefetch><link href=js/chunk-cfe4.ea4b9202.js rel=prefetch><link href=js/chunk-f25b.2f9c5054.js rel=prefetch><link href=js/chunk-fe94.ad74229a.js rel=prefetch><link href=js/e178.ab3b021f.js rel=prefetch><link href=js/fdb9.9599e0da.js rel=prefetch><link href=css/app.cb7e98cd.css rel=preload as=style><link href=css/chunk-vendors.b04b19f7.css rel=preload as=style><link href=js/app.b3565b72.js rel=preload as=script><link href=js/chunk-vendors.1693ca28.js rel=preload as=script><link href=css/chunk-vendors.b04b19f7.css rel=stylesheet><link href=css/app.cb7e98cd.css rel=stylesheet></head><body><noscript><strong>We're sorry but d2-admin doesn't work properly without JavaScript enabled. Please enable it to continue.</strong></noscript><div id=app><div class=d2-app-loading-group><div class=d2-app-loading-grid><div class="d2-app-loading d2-app-loading1"></div><div class="d2-app-loading d2-app-loading2"></div><div class="d2-app-loading d2-app-loading3"></div><div class="d2-app-loading d2-app-loading4"></div><div class="d2-app-loading d2-app-loading5"></div><div class="d2-app-loading d2-app-loading6"></div><div class="d2-app-loading d2-app-loading7"></div><div class="d2-app-loading d2-app-loading8"></div><div class="d2-app-loading d2-app-loading9"></div></div><div class=d2-app-loading-title>加载中</div><div class=d2-app-loading-sub-title>欢迎使用 D2Admin。初次加载较慢，请耐心等待</div><div class=d2-app-loading-sub-info>如果很久很久都没有加载成功，请清空缓存重新加载页面</div><div style="margin-top: 10px;"><a class=d2-app-loading-btn href=https://github.com/d2-projects/d2-admin target=blank>Github仓库</a> <a class=d2-app-loading-btn href=https://d2-projects.github.io/d2-admin-doc/zh/ target=blank>中文文档</a></div></div></div><script src=js/chunk-vendors.1693ca28.js></script><script src=js/app.b3565b72.js></script></body></html>

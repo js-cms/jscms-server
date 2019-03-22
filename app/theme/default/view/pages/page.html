@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh-CN"
+    class=" js flexbox canvas canvastext webgl no-touch geolocation postmessage websqldatabase indexeddb hashchange history draganddrop websockets rgba hsla multiplebgs backgroundsize borderimage borderradius boxshadow textshadow opacity cssanimations csscolumns cssgradients cssreflections csstransforms csstransforms3d csstransitions fontface generatedcontent video audio localstorage sessionstorage webworkers applicationcache svg inlinesvg smil svgclippaths">
+
+<% include ../common/head.html %>
+
+<body class="post-template-default single single-post postid-133 single-format-standard wp-custom-logo">
+
+    <div id="page" class="site">
+
+        <% include ../common/top-menu.html %>
+
+        <div id="content" class="site-content container three-col-layout  clear">
+
+            <div id="primary" class="content-area">
+                <main id="main" class="site-main">
+
+                    <section class="page">
+                        <header class="page-header">
+                            <h1 class="page-title"><%-page.name%></h1>
+                        </header><!-- .page-header -->
+
+                        <div class="page-content">
+                            <%-page.html%>
+                        </div><!-- .page-content -->
+                    </section><!-- .error-404 -->
+
+                </main><!-- #main -->
+            </div>
+
+            <% include ../common/right-aside.html %>
+
+        </div><!-- #content .site-content -->
+
+        <% include ../common/foot.html %>
+        <script type="text/javascript" src="<%-CONFIG.THEME_STATIC%>/static/lib/vue.min.js"></script>
+</body>
+
+</html>

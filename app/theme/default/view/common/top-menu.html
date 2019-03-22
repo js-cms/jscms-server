@@ -1,0 +1,53 @@
+<header id="masthead" class="site-header clear">
+    <div class="container">
+        <div class="site-branding">
+            <div id="logo">
+                <span class="helper"></span>
+                <a href="/" class="custom-logo-link" rel="home" itemprop="url">
+                    <img width="129" height="60" src="<%-CONFIG.THEME_STATIC%>/static/images/cropped-logo.png" class="custom-logo" alt="<%-webConfig.websiteConfig.subtitle%>"
+                        itemprop="logo">
+                </a>
+            </div><!-- #logo -->
+        </div><!-- .site-branding -->
+        <nav id="primary-nav" class="primary-navigation">
+            <div class="menu-top-container">
+                <ul id="primary-menu" class="sf-menu sf-js-enabled sf-arrows" style="touch-action: pan-y;">
+                    <li class="menu-item menu-item-type-custom menu-item-object-custom <% if ( typeObj.type === 'home' ) { %>current-menu-item<% } %>">
+                        <a class="top" href="/index.html">首页</a>
+                    </li>
+                    <li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children <% if ( typeObj.type === 'category' ) { %>current-menu-item current-menu-ancestor current-menu-parent<% } %>">
+                        <a class="top" href="/<%-webConfig.categories[0].alias%>.html" class="sf-with-ul">信息分类</a>
+                        <ul class="sub-menu" style="display: none;">
+                            <% webConfig.categories.forEach(function(cat, index) { %>
+                            <li class="menu-item menu-item-type-taxonomy menu-item-object-category <% if ( typeObj.type === 'category' && typeObj.catName === cat.alias ) { %>current-menu-item current-menu-ancestor current-menu-parent<% } %>">
+                                <a class="children" href="/<%-cat.alias%>.html"><%-cat.name%></a>
+                            </li>
+                            <% }) %>
+                        </ul>
+                    </li>
+                    <% webConfig.menuConfig.forEach(function(menu, index) { %>
+                        <li class="menu-item menu-item-type-custom menu-item-object-custom <% if ( menu.isActive ) { %>current-menu-item<% } %>">
+                            <a class="top" href="<%-menu.link%>"><%-menu.name%></a>
+                        </li>
+                    <% }) %>
+                </ul>
+            </div>
+        </nav><!-- #primary-nav -->
+
+        <div id="slick-mobile-menu"></div>
+
+        <span class="search-icon">
+            <span class="genericon genericon-search"> <span>搜索</span></span>
+            <span class="genericon genericon-close"> <span>收起</span></span>
+        </span>
+
+        <div class="header-search">
+            <form id="searchform" method="get" action="/s">
+                <input type="search" name="s" class="search-input" placeholder="请输入关键字" autocomplete="off" <% if ( typeObj.type === 'search' && typeObj.keyword ) { %>value="<%-typeObj.keyword%>"<% } %>">
+                <button type="submit" class="search-submit">搜索</button>
+            </form>
+        </div><!-- .header-search -->
+
+    </div><!-- .container -->
+
+</header><!-- #masthead -->

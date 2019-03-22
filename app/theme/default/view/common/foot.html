@@ -1,0 +1,168 @@
+<footer id="colophon" class="site-footer ">
+
+    <div class="footer-columns <% if ( typeObj.type === 404 || typeObj.type === 'page' ) { %>container<% } else { %>footer-container<% } %> clear >">
+
+        <div class="footer-column footer-column-1 ht_grid_1_4">
+            <div id="zimeiti_1-recent-2" class="widget footer-widget widget-zimeiti_1-recent widget_posts_thumbnail">
+                <h3 class="widget-title">近期文章</h3>
+                <ul>
+                    <% publicData.recentlyArticles.forEach(function(article, index) { %>
+                    <li class="clear">
+                        <a href="/<%-article.serialNumber%>.html" rel="bookmark">
+                            <div class="thumbnail-wrap">
+                                <img width="120" height="80" src="<%-article.poster%>" class="attachment-zimeiti_1_widget_post_thumb size-zimeiti_1_widget_post_thumb wp-post-image" alt="<%-article.title%>">
+                            </div>
+                        </a>
+                        <div class="entry-wrap">
+                            <a href="/<%-article.serialNumber%>.html" rel="bookmark"><%-article.title%></a>
+                        </div>
+                    </li>
+                    <% }) %>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-column footer-column-2 ht_grid_1_4">
+            <div id="zimeiti_1-random-2" class="widget footer-widget widget-zimeiti_1-random widget_posts_thumbnail">
+                <h3 class="widget-title">随机文章</h3>
+                <ul>
+                    <% publicData.randomArticlesRes.forEach(function(article, index) { %>
+                    <li class="clear">
+                        <a href="/<%-article.serialNumber%>.html" rel="bookmark">
+                            <div class="thumbnail-wrap">
+                                <img width="120" height="80" src="<%-article.poster%>"
+                                    class="attachment-zimeiti_1_widget_post_thumb size-zimeiti_1_widget_post_thumb wp-post-image"
+                                    alt="<%-article.title%>">
+                            </div>
+                        </a>
+                        <div class="entry-wrap">
+                            <a href="/<%-article.serialNumber%>.html" rel="bookmark">
+                                <%-article.title%>
+                            </a>
+                        </div>
+                    </li>
+                    <% }) %>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-column footer-column-3 ht_grid_1_4">
+            <div id="recent-comments-2" class="widget footer-widget widget_recent_comments">
+                <h3 class="widget-title">近期评论</h3>
+                <ul id="recentcomments">
+                    <% publicData.recentlyCommentsRes.forEach(function(comment, index) { %>
+                    <li class="recentcomments">
+                        <span class="comment-author-link"> <%-comment.authorNickname%></span>发表在《<a href="/<%-comment.articleId.serialNumber%>.html#comment-<%-comment._id%>"><%-comment.articleId.title%></a>》
+                    </li>
+                    <% }) %>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-column footer-column-4 ht_grid_1_4">
+            <div id="text-2" class="widget footer-widget widget_text">
+                <h3 class="widget-title">关于
+                    <%-webConfig.websiteConfig.subtitle%>
+                </h3>
+                <div class="textwidget">
+                    <%-webConfig.websiteConfig.about%>
+                    <p class="tips">本站的部分内容来源于互联网，如不慎侵犯到您的权益，请联系我们，我们会在36小时内删除。</p>
+                </div>
+            </div>
+        </div>
+    </div><!-- .footer-columns -->
+    <div class="clear"></div>
+
+    <div id="site-bottom" class="clear">
+
+        <div class="container">
+
+            <div class="menu-top-container">
+                <ul id="footer-menu" class="footer-nav">
+                    <li class="menu-item menu-item-type-custom menu-item-object-custom">
+                        <a href="/index.html">
+                            首页
+                        </a>
+                    </li>
+                    <li class="menu-item menu-item-type-custom menu-item-object-custom">
+                        <a href="/<%-webConfig.categories[0].alias%>.html">
+                            信息分类
+                        </a>
+                    </li>
+                    <% webConfig.menuConfig.forEach(function(menu, index) { %>
+                    <li class="menu-item menu-item-type-custom menu-item-object-custom">
+                        <a href="<%-menu.link%>"><%-menu.name%></a>
+                    </li>
+                    <% }) %>
+                </ul>
+            </div>
+
+            <div class="site-info">
+
+                <%-webConfig.websiteConfig.footHTML%>
+
+                <% if ( webConfig.websiteConfig.icp ) { %>
+                <div class="icp">
+                    <a href="http://www.miitbeian.gov.cn/">
+                        <%-webConfig.websiteConfig.icp%></a>
+                </div>
+                <% } %>
+
+            </div><!-- .site-info -->
+
+        </div><!-- .container -->
+
+    </div>
+    <!-- #site-bottom -->
+
+</footer><!-- #colophon -->
+</div><!-- #page -->
+<script type="text/javascript" src="<%-CONFIG.THEME_STATIC%>/static/js/superfish.js"></script>
+<script type="text/javascript" src="<%-CONFIG.THEME_STATIC%>/static/js/jquery.slicknav.js"></script>
+<script type="text/javascript" src="<%-CONFIG.THEME_STATIC%>/static/js/modernizr.js"></script>
+<script type="text/javascript" src="<%-CONFIG.THEME_STATIC%>/static/js/html5.js"></script>
+<script type="text/javascript" src="<%-CONFIG.THEME_STATIC%>/static/js/jquery.bxslider.js"></script>
+<script type="text/javascript" src="<%-CONFIG.THEME_STATIC%>/static/js/infinite-scroll.pkgd.min.js"></script>
+<script type="text/javascript" src="<%-CONFIG.THEME_STATIC%>/static/js/jquery.sticky.js"></script>
+<script type="text/javascript" src="<%-CONFIG.THEME_STATIC%>/static/js/jquery.custom.js"></script>
+<script type="text/javascript" src="<%-CONFIG.THEME_STATIC%>/static/js/gg.js"></script>
+
+<div id="back-top">
+    <a href="#top" title="返回顶部"><span class="genericon genericon-collapse"></span></a>
+</div>
+<script>
+    (function ($) { //create closure so we can safely use $ as alias for jQuery
+        $(document).ready(function () {
+            "use strict";
+            /*-----------------------------------------------------------------------------------*/
+            /*  Sticky Breadcrumbs
+            /*-----------------------------------------------------------------------------------*/
+            $(window).scroll(function () {
+                var aTop = 200;
+                if (($(this).scrollTop() >= aTop)) {
+                    $('.single .site-main .entry-header').addClass('sticky-breadcrumbs');
+                    $('.single #primary article.hentry').css('padding-top', '110px');
+                    $('#single-sticky').addClass(' container');
+                    $('.single .left-col').addClass('header-scrolled');
+                } else {
+                    $('.single .site-main .entry-header').removeClass('sticky-breadcrumbs');
+                    $('.single #primary article.hentry').css('padding-top', '0');
+                    $('#single-sticky').removeClass(' container');
+                    $('.single .left-col').removeClass('header-scrolled');
+                }
+            });
+            /*-----------------------------------------------------------------------------------*/
+            /*  Sticky Left Navigation
+            /*-----------------------------------------------------------------------------------*/
+
+            $(".left-col").sticky({ topSpacing: 0 });
+
+            /*-----------------------------------------------------------------------------------*/
+            /*  Slick Mobile Menu
+            /*-----------------------------------------------------------------------------------*/
+            $('#primary-menu').slicknav({
+                prependTo: '#slick-mobile-menu',
+                allowParentLinks: true,
+                label: '导航'
+            });
+        });
+    })(jQuery);
+</script>

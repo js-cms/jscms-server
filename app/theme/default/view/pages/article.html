@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class=" js flexbox canvas canvastext webgl no-touch geolocation postmessage websqldatabase indexeddb hashchange history draganddrop websockets rgba hsla multiplebgs backgroundsize borderimage borderradius boxshadow textshadow opacity cssanimations csscolumns cssgradients cssreflections csstransforms csstransforms3d csstransitions fontface generatedcontent video audio localstorage sessionstorage webworkers applicationcache svg inlinesvg smil svgclippaths">
+
+<% include ../common/head.html %>
+
+<body class="post-template-default single single-post postid-133 single-format-standard wp-custom-logo">
+    <div id="page" class="site">
+
+        <% include ../common/top-menu.html %>
+
+        <div id="content" class="site-content container three-col-layout  clear">
+
+            <div id="primary" class="content-area">
+
+                <% include ../common/left-nav.html %>
+
+                <div class="right-col">
+
+                    <main id="main" class="site-main">
+
+                        <article id="post-70" class="post-70 post type-post status-publish format-standard has-post-thumbnail hentry category-tiyu category-sheying category-xinwen tag-16 tag-12 tag-13"
+                            style="padding-top: 0px;">
+
+                            <header class="entry-header">
+
+                                <div id="single-sticky" class="">
+
+                                    <h1 class="entry-title">
+                                        <%-article.title%>
+                                    </h1>
+                                    <div class="entry-meta">
+
+                                        <span class="entry-category">
+                                            <a href="/<%-article.categoryId.alias%>.html">
+                                                <%-article.categoryId.name%></a>
+                                        </span><!-- .entry-category -->
+
+                                        <span class="entry-author">
+
+                                            <a href="/author/<%-article.userId.nickname%>.html">
+
+                                                <img alt="作者头像" src="<%-article.userId.avatar%>" srcset="<%-article.userId.avatar%>"
+                                                    class="avatar avatar-80 photo" height="80" width="80">
+                                                <%-article.userId.nickname%>
+                                            </a>
+
+                                        </span><!-- .entry-author -->
+
+                                        <span class="entry-date">
+                                            <%-helper.toDate(article.updateTime)%>
+                                        </span><!-- .entry-date -->
+
+                                        <span class="sticky-meta-right">
+
+                                            <span class="bdsharebuttonbox bdshare-button-style0-16" data-bd-bind="1541003758518">
+                                                <a href="#" class="bds_more" data-cmd="more"></a>
+                                                <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+                                                <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+                                                <a href="#" class="bds_sqq" data-cmd="sqq" title="分享给QQ好友"></a>
+                                                <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+                                            </span><!-- .bdsharebuttonbox -->
+
+                                            <span class="meta-right">
+
+                                                <span class="entry-views">
+                                                    <span class="view-count">
+                                                        <%-article.visNumber%></span> 浏览 </span>
+
+                                                <span class="entry-comment"><a href="/<%-typeObj.value%>.html#comments"
+                                                        class="comments-link">
+                                                        <%-comments.length%> 评论</a></span>
+
+                                            </span><!-- .meta-right -->
+
+                                        </span><!-- .sticky-meta-right -->
+
+                                    </div><!-- .entry-meta -->
+
+                                </div><!-- #single-sticky -->
+
+                            </header><!-- .entry-header -->
+
+                            <div class="single-excerpt">
+                                <p>
+                                    <%-article.description%>
+                                </p>
+                            </div><!-- .single-excerpt -->
+
+                            <div class="entry-content">
+                                <img width="820" height="460" data-src="<%-article.poster%>" src="<%-article.poster%>"
+                                    class="attachment-zimeiti_1_single_thumb size-zimeiti_1_single_thumb wp-post-image"
+                                    alt="<%-article.title%>">
+
+                                <%-article.htContent%>
+                            </div><!-- .entry-content -->
+
+                            <div class="entry-footer clear">
+                                <div class="entry-tags">
+                                    <span class="tag-links">
+                                        <span>文章标签：</span>
+                                        <% article.keywords.forEach(function(keyword, index) { %>
+                                        <a href="/tags/<%-keyword%>.html" rel="tag">
+                                            <%-keyword%></a>
+                                        <% }) %>
+                                    </span>
+                                </div><!-- .entry-tags -->
+
+                                <!-- The Modal -->
+                                <div id="myModal" class="modal">
+
+                                    <!-- Modal content -->
+                                    <div class="modal-content clear">
+                                        <h3>给这篇文章的作者打赏</h3>
+                                        <div class="ht_grid_1_2_custom">
+                                            <img src="<%-CONFIG.THEME_STATIC%>/static/images/wechat-qr.jpg" alt="微信扫一扫打赏">
+                                            微信扫一扫打赏
+                                        </div>
+                                        <div class="ht_grid_1_2_custom">
+                                            <img src="<%-CONFIG.THEME_STATIC%>/static/images/alipay-qr.jpg" alt="微信扫一扫打赏">
+                                            支付宝扫一扫打赏
+                                        </div>
+                                        <span class="close" onclick="this.parentNode.parentNode.style.display='none'">×</span>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="entry-footer-right">
+
+                                    <span class="entry-like">
+                                        <span class="sl-wrapper">
+                                            <a id="btnLike" href="javascript:void(0);" class="sl-button" title="点赞这篇文章">
+                                                <span class="sl-count">
+                                                    <%-article.likeCount%> <em>赞</em></span>
+                                            </a>
+                                            <span class="sl-loader"></span>
+                                        </span>
+                                    </span><!-- .entry-like -->
+                                    <span class="entry-sponsor">
+                                        <span id="btnSponsor" href="javascript:void(0);">打赏</span>
+                                    </span>
+
+                                </div>
+                            </div><!-- .entry-footer -->
+
+                        </article><!-- #post-## -->
+
+                        <% if ( article.userId.about ) { %>
+                        <div class="author-box clear">
+                            <a href="https://www.zhutibaba.com/demo/zimeiti1/author/zhutibaba"><img alt="" src="https://secure.gravatar.com/avatar/4c2ed72c6be86742f05e9750110d5731?s=120&amp;d=mm&amp;r=g"
+                                    srcset="https://secure.gravatar.com/avatar/4c2ed72c6be86742f05e9750110d5731?s=240&amp;d=mm&amp;r=g 2x"
+                                    class="avatar avatar-120 photo" height="120" width="120"></a>
+                            <div class="author-meta">
+                                <h4 class="author-name">关于作者: <span class="hover-underline"><a href="https://www.zhutibaba.com/demo/zimeiti1/author/zhutibaba">网站小编</a></span></h4>
+                                <div class="author-desc">
+                                    主题巴巴团队从2009年开始专注于WordPress主题设计开发，致力于为更多用户能轻松使用WordPress打造出更漂亮、更好用、更专业的网站。已累计开发近100款主题，全球付费客户超过3万人。主题巴巴，是您可以长期信赖的伙伴。
+                                </div>
+                            </div>
+                        </div><!-- .author-box -->
+                        <% } %>
+
+                        <div class="warning">
+                            <p><span class="font-red">声明：</span>本站大部分内容来自于互联网且仅供参考，涉及功效药用等内容请自行判断或咨询相关领域专业人士，本站概不对相关内容负责。</p>
+                        </div>
+
+                        <div class="entry-related clear">
+                            <h3>为您推荐</h3>
+                            <div class="related-loop clear">
+                                <% associateRecommendation.forEach(function(article, index) { %>
+                                <div class="hentry ht_grid_1_3">
+                                    <a class="thumbnail-link" href="/<%-article.serialNumber%>.html">
+                                        <div class="thumbnail-wrap">
+                                            <img width="280" height="176" src="<%-article.poster%>"
+                                                class="attachment-zimeiti_1_list_thumb size-zimeiti_1_list_thumb wp-post-image"
+                                                alt="<%-article.title%>"></div><!-- .thumbnail-wrap -->
+                                    </a>
+                                    <h2 class="entry-title"><a href="/<%-article.serialNumber%>.html"><%-article.title%></a></h2>
+                                </div><!-- .grid -->
+                                <% }) %>
+                            </div><!-- .related-posts -->
+                        </div><!-- .entry-related -->
+
+
+                        <div id="comments" class="comments-area">
+
+                            <div id="respond" class="comment-respond">
+                                <h3 id="reply-title" class="comment-reply-title">发表评论
+                                    <small>
+                                        <a rel="nofollow" id="cancel-comment-reply-link" href="/demo/zimeiti1/83.html#respond"
+                                            style="display:none;">取消回复</a>
+                                    </small>
+                                </h3>
+                                <form action="" method="post" id="commentform" class="comment-form" novalidate>
+                                    <p class="comment-notes">
+                                        <span id="email-notes">电子邮件地址不会被公开。</span>
+                                        必填项已用<span class="required">*</span>标注
+                                    </p>
+                                    <p class="comment-form-comment">
+                                        <label for="comment">评论 <span class="required">*</span></label>
+                                        <textarea id="comment" v-model="form.mdContent" name="comment" cols="45" rows="8"
+                                            maxlength="65525" required="required"></textarea>
+                                    </p>
+                                    <p class="comment-form-author">
+                                        <label for="author">
+                                            姓名
+                                        </label>
+                                        <input id="author" v-model="form.authorNickname" name="author" type="text"
+                                            value="" size="30" maxlength="245" required='required' />
+                                    </p>
+                                    <p class="comment-form-email">
+                                        <label for="email">
+                                            电子邮件
+                                        </label>
+                                        <input id="email" v-model="form.authorEmail" name="email" type="email" value=""
+                                            size="30" maxlength="100" aria-describedby="email-notes" required='required' />
+                                    </p>
+                                    <p class="comment-form-url">
+                                        <label for="url">站点</label>
+                                        <input id="url" v-model="form.authorUrl" name="url" type="url" value="" size="30"
+                                            maxlength="200" />
+                                    </p>
+                                    <p class="form-submit">
+                                        <input name="submit" @click="postForm()" type="button" id="submit" class="submit"
+                                            value="发表评论" />
+                                    </p>
+                                </form>
+                            </div><!-- #respond -->
+                            <h2 class="comments-title">
+                                <%-comments.length%> 条评论
+                            </h2>
+                            <ol class="comment-list">
+                                <% comments.forEach(function(comment, index) { %>
+                                <li id="comment-<%-comment._id%>" class="comment byuser bypostauthor even thread-even depth-1">
+                                    <article id="div-comment-<%-comment._id%>" class="comment-body">
+                                        <footer class="comment-meta">
+                                            <div class="comment-author vcard">
+                                                <img alt='<%-comment.authorNickname%>' src='<%-comment.authorAvatar%>'
+                                                    class='avatar avatar-32 photo' height='32' width='32' />
+                                                <b class="fn">
+                                                    <%-comment.authorNickname%></b>
+                                                <span class="says">说道：</span>
+                                            </div><!-- .comment-author -->
+                                            <div class="comment-metadata">
+                                                <a href="/<%-article.serialNumber%>.html#comment-<%-comment.createTime%>">
+                                                    <time datetime="<%-helper.toDate(comment.createTime)%>">
+                                                        <%-helper.toDate(comment.createTime)%> </time>
+                                                </a>
+                                            </div><!-- .comment-metadata -->
+                                        </footer><!-- .comment-meta -->
+                                        <div class="comment-content">
+                                            <p>
+                                                <%-comment.htContent%>
+                                            </p>
+                                        </div><!-- .comment-content -->
+                                        <!-- <div class="reply"><a rel='nofollow' class='comment-reply-link' href='https://www.zhutibaba.com/demo/zimeiti1/70.html?replytocom=3#respond'
+                                                onclick='return addComment.moveForm( "div-comment-3", "3", "respond", "70" )'
+                                                aria-label='回复给网站小编'>回复</a></div> -->
+                                    </article><!-- .comment-body -->
+                                </li><!-- #comment-## -->
+                                <% }) %>
+                            </ol><!-- .comment-list -->
+                        </div><!-- #comments -->
+
+                    </main><!-- #main -->
+
+                </div><!-- .right-col -->
+
+            </div>
+
+            <% include ../common/right-aside.html %>
+
+        </div><!-- #content .site-content -->
+
+        <% include ../common/foot.html %>
+        <script type="text/javascript" src="<%-CONFIG.THEME_STATIC%>/static/lib/vue.min.js"></script>
+        <script>
+            window.articleId = '<%-article._id%>';
+        </script>
+        <script type="text/javascript" src="<%-CONFIG.THEME_STATIC%>/static/js/article.js"></script>
+</body>
+
+</html>
