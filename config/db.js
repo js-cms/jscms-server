@@ -1,10 +1,18 @@
 'use strict';
 
+const dbType = 'mongodb';
+const dbUser = '';
+const dbPass = '';
+const dbHost = '127.0.0.1';
+const dbPort = '27017';
+const dbName = 'jscms';
+const parameter = 'authSource=admin';
+
 module.exports = {
   client: {
-    url: process.env.EGG_MONGODB_URL || 'mongodb://127.0.0.1:27017/cilihome',
+    url: `${dbType}://${dbUser}:${dbPass}@${dbHost}:${dbPort}/${dbName}?${parameter}`,
     options: {
-      poolSize: 20,
+      poolSize: 200,
       useNewUrlParser: true
     }
   }

@@ -1,5 +1,5 @@
-const Page = require('./Page');
+const page = require('./page');
 
 module.exports = {
-    Page
+  page
 }
