@@ -10,6 +10,8 @@ class MainController extends Controller {
   //首页
   async index() {
     const { ctx, service, config } = this;
+    console.log(Object.keys(this));
+    console.log(this.success);
     const routerName = ctx.params.routerName || '';
     const res = utils.getType(routerName);
     let publicDdata = {};

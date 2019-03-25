@@ -12,7 +12,7 @@ class ConfigController extends Controller {
   async show() {
     const { ctx, service, config } = this;
     if (!ctx.locals.currentUser.auth.isLogin) {
-      return ctx.helper.throwError(ctx, "你没有登陆", 101);
+      return ctx.helper.throwError(ctx, "你没有登陆", 403);
     }
     const userId = ctx.locals.currentUser.user._id;
     const alias = ctx.query.alias;
@@ -29,7 +29,7 @@ class ConfigController extends Controller {
   async update() {
     const { ctx, service, config } = this;
     if (!ctx.locals.currentUser.auth.isLogin) {
-      return ctx.helper.throwError(ctx, "你没有登陆", 101);
+      return ctx.helper.throwError(ctx, "你没有登陆", 403);
     }
     const info = ctx.request.body.info;
     const id = ctx.request.body.id;

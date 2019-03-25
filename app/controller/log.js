@@ -8,7 +8,7 @@ class LogController extends Controller {
     async list() {
         const { ctx, service, config } = this;
         if (!ctx.locals.currentUser.auth.isLogin) {
-            return ctx.helper.throwError(ctx, "你没有登陆", 101);
+            return ctx.helper.throwError(ctx, "你没有登陆", 403);
         }
         let type = Number(ctx.query.type);
         let pageSize = Number(ctx.query.pageSize);
@@ -42,7 +42,7 @@ class LogController extends Controller {
     async delete() {
         const { ctx, service, config } = this;
         if ( !ctx.locals.currentUser.auth.isLogin ) {
-            return ctx.helper.throwError(ctx, "你没有登陆", 101);
+            return ctx.helper.throwError(ctx, "你没有登陆", 403);
         }
 
         const id = ctx.request.body.id;

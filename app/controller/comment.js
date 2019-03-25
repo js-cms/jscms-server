@@ -120,7 +120,7 @@ class CommentController extends Controller {
     async update() {
         const { ctx, service, config } = this;
         if ( !ctx.locals.currentUser.auth.isLogin ) {
-            return ctx.helper.throwError(ctx, "你没有登陆", 101);
+            return ctx.helper.throwError(ctx, "你没有登陆", 403);
         }
         const id = ctx.request.body._id;
         let info = ctx.request.body;
@@ -149,7 +149,7 @@ class CommentController extends Controller {
     async delete() {
         const { ctx, service, config } = this;
         if ( !ctx.locals.currentUser.auth.isLogin ) {
-            return ctx.helper.throwError(ctx, "你没有登陆", 101);
+            return ctx.helper.throwError(ctx, "你没有登陆", 403);
         }
 
         const id = ctx.request.body.id;
@@ -174,7 +174,7 @@ class CommentController extends Controller {
     async list() {
         const { ctx, service, config } = this;
         if ( !ctx.locals.currentUser.auth.isLogin ) {
-            return ctx.helper.throwError(ctx, "你没有登陆", 101);
+            return ctx.helper.throwError(ctx, "你没有登陆", 403);
         }
         let pageSize = Number(ctx.query.pageSize);
         let pageNumber = Number(ctx.query.pageNumber);

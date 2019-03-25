@@ -54,7 +54,7 @@ class UserController extends Controller {
   async self() {
     const ctx = this.ctx;
     if (!ctx.locals.currentUser.auth.isLogin) {
-      return ctx.helper.throwError(ctx, "你没有登陆", 101);
+      return ctx.helper.throwError(ctx, "你没有登陆", 403);
     }
     const userId = ctx.locals.currentUser.user._id;
 
@@ -117,7 +117,7 @@ class UserController extends Controller {
   async updateInfo() {
     const ctx = this.ctx;
     if (!ctx.locals.currentUser.auth.isLogin) {
-      return ctx.helper.throwError(ctx, "你没有登陆", 101);
+      return ctx.helper.throwError(ctx, "你没有登陆", 403);
     }
     const _user = ctx.request.body;
     const userId = ctx.locals.currentUser.user._id;
@@ -150,7 +150,7 @@ class UserController extends Controller {
     const ctx = this.ctx;
     ctx.validate(passRule);
     if (!ctx.locals.currentUser.auth.isLogin) {
-      return ctx.helper.throwError(ctx, "你没有登陆", 101);
+      return ctx.helper.throwError(ctx, "你没有登陆", 403);
     }
     const password = ctx.request.body.password;
     const userId = ctx.locals.currentUser.user._id;

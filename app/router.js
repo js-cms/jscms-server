@@ -4,29 +4,38 @@
  * @param {Egg.Application} app - egg application
  */
 
+const loader = require('./routes/loader');
+const interceptor = require('./routes/interceptor');
+
 module.exports = app => {
   const {
     router,
     controller
   } = app;
 
-  //首页路由
-  router.redirect('/index.php', '/index.html', 302);
-  router.redirect('/index.asp', '/index.html', 302);
-  router.redirect('/index.jsp', '/index.html', 302);
-
-  //sitemap.txt
-  router.get('/sitemap.txt', controller.sitemap.index); //sitemap
-  //robots.txt
-  router.get('/robots.txt', controller.config.robots); //sitemap
+  //web端路由
+  loader(require('./routes/web/index'), router, controller);
   
-  router.get('/s', controller.main.search); // 搜索页面
-  router.get('/', controller.main.index); //首页
-  router.get('/:routerName', controller.main.index); //伪静态入口
-  router.get('/tags/:tagName', controller.main.tags); //通过标签/关键字查找文章列表
-  router.get('/author/:nickname', controller.main.author); // 用户页面
-  router.get('/page/:pageAlias', controller.main.page); // 页面路由
-  router.get('/s/:keyword', controller.main.search); // 搜索页面
+  //api路由
+  //require('./routes/api/index')(router, controller);
+
+  //首页路由
+  // router.redirect('/index.php', '/index.html', 302);
+  // router.redirect('/index.asp', '/index.html', 302);
+  // router.redirect('/index.jsp', '/index.html', 302);
+
+  // //sitemap.txt
+  // router.get('/sitemap.txt', controller.sitemap.index); //sitemap
+  // //robots.txt
+  // router.get('/robots.txt', controller.config.robots); //sitemap
+  
+  // router.get('/s', controller.main.search); // 搜索页面
+  // router.get('/', controller.main.index); //首页
+  // router.get('/:routerName', controller.main.index); //伪静态入口
+  // router.get('/tags/:tagName', controller.main.tags); //通过标签/关键字查找文章列表
+  // router.get('/author/:nickname', controller.main.author); // 用户页面
+  // router.get('/page/:pageAlias', controller.main.page); // 页面路由
+  // router.get('/s/:keyword', controller.main.search); // 搜索页面
 
   //资源api
   router.post('/api/resource/uploader', controller.resource.uploader); //资源上传
@@ -82,4 +91,7 @@ module.exports = app => {
 
   //模型api
   router.get('/api/model', controller.model.index); //获取模型对象
+
+  //测试api
+  interceptor(router, app.controller, controller.test.index);
 };

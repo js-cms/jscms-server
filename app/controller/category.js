@@ -60,7 +60,7 @@ class CategoryController extends Controller {
     async create() {
         const { ctx, service, config } = this;
         if ( !ctx.locals.currentUser.auth.isLogin ) {
-            return ctx.helper.throwError(ctx, "你没有登陆", 101);
+            return ctx.helper.throwError(ctx, "你没有登陆", 403);
         }
         const validateResult = validate(ctx.request.body);
         //校验失败
@@ -97,7 +97,7 @@ class CategoryController extends Controller {
     async update() {
         const { ctx, service, config } = this;
         if ( !ctx.locals.currentUser.auth.isLogin ) {
-            return ctx.helper.throwError(ctx, "你没有登陆", 101);
+            return ctx.helper.throwError(ctx, "你没有登陆", 403);
         }
         const id = ctx.request.body._id;
         let info = ctx.request.body;
@@ -121,7 +121,7 @@ class CategoryController extends Controller {
     async delete() {
         const { ctx, service, config } = this;
         if ( !ctx.locals.currentUser.auth.isLogin ) {
-            return ctx.helper.throwError(ctx, "你没有登陆", 101);
+            return ctx.helper.throwError(ctx, "你没有登陆", 403);
         }
 
         const id = ctx.request.body.id;
@@ -146,7 +146,7 @@ class CategoryController extends Controller {
     async list() {
         const { ctx, service, config } = this;
         if ( !ctx.locals.currentUser.auth.isLogin ) {
-            return ctx.helper.throwError(ctx, "你没有登陆", 101);
+            return ctx.helper.throwError(ctx, "你没有登陆", 403);
         }
 
         //获取分类列表

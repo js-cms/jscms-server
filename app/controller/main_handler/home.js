@@ -1,5 +1,6 @@
 const home = async function (opt) {
     const { ctx, service, config, typeObj } = opt;
+    
     if (!isNaN(Number(typeObj.value))) {
         if (typeObj.value <= 0) {
             return this.notFound(opt);

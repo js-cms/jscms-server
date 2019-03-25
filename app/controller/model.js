@@ -9,7 +9,7 @@ class ModelController extends Controller {
     async index() {
         const { ctx, service, config } = this;
         if ( !ctx.locals.currentUser.auth.isLogin ) {
-            return ctx.helper.throwError(ctx, "你没有登陆", 101);
+            return ctx.helper.throwError(ctx, "你没有登陆", 403);
         }
         
         let modelName = ctx.query.name;

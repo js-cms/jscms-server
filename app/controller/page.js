@@ -47,7 +47,7 @@ class PageController extends Controller {
         const { ctx, service, config } = this;
 
         if ( !ctx.locals.currentUser.auth.isLogin ) {
-            return ctx.helper.throwError(ctx, "你没有登陆", 101);
+            return ctx.helper.throwError(ctx, "你没有登陆", 403);
         }
 
         let parameters = ctx.request.body;
@@ -84,7 +84,7 @@ class PageController extends Controller {
         const { ctx, service, config } = this;
 
         if ( !ctx.locals.currentUser.auth.isLogin ) {
-            return ctx.helper.throwError(ctx, "你没有登陆", 101);
+            return ctx.helper.throwError(ctx, "你没有登陆", 403);
         }
 
         let parameters = ctx.request.body;
@@ -118,7 +118,7 @@ class PageController extends Controller {
         const { ctx, service, config } = this;
 
         if ( !ctx.locals.currentUser.auth.isLogin ) {
-            return ctx.helper.throwError(ctx, "你没有登陆", 101);
+            return ctx.helper.throwError(ctx, "你没有登陆", 403);
         }
 
         const id = ctx.request.body.id;
@@ -144,7 +144,7 @@ class PageController extends Controller {
         const { ctx, service, config } = this;
 
         if ( !ctx.locals.currentUser.auth.isLogin ) {
-            return ctx.helper.throwError(ctx, "你没有登陆", 101);
+            return ctx.helper.throwError(ctx, "你没有登陆", 403);
         }
         let pageSize = Number(ctx.query.pageSize);
         let pageNumber = Number(ctx.query.pageNumber);
@@ -171,7 +171,7 @@ class PageController extends Controller {
         const { ctx, service, config } = this;
 
         if (!ctx.locals.currentUser.auth.isLogin) {
-            return ctx.helper.throwError(ctx, "你没有登陆", 101);
+            return ctx.helper.throwError(ctx, "你没有登陆", 403);
         }
 
         const id = ctx.query.id;

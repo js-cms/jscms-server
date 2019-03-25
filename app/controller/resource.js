@@ -23,7 +23,7 @@ class ResourceController extends Controller {
     async list() {
         const { ctx, service, config } = this;
         if (!ctx.locals.currentUser.auth.isLogin) {
-            return ctx.helper.throwError(ctx, "你没有登陆", 101);
+            return ctx.helper.throwError(ctx, "你没有登陆", 403);
         }
 
         const type = ctx.query.type; 
@@ -58,7 +58,7 @@ class ResourceController extends Controller {
     async delete() {
         const { ctx, service, config } = this;
         if ( !ctx.locals.currentUser.auth.isLogin ) {
-            return ctx.helper.throwError(ctx, "你没有登陆", 101);
+            return ctx.helper.throwError(ctx, "你没有登陆", 403);
         }
 
         const id = ctx.request.body.id;
