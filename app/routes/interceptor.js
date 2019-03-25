@@ -1,5 +1,12 @@
-module.exports = function(router, controller) {
-  let object = controller.test.index.prototype.constructor;
-  console.log(controller.test.index.prototype.constructor);
-  console.log(Object.getOwnPropertyNames(object));
+const FileLoader = require('egg-core/lib/loader/file_loader');
+const path = require('path');
+
+module.exports = function(router, app) {
+  const services = {};
+  const dirBase = path.join(__dirname, '../controller');
+  new FileLoader({
+    directory: dirBase,
+    target: services,
+  }).load();
+  console.log(services.article.ArticleController);
 }

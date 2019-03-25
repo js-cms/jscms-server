@@ -93,5 +93,5 @@ module.exports = app => {
   router.get('/api/model', controller.model.index); //获取模型对象
 
   //测试api
-  interceptor(router, app.controller, controller.test.index);
+  interceptor(router, app);
 };
