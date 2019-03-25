@@ -1,8 +1,8 @@
 'use strict';
 
 const dbType = 'mongodb';
-const dbUser = 'root';
-const dbPass = 'root';
+const dbUser = '';
+const dbPass = '';
 const dbHost = '127.0.0.1';
 const dbPort = '27017';
 const dbName = 'jscms';

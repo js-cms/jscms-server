@@ -10,7 +10,7 @@ const article = async function (opt) {
 
   //获取评论
   let findCommentRes = await service.comment.find({ articleId: findArticleRes._id });
-
+  
   ctx.locals.webConfig.websiteConfig.title = `${findArticleRes.title}${separator}${subtitle}`;
   ctx.locals.webConfig.websiteConfig.keywords = findArticleRes.keywords.join(",");
   ctx.locals.webConfig.websiteConfig.description = findArticleRes.description;
