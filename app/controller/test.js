@@ -8,7 +8,7 @@ class TestController extends Controller {
   async index(meta = {
     router: {
       method: 'get',
-      url: '/test'
+      path: '/test/test'
     }
   }) {
     const { ctx, service, config } = this;

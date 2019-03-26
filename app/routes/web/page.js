@@ -1,6 +1,5 @@
 /** 独立自定义页面 */
-module.exports = function(controller) {
-  return {
-    get: ['/page/:pageAlias', controller.main.page]
-  }
+module.exports = function(app) {
+  const { router, controller } = app;
+  router.get('/page/:pageAlias', controller.main.page);
 }

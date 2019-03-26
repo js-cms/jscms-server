@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = () => {
+module.exports = app => {
   // 验证用户
   return async function (ctx, next) {
     const prefix = ctx.request.path.substring(0, 4);

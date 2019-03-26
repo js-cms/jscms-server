@@ -4,7 +4,6 @@ const page = async function (opt) {
 
     //获取页面信息
     let findPageRes = await service.page.findOne({ alias: typeObj.alias });
-    console.log(findPageRes);
     if (!findPageRes) {
         return this.notFound(opt);
     }

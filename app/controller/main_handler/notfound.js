@@ -1,6 +1,5 @@
 const notFound = async function (opt) {
     const { ctx, service, config, typeObj } = opt;
-    console.log(typeObj);
     const findTagsRes = await service.config.findOne({"alias": "tags"});
     let tags = [];
     findTagsRes.info.forEach((tag)=>{
@@ -10,7 +9,6 @@ const notFound = async function (opt) {
     });
 
     this.publicData.tags = tags;
-    console.log(this.publicData.tags);
 
     let data = {
         publicData: this.publicData,

@@ -73,7 +73,6 @@ class CacheService extends Service {
         let verCodes = result ? JSON.parse(result) : [];
         //覆盖
         verCodes = deleteEmail(verCodes, email);
-        console.log(verCodes);
         await redis.set("verCodes", JSON.stringify(verCodes));
     }
 

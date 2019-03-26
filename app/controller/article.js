@@ -25,7 +25,7 @@ const mixinArray = function (arr1, arr2) {
 class ArticleController extends Controller {
 
   //安装时的初始化
-  async install(meta = {}) {
+  async install() {
     const { ctx, service, config } = this;
     if (ctx.app.config.env !== "local") {
       return ctx.helper.throwError(ctx, "没有操作权限");
@@ -107,7 +107,6 @@ class ArticleController extends Controller {
         $inc: { likeCount: Number(1) }
       }
     );
-    console.log(updateArticleRes);
     ctx.body = {
       code: 0,
       data: {
