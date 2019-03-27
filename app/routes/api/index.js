@@ -1,6 +1,6 @@
-module.exports = function(app) {
+module.exports = function (app) {
   [
-    'article', 
+    'article',
     'category',
     'comment',
     'config',

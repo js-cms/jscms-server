@@ -1,36 +1,18 @@
 'use strict';
 
-const Controller = require('egg').Controller;
-
+const BaseController = require('./web/base');
 const utils = require('./main_handler/utils');
 const handlers = require('./main_handler/index'); //处理器
 
-class MainController extends Controller {
+class MainController extends BaseController {
 
   //首页
   async index() {
     const { ctx, service, config } = this;
-    const routerName = ctx.params.routerName || '';
-    const res = utils.getType(routerName);
-    let publicDdata = {};
-    //最近三篇文章
-    let recentlyArticlesRes = await service.article.find({}, 0, 3);
-    //随机三篇文章
-    let randomArticlesRes = await service.article.findRandom(3);
-    //最近三条评论
-    let recentlyCommentsRes = await service.comment.findByQuery({}, 0, 3);
-    //获取浏览量最多的5篇文章
-    let hotArticlesRes = await service.article.findByHot({}, 0, 5);
-    //获取评论量最多的5篇文章
-    let commentArticlesRes = await service.article.findByComment({}, 0, 5);
-
-    this.publicData = {
-      recentlyArticles: recentlyArticlesRes,
-      randomArticlesRes: randomArticlesRes,
-      recentlyCommentsRes: recentlyCommentsRes,
-      hotArticlesRes: hotArticlesRes,
-      commentArticlesRes: commentArticlesRes
-    }
+    await this.loadCommonData();
+ 
+    this.publicData = this.cache('TEMPLAE_DATA');
+    let res = this.cache('PAGE_TYPE');
 
     await handlers[res.type].call(this, {
       ctx, service, config,

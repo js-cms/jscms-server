@@ -6,6 +6,6 @@ module.exports = function(app) {
     'page',
     'search',
     'tags',
-    'txt'
+    'text'
   ].map(m => require(`./${m}.js`)(app));
 };

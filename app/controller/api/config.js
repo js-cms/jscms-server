@@ -32,7 +32,7 @@ class ConfigController extends Controller {
       return ctx.helper.throwError(ctx, "你没有登陆", 403);
     }
     const info = ctx.request.body.info;
-    const id = ctx.request.body.id;
+    const id = ctx.request.body._id;
     const updateRes = await service.config.update(id, {
       info: info
     });

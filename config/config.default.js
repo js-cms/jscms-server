@@ -45,16 +45,16 @@ module.exports = appInfo => {
       'http://localhost:9012'
     ]
   };
-
+  
   config.static = {
     dir: [
       {
-        prefix: config.directory.JSCMS_URL_STATIC,
-        dir: path.join(appInfo.baseDir, config.directory.JSCMS_STATIC)
-      },
-      {
         prefix: config.directory.JSCMS_URL_MANAGEMENT,
         dir: path.join(appInfo.baseDir, config.directory.JSCMS_MANAGEMENT)
+      },
+      {
+        prefix: config.directory.JSCMS_URL_STATIC,
+        dir: path.join(appInfo.baseDir, config.directory.JSCMS_STATIC)
       },
       {
         prefix: config.directory.JSCMS_URL_THEME_STATIC,
