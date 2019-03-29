@@ -8,29 +8,21 @@ class BaseController extends Controller {
   async loadCommonData(data) {
     const { ctx, service, config } = this;
     const routerName = ctx.params.routerName || '';
-    const pageType = utils.getType(routerName);
 
     //缓存页面类型
-    this.cache('PAGE_TYPE', pageType);
-     
-    //最近三篇文章
-    let recentlyArticlesRes = await service.article.find({}, 0, 3);
-    //随机三篇文章
-    let randomArticlesRes = await service.article.findRandom(3);
-    //最近三条评论
-    let recentlyCommentsRes = await service.comment.findByQuery({}, 0, 3);
-    //获取浏览量最多的5篇文章
-    let hotArticlesRes = await service.article.findByHot({}, 0, 5);
-    //获取评论量最多的5篇文章
-    let commentArticlesRes = await service.article.findByComment({}, 0, 5);
-
+    this.cache('RENDER_TYPE', utils.getType(routerName));
     //缓存模版数据
-    this.cache('TEMPLAE_DATA', {
-      recentlyArticles: recentlyArticlesRes,
-      randomArticlesRes: randomArticlesRes,
-      recentlyCommentsRes: recentlyCommentsRes,
-      hotArticlesRes: hotArticlesRes,
-      commentArticlesRes: commentArticlesRes
+    this.cache('RENDER_DATA', {
+      // 最近三篇文章
+      recentlyArticles: await service.article.find({}, 0, 3),
+      // 随机三篇文章
+      randomArticlesRes: await service.article.findRandom(3),
+      // 最近三条评论
+      recentlyCommentsRes: await service.comment.findByQuery({}, 0, 3),
+      // 获取浏览量最多的5篇文章
+      hotArticlesRes: await service.article.findByHot({}, 0, 5),
+      // 获取评论量最多的5篇文章
+      commentArticlesRes: await service.article.findByComment({}, 0, 5)
     });
   }
 
@@ -49,6 +41,16 @@ class BaseController extends Controller {
     msg = msg || 'not found';
     this.ctx.throw(404, msg);
   }
+
+  async render(path, data) {
+    const { ctx, service, config } = this;
+    let commonData = {
+      RENDER_TYPE: this.cache('RENDER_TYPE'),
+      RENDER_DATA: this.cache('RENDER_DATA')
+    }
+    await ctx.render(`/${config.theme.THEME_NAME}/view/${path}`, Object.assign(commonData, data));
+  }
+
 }
 
 module.exports = BaseController;

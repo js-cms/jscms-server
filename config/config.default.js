@@ -5,7 +5,7 @@ const path = require('path');
 module.exports = appInfo => {
   const config = exports = {};
   config.mongoose = require('./db.js');
-  config.directory = require('./directory.js');
+  config.constant = require('./constant/index.js');
   config.theme = require('./theme.js');
 
   // use for cookie sign key, should change to your own and keep security
@@ -19,7 +19,7 @@ module.exports = appInfo => {
       '.html': 'ejs',
     },
     root: [
-      path.join(appInfo.baseDir, config.directory.JSCMS_THEME)
+      path.join(appInfo.baseDir, config.constant.directory.JSCMS_THEME)
     ].join(',')
   };
 
@@ -49,16 +49,16 @@ module.exports = appInfo => {
   config.static = {
     dir: [
       {
-        prefix: config.directory.JSCMS_URL_MANAGEMENT,
-        dir: path.join(appInfo.baseDir, config.directory.JSCMS_MANAGEMENT)
+        prefix: config.constant.directory.JSCMS_URL_MANAGEMENT,
+        dir: path.join(appInfo.baseDir, config.constant.directory.JSCMS_MANAGEMENT)
       },
       {
-        prefix: config.directory.JSCMS_URL_STATIC,
-        dir: path.join(appInfo.baseDir, config.directory.JSCMS_STATIC)
+        prefix: config.constant.directory.JSCMS_URL_STATIC,
+        dir: path.join(appInfo.baseDir, config.constant.directory.JSCMS_STATIC)
       },
       {
-        prefix: config.directory.JSCMS_URL_THEME_STATIC,
-        dir: path.join(appInfo.baseDir, config.directory.JSCMS_THEME)
+        prefix: config.constant.directory.JSCMS_URL_THEME_STATIC,
+        dir: path.join(appInfo.baseDir, config.constant.directory.JSCMS_THEME)
       }
     ]
   }

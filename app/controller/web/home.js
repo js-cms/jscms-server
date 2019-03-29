@@ -1,6 +1,5 @@
 'use strict';
 
-const Controller = require('egg').Controller;
 const BaseController = require('./base');
 
 class HomeController extends BaseController {
@@ -15,16 +14,16 @@ class HomeController extends BaseController {
 
   async handler() {
     const { ctx, service, config } = this;
-    const typeObj = this.cache('PAGE_TYPE');
+    const renderType = this.cache('RENDER_TYPE');
 
-    if (!isNaN(Number(typeObj.value))) {
-      if (typeObj.value <= 0) {
+    if (!isNaN(Number(renderType.value))) {
+      if (renderType.value <= 0) {
         return this.notFound(opt);
       }
     }
 
     let pageSize = 10;
-    let pageNumber = typeObj.value - 1;
+    let pageNumber = renderType.value - 1;
     pageSize = isNaN(pageSize) ? 10 : pageSize;
     pageNumber = isNaN(pageNumber) ? 0 : pageNumber;
 
@@ -66,8 +65,6 @@ class HomeController extends BaseController {
     });
 
     let data = {
-      publicData: this.publicData,
-      typeObj: typeObj,
       articles: articlesRes,
       majorArticles,
       secondaryArticles,

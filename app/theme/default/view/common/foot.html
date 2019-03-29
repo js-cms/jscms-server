@@ -1,12 +1,12 @@
 <footer id="colophon" class="site-footer ">
 
-    <div class="footer-columns <% if ( typeObj.type === 404 || typeObj.type === 'page' ) { %>container<% } else { %>footer-container<% } %> clear >">
+    <div class="footer-columns <% if ( RENDER_TYPE.type === 404 || RENDER_TYPE.type === 'page' ) { %>container<% } else { %>footer-container<% } %> clear >">
 
         <div class="footer-column footer-column-1 ht_grid_1_4">
             <div id="zimeiti_1-recent-2" class="widget footer-widget widget-zimeiti_1-recent widget_posts_thumbnail">
                 <h3 class="widget-title">近期文章</h3>
                 <ul>
-                    <% publicData.recentlyArticles.forEach(function(article, index) { %>
+                    <% RENDER_DATA.recentlyArticles.forEach(function(article, index) { %>
                     <li class="clear">
                         <a href="/<%-article.serialNumber%>.html" rel="bookmark">
                             <div class="thumbnail-wrap">
@@ -26,7 +26,7 @@
             <div id="zimeiti_1-random-2" class="widget footer-widget widget-zimeiti_1-random widget_posts_thumbnail">
                 <h3 class="widget-title">随机文章</h3>
                 <ul>
-                    <% publicData.randomArticlesRes.forEach(function(article, index) { %>
+                    <% RENDER_DATA.randomArticlesRes.forEach(function(article, index) { %>
                     <li class="clear">
                         <a href="/<%-article.serialNumber%>.html" rel="bookmark">
                             <div class="thumbnail-wrap">
@@ -49,7 +49,7 @@
             <div id="recent-comments-2" class="widget footer-widget widget_recent_comments">
                 <h3 class="widget-title">近期评论</h3>
                 <ul id="recentcomments">
-                    <% publicData.recentlyCommentsRes.forEach(function(comment, index) { %>
+                    <% RENDER_DATA.recentlyCommentsRes.forEach(function(comment, index) { %>
                     <li class="recentcomments">
                         <span class="comment-author-link"> <%-comment.authorNickname%></span>发表在《<a href="/<%-comment.articleId.serialNumber%>.html#comment-<%-comment._id%>"><%-comment.articleId.title%></a>》
                     </li>
@@ -60,10 +60,10 @@
         <div class="footer-column footer-column-4 ht_grid_1_4">
             <div id="text-2" class="widget footer-widget widget_text">
                 <h3 class="widget-title">关于
-                    <%-webConfig.websiteConfig.subtitle%>
+                    <%-webConfig.site.subtitle%>
                 </h3>
                 <div class="textwidget">
-                    <%-webConfig.websiteConfig.about%>
+                    <%-webConfig.site.about%>
                     <p class="tips">本站的部分内容来源于互联网，如不慎侵犯到您的权益，请联系我们，我们会在36小时内删除。</p>
                 </div>
             </div>
@@ -87,7 +87,7 @@
                             信息分类
                         </a>
                     </li>
-                    <% webConfig.menuConfig.forEach(function(menu, index) { %>
+                    <% webConfig.menus.forEach(function(menu, index) { %>
                     <li class="menu-item menu-item-type-custom menu-item-object-custom">
                         <a href="<%-menu.link%>"><%-menu.name%></a>
                     </li>
@@ -97,12 +97,12 @@
 
             <div class="site-info">
 
-                <%-webConfig.websiteConfig.footHTML%>
+                <%-webConfig.site.footHTML%>
 
-                <% if ( webConfig.websiteConfig.icp ) { %>
+                <% if ( webConfig.site.icp ) { %>
                 <div class="icp">
                     <a href="http://www.miitbeian.gov.cn/">
-                        <%-webConfig.websiteConfig.icp%></a>
+                        <%-webConfig.site.icp%></a>
                 </div>
                 <% } %>
 

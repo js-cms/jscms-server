@@ -167,8 +167,11 @@ class UserController extends Controller {
     }
   }
 
+  /*
+   * 登陆
+   */
   async login() {
-    const ctx = this.ctx;
+    const { ctx, service, config } = this;
     ctx.validate(userRule);
     const _user = ctx.request.body;
     //判断用户是否存在
@@ -215,6 +218,14 @@ class UserController extends Controller {
     };
   }
 
+  /*
+   * 登出
+   */
+  async logout() {
+    const { ctx, service, config } = this;
+    ctx.body = "hi";
+  }
+
   //用户列表
   async list() {
     const ctx = this.ctx;
@@ -227,40 +238,6 @@ class UserController extends Controller {
       }
     } else {
       return ctx.helper.throwError(ctx, "查询失败");
-    }
-    ctx.status = 201;
-  }
-
-  //内部接口，用于创建超级管理员
-  async super() {
-    const ctx = this.ctx;
-    if (ctx.app.config.env !== "local") {
-      error(ctx, "没有操作权限");
-    }
-    ctx.validate(userRule);
-    const _user = ctx.request.body;
-
-    //判断用户是否已经注册
-    const users = await ctx.service.user.getUsersByQuery({
-      $or: [{ email: _user.email }]
-    }, {});
-    if (users.length > 0) {
-      ctx.status = 422;
-      return ctx.helper.throwError(ctx, "用户名或邮箱已被使用。")
-    }
-
-    //没有注册的话就注册该用户
-    const user = await ctx.service.user.create(_user);
-
-    //如果用户添加成功
-    if (user._id) {
-      // 设置响应体和状态码
-      ctx.body = {
-        code: 0,
-        msg: 'ok',
-      };
-    } else {
-      return ctx.helper.throwError(ctx, "用户注册失败！")
     }
     ctx.status = 201;
   }

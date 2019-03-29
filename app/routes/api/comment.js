@@ -1,7 +1,6 @@
 /** 评论相关api */
 module.exports = function(app) {
-  const { router, controller } = app; 
-  router.post('/api/comment/install', controller.api.comment.install); //默认评论安装
+  const { router, controller } = app;
   router.post('/api/comment/create', controller.api.comment.create); //新增文章
   router.post('/api/comment/update', controller.api.comment.update); //更新文章
   router.post('/api/comment/delete', controller.api.comment.delete); //删除文章

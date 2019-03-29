@@ -4,166 +4,126 @@ const Controller = require('egg').Controller;
 const _ = require('lodash');
 
 //数据校验函数
-const validate = function(object) {
-    return {
-        code: 0,
-        object: object
-    };
+const validate = function (object) {
+  return {
+    code: 0,
+    object: object
+  };
 }
 
 /**
  * 分类相关api
  */
 class CategoryController extends Controller {
-    //安装时的初始化
-    async install() {
-        const { ctx, service, config } = this;
-        if ( ctx.app.config.env !== "local" ) {
-            return ctx.helper.throwError(ctx, "没有操作权限");
-        }
-        const initData = {
-            order: 0,
-            name: "默认分类",
-            alias: "default"
-        }
-        let data = {};
-        const parameters = ctx.request.body;
-        if ( parameters.name && parameters.alias) {
-            data = parameters
-        } else {
-            data = initData
-        }
 
-        let findRes = await service.category.findOne({
-            name: data.name,
-            alias: data.alias
-        });
+  //新增分类
+  async create() {
+    const { ctx, service, config } = this;
+    if (!ctx.locals.currentUser.auth.isLogin) {
+      return ctx.helper.throwError(ctx, "你没有登陆", 403);
+    }
+    const validateResult = validate(ctx.request.body);
+    //校验失败
+    if (validateResult.code === 1) {
+      return ctx.helper.throwError(ctx, validateResult.msg, validateResult.code);
+    }
+    let parameters = validateResult.object;
 
-        if ( findRes ) {
-            return ctx.helper.throwError(ctx, "该分类已存在");
-        }
+    let findRes = await service.category.findOne({
+      name: parameters.name,
+      alias: parameters.alias
+    });
 
-        let createRes = await service.category.create(data);
-
-        if ( createRes._id ) {
-            ctx.body = {
-                code: 0,
-                msg: "分类创建完成",
-                data: createRes
-            }
-        } else {
-            return ctx.helper.throwError(ctx, "分类创建失败");
-        }
+    //判断是否存在重复分类
+    if (findRes) {
+      return ctx.helper.throwError(ctx, "分类已存在");
     }
 
-    //新增分类
-    async create() {
-        const { ctx, service, config } = this;
-        if ( !ctx.locals.currentUser.auth.isLogin ) {
-            return ctx.helper.throwError(ctx, "你没有登陆", 403);
-        }
-        const validateResult = validate(ctx.request.body);
-        //校验失败
-        if ( validateResult.code === 1 ) {
-            return ctx.helper.throwError(ctx, validateResult.msg, validateResult.code);
-        }
-        let parameters = validateResult.object;
-    
-        let findRes = await service.category.findOne({
-            name: parameters.name,
-            alias: parameters.alias
-        });
+    //分类创建结果
+    const createCatRes = await service.category.create(parameters);
 
-        //判断是否存在重复分类
-        if ( findRes ) {
-            return ctx.helper.throwError(ctx, "分类已存在");
-        }
+    if (createCatRes._id) {
+      ctx.body = {
+        code: 0,
+        msg: "分类创建完成",
+        data: createCatRes
+      }
+    } else {
+      return ctx.helper.throwError(ctx, "分类创建失败");
+    }
+  }
 
-        //分类创建结果
-        const createCatRes = await service.category.create(parameters);
+  //更新分类
+  async update() {
+    const { ctx, service, config } = this;
+    if (!ctx.locals.currentUser.auth.isLogin) {
+      return ctx.helper.throwError(ctx, "你没有登陆", 403);
+    }
+    const id = ctx.request.body._id;
+    let info = ctx.request.body;
+    delete info._id;
+    delete info.createTime;
+    delete info.updateTime;
 
-        if ( createCatRes._id ) {
-            ctx.body = {
-                code: 0,
-                msg: "分类创建完成",
-                data: createCatRes
-            }
-        } else {
-            return ctx.helper.throwError(ctx, "分类创建失败");
-        }
+    const updateRes = await service.category.update(id, info);
+    if (updateRes) {
+      ctx.body = {
+        code: 0,
+        msg: "更新成功",
+        data: updateRes
+      };
+    } else {
+      return ctx.helper.throwError(ctx, "更新失败");
+    }
+  }
+
+  //删除分类
+  async delete() {
+    const { ctx, service, config } = this;
+    if (!ctx.locals.currentUser.auth.isLogin) {
+      return ctx.helper.throwError(ctx, "你没有登陆", 403);
     }
 
-    //更新分类
-    async update() {
-        const { ctx, service, config } = this;
-        if ( !ctx.locals.currentUser.auth.isLogin ) {
-            return ctx.helper.throwError(ctx, "你没有登陆", 403);
-        }
-        const id = ctx.request.body._id;
-        let info = ctx.request.body;
-        delete info._id;
-        delete info.createTime;
-        delete info.updateTime;
-        
-        const updateRes = await service.category.update(id, info);
-        if ( updateRes ) { 
-            ctx.body = {
-                code: 0,
-                msg: "更新成功",
-                data: updateRes
-            };
-        } else {
-            return ctx.helper.throwError(ctx, "更新失败");
-        }
+    const id = ctx.request.body.id;
+
+    if (!id) {
+      return ctx.helper.throwError(ctx, "参数错误");
     }
 
-    //删除分类
-    async delete() {
-        const { ctx, service, config } = this;
-        if ( !ctx.locals.currentUser.auth.isLogin ) {
-            return ctx.helper.throwError(ctx, "你没有登陆", 403);
-        }
+    const deleteRes = await service.category.remove(id);
 
-        const id = ctx.request.body.id;
+    if (deleteRes) {
+      ctx.body = {
+        code: 0,
+        msg: "分类删除完成"
+      }
+    } else {
+      return ctx.helper.throwError(ctx, "分类创建失败");
+    }
+  }
 
-        if ( !id ) {
-            return ctx.helper.throwError(ctx, "参数错误");
-        }
-
-        const deleteRes = await service.category.remove(id);
-
-        if ( deleteRes ) {
-            ctx.body = {
-                code: 0,
-                msg: "分类删除完成"
-            }
-        } else {
-            return ctx.helper.throwError(ctx, "分类创建失败");
-        }
+  //获取分类列表
+  async list() {
+    const { ctx, service, config } = this;
+    if (!ctx.locals.currentUser.auth.isLogin) {
+      return ctx.helper.throwError(ctx, "你没有登陆", 403);
     }
 
     //获取分类列表
-    async list() {
-        const { ctx, service, config } = this;
-        if ( !ctx.locals.currentUser.auth.isLogin ) {
-            return ctx.helper.throwError(ctx, "你没有登陆", 403);
-        }
+    const findCategoryRes = await service.category.find({});
 
-        //获取分类列表
-        const findCategoryRes = await service.category.find({});
+    ctx.body = {
+      code: 0,
+      msg: '查询成功',
+      data: findCategoryRes
+    };
+  }
 
-        ctx.body = {
-            code: 0,
-            msg: '查询成功',
-            data: findCategoryRes
-        };
-    }
-
-    //获取单个分类信息
-    async show() {
-        const { ctx, service, config } = this;
-        ctx.body = "hi!";
-    }
+  //获取单个分类信息
+  async show() {
+    const { ctx, service, config } = this;
+    ctx.body = "hi!";
+  }
 }
 
 module.exports = CategoryController;

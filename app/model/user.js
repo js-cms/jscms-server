@@ -1,7 +1,7 @@
 'use strict';
 
 const path = require('path');
-const configDirectory = require('../../config/directory');
+const configDirectory = require('../../config/constant/directory');
 const configTheme = require('../../config/theme');
 const THEME_IMAGES = path.join(configDirectory.JSCMS_URL_THEME_STATIC, configTheme.THEME_NAME, '/static/images')
 

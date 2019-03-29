@@ -1,7 +1,6 @@
 /** 文章相关api */
 module.exports = function(app) {
-  const { router, controller } = app; 
-  router.post('/api/article/install', controller.api.article.install); //默认文章安装
+  const { router, controller } = app;
   router.post('/api/article/like', controller.api.article.like); //文章点赞
   router.post('/api/article/create', controller.api.article.create); //新增文章
   router.post('/api/article/update', controller.api.article.update); //更新文章

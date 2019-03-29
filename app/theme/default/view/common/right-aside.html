@@ -2,7 +2,7 @@
     <div id="zimeiti_1-views-2" class="widget widget-zimeiti_1-views widget_posts_thumbnail">
         <h2 class="widget-title">浏览最多的文章</h2>
         <ul>
-            <% publicData.hotArticlesRes.forEach(function(article, index) { %>
+            <% RENDER_DATA.hotArticlesRes.forEach(function(article, index) { %>
             <li class="clear">
                 <a href="/<%-article.serialNumber%>.html" rel="bookmark">
                     <div class="thumbnail-wrap">
@@ -26,7 +26,7 @@
     <div id="zimeiti_1-popular-2" class="widget widget-zimeiti_1-popular widget_posts_thumbnail">
         <h2 class="widget-title">评论最多的文章</h2>
         <ul>
-            <% publicData.commentArticlesRes.forEach(function(article, index) { %>
+            <% RENDER_DATA.commentArticlesRes.forEach(function(article, index) { %>
             <li class="clear">
                 <a href="/<%-article.serialNumber%>.html" rel="bookmark">
                     <div class="thumbnail-wrap">
