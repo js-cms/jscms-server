@@ -1,7 +1,6 @@
 'use strict';
 
 const Controller = require('egg').Controller;
-const _ = require('lodash');
 const marked = require('marked');
 
 // 数据校验函数
@@ -29,7 +28,7 @@ class ArticleController extends Controller {
     const { ctx, service, config } = this;
     const id = ctx.request.body.id;
     if (!id) {
-      return ctx.helper.throwError(ctx, "参数错误");
+      return ctx.helper.throwError(ctx, '参数错误');
     }
 
     //给文章增加点赞数
@@ -51,7 +50,7 @@ class ArticleController extends Controller {
   async create() {
     const { ctx, service, config } = this;
     if (!ctx.locals.currentUser.auth.isLogin) {
-      return ctx.helper.throwError(ctx, "你没有登陆", 403);
+      return ctx.helper.throwError(ctx, '你没有登陆', 403);
     }
     const userId = ctx.locals.currentUser.user._id;
     const validateResult = validate(ctx.request.body);
@@ -102,7 +101,7 @@ class ArticleController extends Controller {
         data: createArticleRes
       };
     } else {
-      return ctx.helper.throwError(ctx, "文章创建失败");
+      return ctx.helper.throwError(ctx, '文章创建失败');
     }
   }
 
@@ -110,13 +109,13 @@ class ArticleController extends Controller {
   async update() {
     const { ctx, service, config } = this;
     if (!ctx.locals.currentUser.auth.isLogin) {
-      return ctx.helper.throwError(ctx, "你没有登陆", 403);
+      return ctx.helper.throwError(ctx, '你没有登陆', 403);
     }
 
     const id = ctx.request.body.id;
 
     if (!id) {
-      return ctx.helper.throwError(ctx, "参数错误");
+      return ctx.helper.throwError(ctx, '参数错误');
     }
 
     let info = ctx.request.body;
@@ -135,11 +134,11 @@ class ArticleController extends Controller {
     if (updateRes) {
       ctx.body = {
         code: 0,
-        msg: "更新成功",
+        msg: '更新成功',
         data: updateRes
       };
     } else {
-      return ctx.helper.throwError(ctx, "更新失败");
+      return ctx.helper.throwError(ctx, '更新失败');
     }
   }
 
@@ -147,13 +146,13 @@ class ArticleController extends Controller {
   async delete() {
     const { ctx, service, config } = this;
     if (!ctx.locals.currentUser.auth.isLogin) {
-      return ctx.helper.throwError(ctx, "你没有登陆", 403);
+      return ctx.helper.throwError(ctx, '你没有登陆', 403);
     }
 
     const id = ctx.request.body.id;
 
     if (!id) {
-      return ctx.helper.throwError(ctx, "参数错误");
+      return ctx.helper.throwError(ctx, '参数错误');
     }
 
     const deleteRes = await service.article.remove(id);
@@ -161,10 +160,10 @@ class ArticleController extends Controller {
     if (deleteRes) {
       ctx.body = {
         code: 0,
-        msg: "文章删除完成"
+        msg: '文章删除完成'
       }
     } else {
-      return ctx.helper.throwError(ctx, "文章删除失败");
+      return ctx.helper.throwError(ctx, '文章删除失败');
     }
   }
 
@@ -172,7 +171,7 @@ class ArticleController extends Controller {
   async list() {
     const { ctx, service, config } = this;
     if (!ctx.locals.currentUser.auth.isLogin) {
-      return ctx.helper.throwError(ctx, "你没有登陆", 403);
+      return ctx.helper.throwError(ctx, '你没有登陆', 403);
     }
     const categoryId = ctx.query.categoryId;
     const keyword = ctx.helper.escape(ctx.query.keyword);
@@ -197,7 +196,7 @@ class ArticleController extends Controller {
     }
     if (whereAnd.length) {
       where = {
-        "$and": whereAnd
+        '$and': whereAnd
       }
     }
 
@@ -220,11 +219,11 @@ class ArticleController extends Controller {
   async show() {
     const { ctx, service, config } = this;
     if (!ctx.locals.currentUser.auth.isLogin) {
-      return ctx.helper.throwError(ctx, "你没有登陆", 403);
+      return ctx.helper.throwError(ctx, '你没有登陆', 403);
     }
     const id = ctx.query.id;
     if (!id) {
-      return ctx.helper.throwError(ctx, "参数错误");
+      return ctx.helper.throwError(ctx, '参数错误');
     }
 
     //获取文章
@@ -237,7 +236,7 @@ class ArticleController extends Controller {
         data: findArticleRes
       };
     } else {
-      return ctx.helper.throwError(ctx, "文章查询失败");
+      return ctx.helper.throwError(ctx, '文章查询失败');
     }
   }
 }

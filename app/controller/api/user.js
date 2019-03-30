@@ -18,18 +18,13 @@ const userRule = {
   password: _passRule
 };
 
-const error = function (ctx, msg) {
-  ctx.body = {
-    code: 1,
-    msg: msg,
-  };
-  return false;
-}
-
+/**
+ * 用户相关的api接口
+ */
 class UserController extends Controller {
 
   async index() {
-    this.ctx.body = "hi, imooyo!";
+    this.ctx.body = 'hi, imooyo!';
   }
 
   async show() {
@@ -54,7 +49,7 @@ class UserController extends Controller {
   async self() {
     const ctx = this.ctx;
     if (!ctx.locals.currentUser.auth.isLogin) {
-      return ctx.helper.throwError(ctx, "你没有登陆", 403);
+      return ctx.helper.throwError(ctx, '你没有登陆', 403);
     }
     const userId = ctx.locals.currentUser.user._id;
 
@@ -86,7 +81,7 @@ class UserController extends Controller {
     }, {});
     if (users.length > 0) {
       ctx.status = 422;
-      return ctx.helper.throwError(ctx, "用户名或邮箱已被使用。")
+      return ctx.helper.throwError(ctx, '用户名或邮箱已被使用。')
     }
 
     const userInfo = ctx.helper.filterFields(
@@ -97,7 +92,7 @@ class UserController extends Controller {
 
     //获取用户总数
     const count = await ctx.service.user.count();
-    userInfo.nickname = "会员" + count;
+    userInfo.nickname = '会员' + count;
 
     //没有注册的话就注册该用户
     const user = await ctx.service.user.create(userInfo);
@@ -109,7 +104,7 @@ class UserController extends Controller {
         msg: 'ok',
       };
     } else {
-      return ctx.helper.throwError(ctx, "用户注册失败！")
+      return ctx.helper.throwError(ctx, '用户注册失败！')
     }
     ctx.status = 201;
   }
@@ -117,7 +112,7 @@ class UserController extends Controller {
   async updateInfo() {
     const ctx = this.ctx;
     if (!ctx.locals.currentUser.auth.isLogin) {
-      return ctx.helper.throwError(ctx, "你没有登陆", 403);
+      return ctx.helper.throwError(ctx, '你没有登陆', 403);
     }
     const _user = ctx.request.body;
     const userId = ctx.locals.currentUser.user._id;
@@ -131,7 +126,7 @@ class UserController extends Controller {
     if (updateInfo.nickname) {
       const nicknameUser = await ctx.service.user.getUserByNickname(updateInfo.nickname)
       if (nicknameUser) {
-        return ctx.helper.throwError(ctx, "昵称已被人使用");
+        return ctx.helper.throwError(ctx, '昵称已被人使用');
       }
     }
 
@@ -139,10 +134,10 @@ class UserController extends Controller {
     if (res) {
       ctx.body = {
         code: 0,
-        msg: "用户信息更新成功！"
+        msg: '用户信息更新成功！'
       }
     } else {
-      return ctx.helper.throwError(ctx, "用户信息更新失败。");
+      return ctx.helper.throwError(ctx, '用户信息更新失败。');
     }
   }
 
@@ -150,7 +145,7 @@ class UserController extends Controller {
     const ctx = this.ctx;
     ctx.validate(passRule);
     if (!ctx.locals.currentUser.auth.isLogin) {
-      return ctx.helper.throwError(ctx, "你没有登陆", 403);
+      return ctx.helper.throwError(ctx, '你没有登陆', 403);
     }
     const password = ctx.request.body.password;
     const userId = ctx.locals.currentUser.user._id;
@@ -160,10 +155,10 @@ class UserController extends Controller {
     if (res) {
       ctx.body = {
         code: 0,
-        msg: "密码修改成功"
+        msg: '密码修改成功'
       }
     } else {
-      return ctx.helper.throwError(ctx, "密码修改失败");
+      return ctx.helper.throwError(ctx, '密码修改失败');
     }
   }
 
@@ -178,24 +173,29 @@ class UserController extends Controller {
     const existUser = await ctx.service.user.getUserByMail(_user.email);
     // 用户不存在
     if (!existUser) {
-      return ctx.helper.throwError(ctx, "用户不存在");
+      return ctx.helper.throwError(ctx, '用户不存在');
     }
     // TODO: change to async compare
     const equal = ctx.helper.bcompare(_user.password, existUser.password);
     // 密码不匹配
     if (!equal) {
-      return ctx.helper.throwError(ctx, "密码不正确");
+      return ctx.helper.throwError(ctx, '密码不正确');
     }
 
-    //创建token
+    //创建新的token
     let accessToken = uuid.v4();
 
     let res = await ctx.service.token.getByUserId(existUser._id);
     //更新用户的token，没有则自动创建。
-    if (res) { //更新
+    if (res) { //更新 
+      const now = (new Date()).getTime();
+      const tomorrow = now + 1000 * 60 * 60 * 24;
       res = await ctx.service.token.updateToken({
-        userId: existUser._id,
-        token: accessToken
+        userId: existUser._id
+      }, {
+        token: accessToken,
+        updateTime: now,
+        passwExpiry: tomorrow
       });
     } else { //创建
       res = await ctx.service.token.create({
@@ -205,7 +205,7 @@ class UserController extends Controller {
     }
 
     if (!res) {
-      return ctx.helper.throwError(ctx, "登陆失败");
+      return ctx.helper.throwError(ctx, '登陆失败');
     }
 
     ctx.body = {
@@ -222,8 +222,21 @@ class UserController extends Controller {
    * 登出
    */
   async logout() {
-    const { ctx, service, config } = this;
-    ctx.body = "hi";
+    const { ctx, service } = this;
+    let token = ctx.query.token;
+    let userId = ctx.query.userId;
+    let removeRes = await service.token.remove({
+      token,
+      userId
+    });
+    if (!removeRes) {
+      return ctx.helper.throwError(ctx, '登出失败');
+    } else {
+      ctx.body = {
+        code: 0,
+        msg: '登出成功'
+      };
+    }
   }
 
   //用户列表
@@ -237,7 +250,7 @@ class UserController extends Controller {
         data: listRes
       }
     } else {
-      return ctx.helper.throwError(ctx, "查询失败");
+      return ctx.helper.throwError(ctx, '查询失败');
     }
     ctx.status = 201;
   }

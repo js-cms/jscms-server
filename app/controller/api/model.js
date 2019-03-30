@@ -9,17 +9,17 @@ class ModelController extends Controller {
   async index() {
     const { ctx, service, config } = this;
     if (!ctx.locals.currentUser.auth.isLogin) {
-      return ctx.helper.throwError(ctx, "你没有登陆", 403);
+      return ctx.helper.throwError(ctx, '你没有登陆', 403);
     }
 
     let modelName = ctx.query.name;
     if (!modelName) {
-      return ctx.helper.throwError(ctx, "参数错误");
+      return ctx.helper.throwError(ctx, '参数错误');
     }
 
     let model = models[modelName];
     if (!model) {
-      return ctx.helper.throwError(ctx, "没有找到这个模型");
+      return ctx.helper.throwError(ctx, '没有找到这个模型');
     }
 
     ctx.body = {

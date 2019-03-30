@@ -8,7 +8,7 @@ class LogController extends Controller {
 	async list() {
 		const { ctx, service, config } = this;
 		if (!ctx.locals.currentUser.auth.isLogin) {
-			return ctx.helper.throwError(ctx, "你没有登陆", 403);
+			return ctx.helper.throwError(ctx, '你没有登陆', 403);
 		}
 		let type = Number(ctx.query.type);
 		let pageSize = Number(ctx.query.pageSize);
@@ -17,7 +17,7 @@ class LogController extends Controller {
 		pageNumber = isNaN(pageNumber) ? 0 : pageNumber;
 
 		if (!type || isNaN(type)) {
-			return ctx.helper.throwError(ctx, "参数错误");
+			return ctx.helper.throwError(ctx, '参数错误');
 		}
 
 		//获取日志列表
@@ -42,13 +42,13 @@ class LogController extends Controller {
 	async delete() {
 		const { ctx, service, config } = this;
 		if (!ctx.locals.currentUser.auth.isLogin) {
-			return ctx.helper.throwError(ctx, "你没有登陆", 403);
+			return ctx.helper.throwError(ctx, '你没有登陆', 403);
 		}
 
 		const id = ctx.request.body.id;
 
 		if (!id) {
-			return ctx.helper.throwError(ctx, "参数错误");
+			return ctx.helper.throwError(ctx, '参数错误');
 		}
 
 		const deleteRes = await service.log.remove(id);
@@ -56,10 +56,10 @@ class LogController extends Controller {
 		if (deleteRes) {
 			ctx.body = {
 				code: 0,
-				msg: "日志记录删除完成"
+				msg: '日志记录删除完成'
 			}
 		} else {
-			return ctx.helper.throwError(ctx, "日志记录删除失败");
+			return ctx.helper.throwError(ctx, '日志记录删除失败');
 		}
 	}
 }

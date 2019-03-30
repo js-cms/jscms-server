@@ -8,7 +8,7 @@ class TextController extends Controller {
    * sitemap.txt
    */
   async sitemap() {
-    const { ctx, service, config } = this;
+    const { ctx, service } = this;
     const _articles = await service.article.findAll();
     let articles = "";
     _articles.forEach((item, index) => {

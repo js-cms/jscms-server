@@ -22,7 +22,7 @@ class HomeController extends BaseController {
     pageNumber = isNaN(pageNumber) ? 0 : pageNumber;
 
     if ( pageNumber < 0 ) {
-      return false;
+      return this.notFound();
     }
 
     let topMainArticles = await service.article.find({

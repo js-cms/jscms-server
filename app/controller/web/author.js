@@ -2,10 +2,10 @@
 
 const BaseController = require('./base');
 
-class CategoryController extends BaseController {
+class AuthorController extends BaseController {
 
   /**
-   * 分类页
+   * 作者页
    */
   async index() {
     // 初始化
@@ -15,27 +15,23 @@ class CategoryController extends BaseController {
   }
 
   async handler() {
-    const { ctx, service, config } = this;
+    const { ctx, service } = this;
     let webConfig = this.cache('WEB_CONFIG');
     const { subtitle, separator } = webConfig.site;
-    let catAlias = ctx.params[0];
+    let { nickname, pageNumber } = this.toStructure(ctx.params.nickname);
     let pageSize = 10;
-    let pageNumber = ctx.params[1] ? ctx.params[1] - 1 : 0;
-    pageSize = isNaN(pageSize) ? 10 : pageSize;
-    pageNumber = isNaN(pageNumber) ? 0 : pageNumber;
 
     if ( pageNumber < 0 ) {
       return this.notFound();
     }
 
-    let findCategoryRes = await service.category.findOne({ alias: catAlias });
-
-    if (!findCategoryRes) {
+    let findUserRes = await service.user.findOne({ nickname: nickname });
+    if (!findUserRes) {
       return this.notFound();
     }
 
-    let articlesRes = await service.article.find({ categoryId: findCategoryRes._id }, pageNumber, pageSize);
-    let totalRes = await service.article.count({ categoryId: findCategoryRes._id });
+    let articlesRes = await service.article.find({ userId: findUserRes._id }, pageNumber, pageSize);
+    let totalRes = await service.article.count({ userId: findUserRes._id });
 
     let pages = [];
     let totalNum = Math.ceil(totalRes / pageSize);
@@ -65,23 +61,21 @@ class CategoryController extends BaseController {
 
     //重写页面元信息
     this.setMeta({
-      title: `${findCategoryRes.title}${(findCategoryRes.title ? ',' : '') + findCategoryRes.name}${separator}${subtitle}`,
-      keywords: findCategoryRes.keywords,
-      description: findCategoryRes.description
+      title: `${findUserRes.nickname}发表的文章${separator}${subtitle}`,
+      keywords: `${findUserRes.nickname}发表的文章${separator}${subtitle}`,
+      description: findUserRes.about,
     });
 
     this.cache('RENDER_PARAM', {
       // 页面类型: String
-      pageType: 'category' || 'unknown',
-      // 分类英文别名: String
-      catAlias: catAlias || '',
-      // 分类对象: Object
-      category: findCategoryRes || [],
-      // 该分类的文章列表：Array
+      pageType: 'author' || 'unknown',
+      // 作者页对象: Object
+      author: findUserRes || {},
+      // 所属该作者的文章列表：Array
       articles: articlesRes || [],
       // 分页信息：Object
       pagination: {
-        prefix: catAlias,
+        prefix: nickname,
         start: 1,
         pages: pages,
         current: pageNumber + 1,
@@ -89,9 +83,25 @@ class CategoryController extends BaseController {
       }
     });
 
-    await this.render('/pages/category', {});
+    await this.render('/pages/author', {});
+  }
+
+  /**
+   * @description 解析参数结构
+   * @param {Object} params 
+   */
+  toStructure(params) {
+    let tempArr = params.split('-');
+    let nickname = tempArr[0].replace('.html', '');
+    let pageNumber = tempArr[1] || '0.html';
+    pageNumber = Number(pageNumber.replace('.html', ''));
+    pageNumber = isNaN(pageNumber) || pageNumber < 0 ? 0 : pageNumber;
+    return {
+      nickname: nickname,
+      pageNumber: pageNumber
+    }
   }
 
 }
 
-module.exports = CategoryController;
+module.exports = AuthorController;

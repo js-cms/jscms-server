@@ -13,7 +13,7 @@ class ResourceController extends Controller {
    */
   async create() {
     const { ctx, service, config } = this;
-    ctx.body = "hi";
+    ctx.body = 'hi';
   }
 
   /**
@@ -22,7 +22,7 @@ class ResourceController extends Controller {
   async list() {
     const { ctx, service, config } = this;
     if (!ctx.locals.currentUser.auth.isLogin) {
-      return ctx.helper.throwError(ctx, "你没有登陆", 403);
+      return ctx.helper.throwError(ctx, '你没有登陆', 403);
     }
 
     const type = ctx.query.type;
@@ -43,7 +43,7 @@ class ResourceController extends Controller {
 
     ctx.body = {
       code: 0,
-      msg: "查询成功",
+      msg: '查询成功',
       data: {
         list: findRes,
         total: totalRes
@@ -57,22 +57,22 @@ class ResourceController extends Controller {
   async delete() {
     const { ctx, service, config } = this;
     if (!ctx.locals.currentUser.auth.isLogin) {
-      return ctx.helper.throwError(ctx, "你没有登陆", 403);
+      return ctx.helper.throwError(ctx, '你没有登陆', 403);
     }
 
     const id = ctx.request.body.id;
     const fileName = ctx.request.body.fileName;
-    let msg = "";
+    let msg = '';
     //本地地址
     let target = path.join(this.config.baseDir, `app/public/static/${fileName}`);
     if (!fs.existsSync(target)) {
-      msg = "，资源文件不存在";
+      msg = '，资源文件不存在';
     } else {
       fs.removeSync(target);
     }
 
     if (!id) {
-      return ctx.helper.throwError(ctx, "参数错误");
+      return ctx.helper.throwError(ctx, '参数错误');
     }
 
     const deleteRes = await service.resource.remove(id);
@@ -80,10 +80,10 @@ class ResourceController extends Controller {
     if (deleteRes) {
       ctx.body = {
         code: 0,
-        msg: "资源信息删除完成" + msg
+        msg: '资源信息删除完成' + msg
       }
     } else {
-      return ctx.helper.throwError(ctx, "资源删除失败");
+      return ctx.helper.throwError(ctx, '资源删除失败');
     }
   }
 
@@ -94,7 +94,7 @@ class ResourceController extends Controller {
     const { ctx, service, config } = this;
     const stream = await ctx.getFileStream();
     const nowTimestamp = (new Date()).getTime();
-    let tempArr = stream.filename.split(".");
+    let tempArr = stream.filename.split('.');
     const suffix = tempArr[tempArr.length - 1];
     const newFileName = `${nowTimestamp}.${suffix}`;
 
@@ -119,7 +119,7 @@ class ResourceController extends Controller {
         });
       });
     });
-    let cUrl = ctx.origin + "/public/static/" + newFileName;
+    let cUrl = ctx.origin + '/public/static/' + newFileName;
 
     //写入资源表
     let createRessoureRes = await service.resource.create({
@@ -131,7 +131,7 @@ class ResourceController extends Controller {
     if (createRessoureRes) {
       ctx.body = {
         code: 0,
-        msg: "ok",
+        msg: 'ok',
         data: {
           fileName: newFileName,
           imageUrl: cUrl
@@ -140,7 +140,7 @@ class ResourceController extends Controller {
     } else {
       ctx.body = {
         code: 1,
-        msg: "资源创建失败"
+        msg: '资源创建失败'
       };
     }
 

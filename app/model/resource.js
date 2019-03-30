@@ -11,11 +11,12 @@ model.assign(proto);
 module.exports = app => {
   const mongoose = app.mongoose;
   const Schema = mongoose.Schema;
+  const Types = mongoose.Types;
 
   /*
   * 资源表
   */
-  let schema = model.to.mongoose(Schema);
+  let schema = model.to.mongoose(Types);
   const ResourceSchema = new Schema(schema);
 
   ResourceSchema.pre('save', function (next) {

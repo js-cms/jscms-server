@@ -11,11 +11,12 @@ model.assign(proto);
 module.exports = app => {
   const mongoose = app.mongoose;
   const Schema = mongoose.Schema;
+  const Types = mongoose.Types;
 
   /**
    * 用户Token表
    */
-  let schema = model.to.mongoose(Schema);
+  let schema = model.to.mongoose(Types);
   const TokenSchema = new Schema(schema);
 
   TokenSchema.index({ token: 1 }, { unique: true });
@@ -32,7 +33,9 @@ module.exports = app => {
 
   TokenSchema.pre('update', function (next) {
     const now = (new Date()).getTime();
+    const tomorrow = now + 1000 * 60 * 60 * 24;
     this.updateTime = now;
+    this.passwExpiry = tomorrow;
     next();
   });
 

@@ -9,8 +9,7 @@ class BaseController extends Controller {
    * @description 初始化公共数据
    * @param {Object} data 
    */
-  async init(data = {}) {
-    const { ctx, service, config } = this;
+  async init() {
     // 记录访问信息
     await this.log();
     // 加载web配置
@@ -42,8 +41,8 @@ class BaseController extends Controller {
    * @description 记录访问信息
    */
   async log() {
-    const { ctx, service, config } = this;
-    if (ctx.request.path !== "/s") {
+    const { ctx, service } = this;
+    if (ctx.request.path !== '/s') {
       let info = {
         method: ctx.request.method,
         params: {},
@@ -53,7 +52,7 @@ class BaseController extends Controller {
         visitorUserAgent: ctx.headers['user-agent'],
         headers: ctx.headers
       }
-      if (ctx.request.method === "GET") {
+      if (ctx.request.method === 'GET') {
         info.params = ctx.query || {};
       } else {
         info.params = ctx.request.body || {};
@@ -70,7 +69,7 @@ class BaseController extends Controller {
    * @description 加载渲染数据
    */
   async loadRenderData() {
-    const { ctx, service, config } = this;
+    const { service } = this;
     // 缓存渲染模版数据
     this.cache('RENDER_DATA', {
       // 最近三篇文章
@@ -92,6 +91,28 @@ class BaseController extends Controller {
   async loadWebConfig() {
     const { ctx, service, config } = this;
 
+    // 判断是否激活菜单高亮
+    const isMenuActive = function (activeUrl, origin, path) {
+      if (!activeUrl) return false;
+      let activeUrls = activeUrl.split(',');
+      let fullUrl = origin + path;
+      let isActive = false;
+      activeUrls.forEach((url) => {
+        if (url[0] === '@') {
+          let _path = url.split('@')[1];
+          if (_path === path) {
+            isActive = true;
+          }
+        } else {
+          if (fullUrl === url) {
+            isActive = true;
+          }
+        }
+      });
+      return isActive;
+    }
+
+    // 获取配置项
     async function getWebConfig(name) {
       let res = await service.config.findByConfigName(name);
       return res && res.info ? res.info : false;
@@ -102,6 +123,10 @@ class BaseController extends Controller {
     let site = await getWebConfig(config.constant.webConfigNames.SITE_NAME);
     let menus = await getWebConfig(config.constant.webConfigNames.MENU_NAME);
     let tags = await getWebConfig(config.constant.webConfigNames.TAG_NAME);
+
+    menus ? menus.forEach(m => {
+      m.isActive = isMenuActive(m.activeUrl, ctx.origin, ctx.request.path);
+    }) : void (0);
 
     this.cache('WEB_CONFIG', {
       categories: categories || [],
@@ -124,7 +149,6 @@ class BaseController extends Controller {
     keywords: '',
     description: ''
   }) {
-    const { ctx, service, config } = this;
     let webConfig = this.cache('WEB_CONFIG');
     if (opts.title) { webConfig.site.title = opts.title; };
     if (opts.keywords) { webConfig.site.keywords = opts.keywords; };
@@ -138,7 +162,7 @@ class BaseController extends Controller {
    * @param {Object} data 自定义数据
    */
   async render(viewPath, data) {
-    const { ctx, service, config } = this;
+    const { ctx, config } = this;
     let commonData = {
       // 渲染参数
       RENDER_PARAM: this.cache('RENDER_PARAM') || {},
@@ -153,6 +177,31 @@ class BaseController extends Controller {
       }
     }
     await ctx.render(`/${config.theme.THEME_NAME}/view/${viewPath}`, Object.assign(commonData, data));
+  }
+
+  /**
+   * @description 404未找到
+   */
+  async notFound() {
+    const { service } = this;
+    await this.init();
+    const findTagsRes = await service.config.findOne({ 'alias': 'tags' });
+
+    let tags = [];
+    findTagsRes.info.forEach((tag) => {
+      if (tag !== '' && tag !== ' ') {
+        tags.push(tag);
+      }
+    });
+
+    this.cache('RENDER_PARAM', {
+      // 页面类型: String
+      pageType: '404' || 'unknown',
+      // 标签数组: Array
+      tags: tags || 0
+    });
+
+    await this.render('/pages/404', {});
   }
 
 }

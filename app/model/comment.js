@@ -11,11 +11,12 @@ model.assign(proto);
 module.exports = app => {
   const mongoose = app.mongoose;
   const Schema = mongoose.Schema;
-  
+  const Types = mongoose.Types;
+
   /*
   * 评论表
   */
-  let schema = model.to.mongoose(Schema);
+  let schema = model.to.mongoose(Types);
   const CommentSchema = new Schema(schema);
 
   CommentSchema.pre('save', function (next) {

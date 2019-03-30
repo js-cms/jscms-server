@@ -10,11 +10,11 @@ class CommentController extends Controller {
 
   //新增评论
   async create() {
-    const { ctx, service, config } = this;
+    const { ctx, service } = this;
     let parameters = ctx.request.body;
 
     if (!parameters.articleId) {
-      return ctx.helper.throwError(ctx, "缺少参数");
+      return ctx.helper.throwError(ctx, '缺少参数');
     }
 
     //查找所属文章
@@ -23,7 +23,7 @@ class CommentController extends Controller {
     });
 
     if (!findArticleRes) {
-      return ctx.helper.throwError(ctx, "文章不存在");
+      return ctx.helper.throwError(ctx, '文章不存在');
     }
 
     if (parameters.mdContent) {
@@ -46,11 +46,11 @@ class CommentController extends Controller {
     if (createCommentRes._id) {
       ctx.body = {
         code: 0,
-        msg: "评论创建完成",
+        msg: '评论创建完成',
         data: createCommentRes
       }
     } else {
-      return ctx.helper.throwError(ctx, "评论创建失败");
+      return ctx.helper.throwError(ctx, '评论创建失败');
     }
   }
 
@@ -58,7 +58,7 @@ class CommentController extends Controller {
   async update() {
     const { ctx, service, config } = this;
     if (!ctx.locals.currentUser.auth.isLogin) {
-      return ctx.helper.throwError(ctx, "你没有登陆", 403);
+      return ctx.helper.throwError(ctx, '你没有登陆', 403);
     }
     const id = ctx.request.body._id;
     let info = ctx.request.body;
@@ -75,11 +75,11 @@ class CommentController extends Controller {
     if (updateRes) {
       ctx.body = {
         code: 0,
-        msg: "更新成功",
+        msg: '更新成功',
         data: updateRes
       };
     } else {
-      return ctx.helper.throwError(ctx, "更新失败");
+      return ctx.helper.throwError(ctx, '更新失败');
     }
   }
 
@@ -87,13 +87,13 @@ class CommentController extends Controller {
   async delete() {
     const { ctx, service, config } = this;
     if (!ctx.locals.currentUser.auth.isLogin) {
-      return ctx.helper.throwError(ctx, "你没有登陆", 403);
+      return ctx.helper.throwError(ctx, '你没有登陆', 403);
     }
 
     const id = ctx.request.body.id;
 
     if (!id) {
-      return ctx.helper.throwError(ctx, "参数错误");
+      return ctx.helper.throwError(ctx, '参数错误');
     }
 
     const deleteRes = await service.comment.remove(id);
@@ -101,10 +101,10 @@ class CommentController extends Controller {
     if (deleteRes) {
       ctx.body = {
         code: 0,
-        msg: "评论删除完成"
+        msg: '评论删除完成'
       }
     } else {
-      return ctx.helper.throwError(ctx, "评论删除失败");
+      return ctx.helper.throwError(ctx, '评论删除失败');
     }
   }
 
@@ -112,7 +112,7 @@ class CommentController extends Controller {
   async list() {
     const { ctx, service, config } = this;
     if (!ctx.locals.currentUser.auth.isLogin) {
-      return ctx.helper.throwError(ctx, "你没有登陆", 403);
+      return ctx.helper.throwError(ctx, '你没有登陆', 403);
     }
     let pageSize = Number(ctx.query.pageSize);
     let pageNumber = Number(ctx.query.pageNumber);
@@ -137,7 +137,7 @@ class CommentController extends Controller {
   //获取单个评论信息
   async show() {
     const { ctx, service, config } = this;
-    ctx.body = "hi!";
+    ctx.body = 'hi!';
   }
 }
 

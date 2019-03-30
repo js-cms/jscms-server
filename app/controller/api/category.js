@@ -1,7 +1,6 @@
 'use strict';
 
 const Controller = require('egg').Controller;
-const _ = require('lodash');
 
 //数据校验函数
 const validate = function (object) {
@@ -20,7 +19,7 @@ class CategoryController extends Controller {
   async create() {
     const { ctx, service, config } = this;
     if (!ctx.locals.currentUser.auth.isLogin) {
-      return ctx.helper.throwError(ctx, "你没有登陆", 403);
+      return ctx.helper.throwError(ctx, '你没有登陆', 403);
     }
     const validateResult = validate(ctx.request.body);
     //校验失败
@@ -36,7 +35,7 @@ class CategoryController extends Controller {
 
     //判断是否存在重复分类
     if (findRes) {
-      return ctx.helper.throwError(ctx, "分类已存在");
+      return ctx.helper.throwError(ctx, '分类已存在');
     }
 
     //分类创建结果
@@ -45,11 +44,11 @@ class CategoryController extends Controller {
     if (createCatRes._id) {
       ctx.body = {
         code: 0,
-        msg: "分类创建完成",
+        msg: '分类创建完成',
         data: createCatRes
       }
     } else {
-      return ctx.helper.throwError(ctx, "分类创建失败");
+      return ctx.helper.throwError(ctx, '分类创建失败');
     }
   }
 
@@ -57,7 +56,7 @@ class CategoryController extends Controller {
   async update() {
     const { ctx, service, config } = this;
     if (!ctx.locals.currentUser.auth.isLogin) {
-      return ctx.helper.throwError(ctx, "你没有登陆", 403);
+      return ctx.helper.throwError(ctx, '你没有登陆', 403);
     }
     const id = ctx.request.body._id;
     let info = ctx.request.body;
@@ -69,11 +68,11 @@ class CategoryController extends Controller {
     if (updateRes) {
       ctx.body = {
         code: 0,
-        msg: "更新成功",
+        msg: '更新成功',
         data: updateRes
       };
     } else {
-      return ctx.helper.throwError(ctx, "更新失败");
+      return ctx.helper.throwError(ctx, '更新失败');
     }
   }
 
@@ -81,13 +80,13 @@ class CategoryController extends Controller {
   async delete() {
     const { ctx, service, config } = this;
     if (!ctx.locals.currentUser.auth.isLogin) {
-      return ctx.helper.throwError(ctx, "你没有登陆", 403);
+      return ctx.helper.throwError(ctx, '你没有登陆', 403);
     }
 
     const id = ctx.request.body.id;
 
     if (!id) {
-      return ctx.helper.throwError(ctx, "参数错误");
+      return ctx.helper.throwError(ctx, '参数错误');
     }
 
     const deleteRes = await service.category.remove(id);
@@ -95,10 +94,10 @@ class CategoryController extends Controller {
     if (deleteRes) {
       ctx.body = {
         code: 0,
-        msg: "分类删除完成"
+        msg: '分类删除完成'
       }
     } else {
-      return ctx.helper.throwError(ctx, "分类创建失败");
+      return ctx.helper.throwError(ctx, '分类创建失败');
     }
   }
 
@@ -106,7 +105,7 @@ class CategoryController extends Controller {
   async list() {
     const { ctx, service, config } = this;
     if (!ctx.locals.currentUser.auth.isLogin) {
-      return ctx.helper.throwError(ctx, "你没有登陆", 403);
+      return ctx.helper.throwError(ctx, '你没有登陆', 403);
     }
 
     //获取分类列表
@@ -122,7 +121,7 @@ class CategoryController extends Controller {
   //获取单个分类信息
   async show() {
     const { ctx, service, config } = this;
-    ctx.body = "hi!";
+    ctx.body = 'hi!';
   }
 }
 

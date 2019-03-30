@@ -11,11 +11,12 @@ model.assign(proto);
 module.exports = app => {
   const mongoose = app.mongoose;
   const Schema = mongoose.Schema;
+  const Types = mongoose.Types;
 
   /*
   * 站点配置表
   */
-  let schema = model.to.mongoose(Schema);
+  let schema = model.to.mongoose(Types);
   const ConfigSchema = new Schema(schema);
 
   ConfigSchema.pre('save', function (next) {

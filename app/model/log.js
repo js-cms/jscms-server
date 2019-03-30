@@ -11,11 +11,12 @@ model.assign(proto);
 module.exports = app => {
   const mongoose = app.mongoose;
   const Schema = mongoose.Schema;
+  const Types = mongoose.Types;
 
   /*
   * 日志记录表
   */
-  let schema = model.to.mongoose(Schema);
+  let schema = model.to.mongoose(Types);
   const LogSchema = new Schema(schema);
 
   LogSchema.pre('save', function (next) {

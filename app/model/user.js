@@ -18,11 +18,12 @@ model.assign(proto);
 module.exports = app => {
   const mongoose = app.mongoose;
   const Schema = mongoose.Schema;
+  const Types = mongoose.Types;
 
   /**
    * 用户表
    */
-  let schema = model.to.mongoose(Schema);
+  let schema = model.to.mongoose(Types);
   const UserSchema = new Schema(schema);
 
   UserSchema.index({ email: 1 }, { unique: true });

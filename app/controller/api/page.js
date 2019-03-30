@@ -1,7 +1,6 @@
 'use strict';
 
 const Controller = require('egg').Controller;
-const marked = require('marked');
 
 /**
  * 页面相关api
@@ -11,7 +10,7 @@ class PageController extends Controller {
   //前端渲染
   async index() {
     const { ctx, service, config } = this;
-    ctx.body = "hi";
+    ctx.body = 'hi';
   }
 
   //新增页面
@@ -19,13 +18,13 @@ class PageController extends Controller {
     const { ctx, service, config } = this;
 
     if (!ctx.locals.currentUser.auth.isLogin) {
-      return ctx.helper.throwError(ctx, "你没有登陆", 403);
+      return ctx.helper.throwError(ctx, '你没有登陆', 403);
     }
 
     let parameters = ctx.request.body;
 
     if (!parameters.name || !parameters.alias) {
-      return ctx.helper.throwError(ctx, "缺少参数");
+      return ctx.helper.throwError(ctx, '缺少参数');
     }
 
     //查找同别名页面
@@ -34,7 +33,7 @@ class PageController extends Controller {
     });
 
     if (findPageRes) {
-      return ctx.helper.throwError(ctx, "别名重复");
+      return ctx.helper.throwError(ctx, '别名重复');
     }
 
     //创建页面
@@ -43,11 +42,11 @@ class PageController extends Controller {
     if (createPageRes._id) {
       ctx.body = {
         code: 0,
-        msg: "页面创建完成",
+        msg: '页面创建完成',
         data: createPageRes
       }
     } else {
-      return ctx.helper.throwError(ctx, "页面创建失败");
+      return ctx.helper.throwError(ctx, '页面创建失败');
     }
   }
 
@@ -56,13 +55,13 @@ class PageController extends Controller {
     const { ctx, service, config } = this;
 
     if (!ctx.locals.currentUser.auth.isLogin) {
-      return ctx.helper.throwError(ctx, "你没有登陆", 403);
+      return ctx.helper.throwError(ctx, '你没有登陆', 403);
     }
 
     let parameters = ctx.request.body;
 
     if (!parameters.name || !parameters.alias) {
-      return ctx.helper.throwError(ctx, "缺少参数");
+      return ctx.helper.throwError(ctx, '缺少参数');
     }
 
     const id = parameters.id;
@@ -77,11 +76,11 @@ class PageController extends Controller {
     if (updateRes) {
       ctx.body = {
         code: 0,
-        msg: "更新页面成功",
+        msg: '更新页面成功',
         data: updateRes
       };
     } else {
-      return ctx.helper.throwError(ctx, "更新失败");
+      return ctx.helper.throwError(ctx, '更新失败');
     }
   }
 
@@ -90,13 +89,13 @@ class PageController extends Controller {
     const { ctx, service, config } = this;
 
     if (!ctx.locals.currentUser.auth.isLogin) {
-      return ctx.helper.throwError(ctx, "你没有登陆", 403);
+      return ctx.helper.throwError(ctx, '你没有登陆', 403);
     }
 
     const id = ctx.request.body.id;
 
     if (!id) {
-      return ctx.helper.throwError(ctx, "参数错误");
+      return ctx.helper.throwError(ctx, '参数错误');
     }
 
     const deleteRes = await service.page.remove(id);
@@ -104,10 +103,10 @@ class PageController extends Controller {
     if (deleteRes) {
       ctx.body = {
         code: 0,
-        msg: "页面删除完成"
+        msg: '页面删除完成'
       }
     } else {
-      return ctx.helper.throwError(ctx, "页面删除失败");
+      return ctx.helper.throwError(ctx, '页面删除失败');
     }
   }
 
@@ -116,7 +115,7 @@ class PageController extends Controller {
     const { ctx, service, config } = this;
 
     if (!ctx.locals.currentUser.auth.isLogin) {
-      return ctx.helper.throwError(ctx, "你没有登陆", 403);
+      return ctx.helper.throwError(ctx, '你没有登陆', 403);
     }
     let pageSize = Number(ctx.query.pageSize);
     let pageNumber = Number(ctx.query.pageNumber);
@@ -143,13 +142,13 @@ class PageController extends Controller {
     const { ctx, service, config } = this;
 
     if (!ctx.locals.currentUser.auth.isLogin) {
-      return ctx.helper.throwError(ctx, "你没有登陆", 403);
+      return ctx.helper.throwError(ctx, '你没有登陆', 403);
     }
 
     const id = ctx.query.id;
 
     if (!id) {
-      return ctx.helper.throwError(ctx, "参数错误");
+      return ctx.helper.throwError(ctx, '参数错误');
     }
 
     //获取文章
@@ -162,7 +161,7 @@ class PageController extends Controller {
         data: findPageRes
       };
     } else {
-      return ctx.helper.throwError(ctx, "文章查询失败");
+      return ctx.helper.throwError(ctx, '文章查询失败');
     }
   }
 }

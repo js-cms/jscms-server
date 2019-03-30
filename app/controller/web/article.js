@@ -17,13 +17,13 @@ class ArticleController extends BaseController {
   async handler() {
     const { ctx, service, config } = this;
     let webConfig = this.cache('WEB_CONFIG');
-    const { subtitle, separator } = webConfig;
+    const { subtitle, separator } = webConfig.site;
     let numberId = ctx.params[0];
   
     //获取文章
     let findArticleRes = await service.article.findOneForWeb({ numberId });
     if (!findArticleRes) {
-      return false;
+      return this.notFound();
     }
   
     //获取文章评论
@@ -32,7 +32,7 @@ class ArticleController extends BaseController {
     //重写页面元信息
     this.setMeta({
       title: `${findArticleRes.title}${separator}${subtitle}`,
-      keywords: findArticleRes.keywords.join(","),
+      keywords: findArticleRes.keywords.join(','),
       description: findArticleRes.description,
     });
   
@@ -41,7 +41,7 @@ class ArticleController extends BaseController {
       {
         $inc: { 'visNumber': Number(1) }
       }
-    )
+    );
   
     //定义内部搜索函数
     const searchArticle = async function (keyword) {
@@ -58,7 +58,7 @@ class ArticleController extends BaseController {
       }
       if (whereOr.length) {
         where = {
-          "$or": whereOr
+          '$or': whereOr
         }
       }
       let articlesRes = await service.article.search(where);
@@ -97,7 +97,7 @@ class ArticleController extends BaseController {
       pageType: 'article' || 'unknown',
       // 文章数字id: Number
       numberId: numberId || 0,
-      // 文章对象: Array
+      // 文章对象: Object
       article: findArticleRes || [],
       // 该文章的评论: Array
       comments: findCommentRes || [],

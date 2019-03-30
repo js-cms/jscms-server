@@ -1,16 +1,17 @@
 <div id="sticky-wrapper" class="sticky-wrapper" style="height: 400px;">
-    <div class="left-col sidebar-2">
-        <nav id="left-nav" class="left-navigation">
-            <div class="menu-%e5%b7%a6%e4%be%a7%e5%af%bc%e8%88%aa%e8%8f%9c%e5%8d%95-container">
-                <ul id="left-menu" class="left-menu">
-                    <% WEB_CONFIG.categories.forEach(function(cat, index) { %>
-                    <li class="menu-item menu-item-type-custom menu-item-object-custom <% if ( RENDER_PARAM.type === 'category' && RENDER_PARAM.catName === cat.alias ) { %>current-menu-item current-menu-ancestor current-menu-parent<% } %>">
-                        <a href="/<%-cat.alias%>.html"><%-cat.name%></a>
-                    </li>
-                    <% }) %>
-                </ul>
-            </div>
-        </nav><!-- #left-nav -->
+  <div class="left-col sidebar-2">
+    <nav id="left-nav" class="left-navigation">
+      <div class="menu-%e5%b7%a6%e4%be%a7%e5%af%bc%e8%88%aa%e8%8f%9c%e5%8d%95-container">
+        <ul id="left-menu" class="left-menu">
+          <% WEB_CONFIG.categories.forEach(function(cat, index) { %>
+          <li
+            class="menu-item menu-item-type-custom menu-item-object-custom <% if ( RENDER_PARAM.pageType === 'category' && RENDER_PARAM.catAlias === cat.alias ) { %>current-menu-item current-menu-ancestor current-menu-parent<% } %>">
+            <a href="/<%-cat.alias%>.html"><%-cat.name%></a>
+          </li>
+          <% }) %>
+        </ul>
+      </div>
+    </nav><!-- #left-nav -->
 
-    </div>
+  </div>
 </div><!-- .left-col -->

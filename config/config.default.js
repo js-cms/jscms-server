@@ -25,7 +25,6 @@ module.exports = appInfo => {
 
   // add your config here
   config.middleware = [
-    'common',
     'authUser',
     'errorHandler'
   ];
@@ -62,11 +61,6 @@ module.exports = appInfo => {
       }
     ]
   }
-
-  //404 page
-  // config.notfound = {
-  //     pageUrl: '/view/404.html',
-  // };
 
   return config;
 
