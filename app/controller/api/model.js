@@ -1,7 +1,7 @@
 'use strict';
 
 const Controller = require('egg').Controller;
-const models = require('../../modelman/index');
+const models = require('../../model/proto/index');
 
 class ModelController extends Controller {
 

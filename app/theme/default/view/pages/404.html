@@ -32,9 +32,9 @@
               <div class="widget widget_recent_entries">
                 <h2 class="widgettitle">近期文章</h2>
                 <ul>
-                  <% RENDER_DATA.recentlyArticles.forEach(function(article, index) { %>
+                  <% RENDER_DATA.recentArticles3.forEach(function(article, index) { %>
                   <li>
-                    <a href="/<%-article.serialNumber%>.html"><%-article.title%></a>
+                    <a href="/<%-article.numberId%>.html"><%-RENDER_PARAM.article.title%></a>
                   </li>
                   <% }) %>
                 </ul>
@@ -42,7 +42,7 @@
               <div class="widget widget_categories">
                 <h2 class="widget-title">常用分类目录</h2>
                 <ul>
-                  <% webConfig.categories.forEach(function(cat, index) { %>
+                  <% WEB_CONFIG.categories.forEach(function(cat, index) { %>
                   <li class="cat-item cat-item-4">
                     <a href="/<%-cat.alias%>.html"><%-cat.name%></a>
                   </li>
@@ -71,7 +71,7 @@
     </div><!-- #content .site-content -->
 
     <% include ../common/foot.html %>
-    <script type="text/javascript" src="<%-CONFIG.THEME_STATIC%>/static/lib/vue.min.js"></script>
+    <script type="text/javascript" src="<%-CONSTANT.THEME_STATIC%>/static/lib/vue.min.js"></script>
 </body>
 
 </html>

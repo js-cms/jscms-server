@@ -4,7 +4,7 @@
             <div id="logo">
                 <span class="helper"></span>
                 <a href="/" class="custom-logo-link" rel="home" itemprop="url">
-                    <img width="129" height="60" src="<%-CONFIG.THEME_STATIC%>/static/images/cropped-logo.png" class="custom-logo" alt="<%-webConfig.site.subtitle%>"
+                    <img width="129" height="60" src="<%-CONSTANT.THEME_STATIC%>/static/images/cropped-logo.png" class="custom-logo" alt="<%-WEB_CONFIG.site.subtitle%>"
                         itemprop="logo">
                 </a>
             </div><!-- #logo -->
@@ -12,20 +12,20 @@
         <nav id="primary-nav" class="primary-navigation">
             <div class="menu-top-container">
                 <ul id="primary-menu" class="sf-menu sf-js-enabled sf-arrows" style="touch-action: pan-y;">
-                    <li class="menu-item menu-item-type-custom menu-item-object-custom <% if ( RENDER_TYPE.type === 'home' ) { %>current-menu-item<% } %>">
+                    <li class="menu-item menu-item-type-custom menu-item-object-custom <% if ( RENDER_PARAM.type === 'home' ) { %>current-menu-item<% } %>">
                         <a class="top" href="/index.html">首页</a>
                     </li>
-                    <li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children <% if ( RENDER_TYPE.type === 'category' ) { %>current-menu-item current-menu-ancestor current-menu-parent<% } %>">
-                        <a class="top" href="/<%-webConfig.categories[0].alias%>.html" class="sf-with-ul">信息分类</a>
+                    <li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children <% if ( RENDER_PARAM.type === 'category' ) { %>current-menu-item current-menu-ancestor current-menu-parent<% } %>">
+                        <a class="top" href="/<%-WEB_CONFIG.categories[0].alias%>.html" class="sf-with-ul">信息分类</a>
                         <ul class="sub-menu" style="display: none;">
-                            <% webConfig.categories.forEach(function(cat, index) { %>
-                            <li class="menu-item menu-item-type-taxonomy menu-item-object-category <% if ( RENDER_TYPE.type === 'category' && RENDER_TYPE.catName === cat.alias ) { %>current-menu-item current-menu-ancestor current-menu-parent<% } %>">
+                            <% WEB_CONFIG.categories.forEach(function(cat, index) { %>
+                            <li class="menu-item menu-item-type-taxonomy menu-item-object-category <% if ( RENDER_PARAM.type === 'category' && RENDER_PARAM.catName === cat.alias ) { %>current-menu-item current-menu-ancestor current-menu-parent<% } %>">
                                 <a class="children" href="/<%-cat.alias%>.html"><%-cat.name%></a>
                             </li>
                             <% }) %>
                         </ul>
                     </li>
-                    <% webConfig.menus.forEach(function(menu, index) { %>
+                    <% WEB_CONFIG.menus.forEach(function(menu, index) { %>
                         <li class="menu-item menu-item-type-custom menu-item-object-custom <% if ( menu.isActive ) { %>current-menu-item<% } %>">
                             <a class="top" href="<%-menu.link%>"><%-menu.name%></a>
                         </li>
@@ -43,7 +43,7 @@
 
         <div class="header-search">
             <form id="searchform" method="get" action="/s">
-                <input type="search" name="s" class="search-input" placeholder="请输入关键字" autocomplete="off" <% if ( RENDER_TYPE.type === 'search' && RENDER_TYPE.keyword ) { %>value="<%-RENDER_TYPE.keyword%>"<% } %>">
+                <input type="search" name="s" class="search-input" placeholder="请输入关键字" autocomplete="off" <% if ( RENDER_PARAM.type === 'search' && RENDER_PARAM.keyword ) { %>value="<%-RENDER_PARAM.keyword%>"<% } %>">
                 <button type="submit" class="search-submit">搜索</button>
             </form>
         </div><!-- .header-search -->

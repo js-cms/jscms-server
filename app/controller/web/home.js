@@ -8,30 +8,28 @@ class HomeController extends BaseController {
    * 首页
    */
   async index() {
-    await this.loadCommonData();
+    // 初始化
+    await this.init();
+    // 加载处理器
     await this.handler();
   }
 
   async handler() {
     const { ctx, service, config } = this;
-    const renderType = this.cache('RENDER_TYPE');
-
-    if (!isNaN(Number(renderType.value))) {
-      if (renderType.value <= 0) {
-        return this.notFound(opt);
-      }
-    }
-
     let pageSize = 10;
-    let pageNumber = renderType.value - 1;
+    let pageNumber = ctx.params[0] ? ctx.params[0] - 1 : 0;
     pageSize = isNaN(pageSize) ? 10 : pageSize;
     pageNumber = isNaN(pageNumber) ? 0 : pageNumber;
 
-    let majorArticles = await service.article.find({
+    if ( pageNumber < 0 ) {
+      return false;
+    }
+
+    let topMainArticles = await service.article.find({
       topType: 1
     }, 0, 3);
 
-    let secondaryArticles = await service.article.find({
+    let topMinorArticles = await service.article.find({
       topType: 2
     }, 0, 2);
 
@@ -64,10 +62,20 @@ class HomeController extends BaseController {
       }
     });
 
-    let data = {
+    this.cache('RENDER_PARAM', {
+      // 页面类型: String
+      pageType: 'home' || 'unknown',
+      // 文章列表：Array
       articles: articlesRes,
-      majorArticles,
-      secondaryArticles,
+      // 主要置顶文章：Array
+      topMainArticles: topMainArticles || [],
+      // 次要置顶文章：Array
+      topMinorArticles: topMinorArticles || [],
+      // 每页展示的文章数量：Number
+      pageSize: pageSize || 0,
+      // 当前页的页码：Number
+      pageNumber: pageNumber || 0,
+      // 分页信息：Object
       pagination: {
         prefix: 'index',
         start: 1,
@@ -75,8 +83,9 @@ class HomeController extends BaseController {
         current: pageNumber + 1,
         end: Math.ceil(totalRes / pageSize)
       }
-    };
-    await this.render('pages/index', data);
+    });
+    
+    await this.render('pages/index', {});
   }
 
 }

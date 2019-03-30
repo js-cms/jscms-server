@@ -1,34 +1,36 @@
 'use strict';
 
+const Model = require('modelman').Model;
+const proto = require('./proto/resource');
+const model = new Model({
+  name: 'Resource',
+  displayName: '日志'
+});
+model.assign(proto);
+
 module.exports = app => {
-    const mongoose = app.mongoose;
-    const Schema = mongoose.Schema;
+  const mongoose = app.mongoose;
+  const Schema = mongoose.Schema;
 
-    /*
-    * 资源表
-    */
-    const ResourceSchema = new Schema({
-        type: { type: Number, default: 1 }, //资源类型：1、图片。
-        remarks: { type: String, default: "这是资源的备注" }, //资源备注
-        url: { type: String }, //资源链接地址
+  /*
+  * 资源表
+  */
+  let schema = model.to.mongoose(Schema);
+  const ResourceSchema = new Schema(schema);
 
-        createTime: { type: Number },
-        updateTime: { type: Number },
-    });
+  ResourceSchema.pre('save', function (next) {
+    const now = (new Date()).getTime();
 
-    ResourceSchema.pre('save', function (next) {
-        const now = (new Date()).getTime();
+    this.createTime = now;
+    this.updateTime = now;
+    next();
+  });
 
-        this.createTime = now;
-        this.updateTime = now;
-        next();
-    });
+  ResourceSchema.pre('update', function (next) {
+    const now = (new Date()).getTime();
+    this.updateTime = now;
+    next();
+  });
 
-    ResourceSchema.pre('update', function (next) {
-        const now = (new Date()).getTime();
-        this.updateTime = now;
-        next();
-    });
-
-    return mongoose.model('Resource', ResourceSchema);
+  return mongoose.model(model.model.name, ResourceSchema);
 };

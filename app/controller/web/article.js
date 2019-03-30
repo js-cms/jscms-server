@@ -8,29 +8,33 @@ class ArticleController extends BaseController {
    * 文章页
    */
   async index() {
-    await this.loadCommonData();
+    // 初始化
+    await this.init();
+    // 加载处理器
     await this.handler();
   }
 
   async handler() {
     const { ctx, service, config } = this;
-    const { subtitle, separator } = webConfig.site;
-    let webConfig = ctx.locals.webConfig;
-    let serialNumber = ctx.params[0];
+    let webConfig = this.cache('WEB_CONFIG');
+    const { subtitle, separator } = webConfig;
+    let numberId = ctx.params[0];
   
     //获取文章
-    let findArticleRes = await service.article.findOneForWeb({ serialNumber });
+    let findArticleRes = await service.article.findOneForWeb({ numberId });
     if (!findArticleRes) {
-      return this.notFound(this);
+      return false;
     }
   
     //获取文章评论
     let findCommentRes = await service.comment.find({ articleId: findArticleRes._id });
     
-    //写入全局配置
-    webConfig.site.title = `${findArticleRes.title}${separator}${subtitle}`;
-    webConfig.site.keywords = findArticleRes.keywords.join(",");
-    webConfig.site.description = findArticleRes.description;
+    //重写页面元信息
+    this.setMeta({
+      title: `${findArticleRes.title}${separator}${subtitle}`,
+      keywords: findArticleRes.keywords.join(","),
+      description: findArticleRes.description,
+    });
   
     //更新文章浏览量
     let updateArticle = await service.article.update(findArticleRes._id,
@@ -62,39 +66,46 @@ class ArticleController extends BaseController {
     }
   
     //获取相关推荐文章
-    let associateRecommendation = [];
+    let relatedArticles = [];
     if (findArticleRes.keywords.length === 1) {
       let articles = await searchArticle(findArticleRes.keywords[0]);
-      associateRecommendation = articles;
+      relatedArticles = articles;
     } else if (findArticleRes.keywords.length === 2) {
       let articles = await searchArticle(findArticleRes.keywords[0]);
-      associateRecommendation = articles;
+      relatedArticles = articles;
       articles = await searchArticle(findArticleRes.keywords[1]);
-      associateRecommendation = associateRecommendation.concat(articles);
+      relatedArticles = relatedArticles.concat(articles);
     } else if (findArticleRes.keywords.length === 3) {
       let articles = await searchArticle(findArticleRes.keywords[0]);
-      associateRecommendation = articles;
+      relatedArticles = articles;
       articles = await searchArticle(findArticleRes.keywords[1]);
-      associateRecommendation = associateRecommendation.concat(articles);
+      relatedArticles = relatedArticles.concat(articles);
       articles = await searchArticle(findArticleRes.keywords[2]);
-      associateRecommendation = associateRecommendation.concat(articles);
+      relatedArticles = relatedArticles.concat(articles);
     }
-    if (associateRecommendation.length > 6) {
-      associateRecommendation = associateRecommendation.slice(0, 6);
-    } else if (associateRecommendation.length < 6) {
-      associateRecommendation = associateRecommendation.concat(this.cache('RENDER_DATA').randomArticlesRes);
-      if (associateRecommendation.length > 6) {
-        associateRecommendation = associateRecommendation.slice(0, 6);
+    if (relatedArticles.length > 6) {
+      relatedArticles = relatedArticles.slice(0, 6);
+    } else if (relatedArticles.length === 0) {
+      relatedArticles = relatedArticles.concat(this.cache('RENDER_DATA').randomArticlesRes);
+      if (relatedArticles.length > 6) {
+        relatedArticles = relatedArticles.slice(0, 6);
       }
     }
-  
-    let data = {
-      article: findArticleRes,
+
+    this.cache('RENDER_PARAM', {
+      // 页面类型: String
+      pageType: 'article' || 'unknown',
+      // 文章数字id: Number
+      numberId: numberId || 0,
+      // 文章对象: Array
+      article: findArticleRes || [],
+      // 该文章的评论: Array
       comments: findCommentRes || [],
-      associateRecommendation: associateRecommendation
-    };
+      // 相关文章: Array
+      relate: relatedArticles || []
+    });
   
-    await this.render('/pages/article', data);
+    await this.render('/pages/article', {});
   }
 
 }

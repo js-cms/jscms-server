@@ -1,40 +1,36 @@
 'use strict';
 
+const Model = require('modelman').Model;
+const proto = require('./proto/category');
+const model = new Model({
+  name: 'Category',
+  displayName: '分类'
+});
+model.assign(proto);
+
 module.exports = app => {
-    const mongoose = app.mongoose;
-    const Schema = mongoose.Schema;
+  const mongoose = app.mongoose;
+  const Schema = mongoose.Schema;
 
-    /*
-    * 分类表
-    */
-    const CategorySchema = new Schema({
+  /*
+  * 分类表
+  */
+  let schema = model.to.mongoose(Schema);
+  const CategorySchema = new Schema(schema);
 
-        order: { type: Number, default: 0 }, //排序权重。
-        name: { type: String }, //分类的中文类名，用于展示。
-        alias: { type: String }, //分类的英文名，用于在url上展示。
-        title: { type: String }, //网页标题
-        keywords: { type: String }, //网页关键字
-        description:  { type: String }, //网页描述
+  CategorySchema.pre('save', function (next) {
+    const now = (new Date()).getTime();
 
-        articleCount: { type: Number, default: 0 }, //分类的文章数。
-        
-        createTime: { type: Number },
-        updateTime: { type: Number },
-    });
+    this.createTime = now;
+    this.updateTime = now;
+    next();
+  });
 
-    CategorySchema.pre('save', function (next) {
-        const now = (new Date()).getTime();
+  CategorySchema.pre('update', function (next) {
+    const now = (new Date()).getTime();
+    this.updateTime = now;
+    next();
+  });
 
-        this.createTime = now;
-        this.updateTime = now;
-        next();
-    });
-
-    CategorySchema.pre('update', function (next) {
-        const now = (new Date()).getTime();
-        this.updateTime = now;
-        next();
-    });
-
-    return mongoose.model('Category', CategorySchema);
+  return mongoose.model(model.model.name, CategorySchema);
 };

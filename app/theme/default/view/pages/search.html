@@ -22,14 +22,14 @@
 
                             <div class="breadcrumbs clear">
                                 <h1>
-                                    “<span> <%-RENDER_TYPE.keyword%> </span>” 的搜索结果
+                                    “<span> <%-RENDER_PARAM.keyword%> </span>” 的搜索结果
                                 </h1>
                             </div><!-- .breadcrumbs -->
 
-                            <% articles.forEach(function(article, index) { %>
-                            <div id="post-<%-article.serialNumber%>" class="clear post-<%-article.serialNumber%> post type-post status-publish format-standard has-post-thumbnail hentry">
+                            <% RENDER_PARAM.article.s.forEach(function(article, index) { %>
+                            <div id="post-<%-RENDER_PARAM.article.numberId%>" class="clear post-<%-RENDER_PARAM.article.numberId%> post type-post status-publish format-standard has-post-thumbnail hentry">
 
-                                <a class="thumbnail-link" href="/<%-article.serialNumber%>.html">
+                                <a class="thumbnail-link" href="/<%-article.numberId%>.html">
                                     <div class="thumbnail-wrap">
                                         <img width="120" height="80" src="<%-article.poster%>"
                                             class="attachment-zimeiti_1_widget_post_thumb size-zimeiti_1_widget_post_thumb wp-post-image"
@@ -37,31 +37,31 @@
                                             sizes="(max-width: 120px) 100vw, 120px" />
                                         </div><!-- .thumbnail-wrap -->
                                 </a>
-                                <h2 class="entry-title"><a href="/<%-article.serialNumber%>.html"><%-article.title%></a></h2>
+                                <h2 class="entry-title"><a href="/<%-article.numberId%>.html"><%-RENDER_PARAM.article.title%></a></h2>
                                 <div class="entry-meta">
                                     <span class="entry-category">
-                                        <a href="/<%-article.categoryId.alias%>.html">
-                                            <%-article.categoryId.name%>
+                                        <a href="/<%-RENDER_PARAM.article.categoryId.alias%>.html">
+                                            <%-RENDER_PARAM.article.categoryId.name%>
                                         </a>
                                     </span><!-- .entry-category -->
                                     <span class="entry-author">
-                                        <a href="/author/<%-article.userId.nickname%>.html">
-                                            <img alt='<%-article.userId.nickname%>' src="<%-article.userId.avatar%>" class='avatar avatar-80 photo' height='80' width='80' />
-                                            <%-article.userId.nickname%>
+                                        <a href="/author/<%-RENDER_PARAM.article.userId.nickname%>.html">
+                                            <img alt='<%-RENDER_PARAM.article.userId.nickname%>' src="<%-RENDER_PARAM.article.userId.avatar%>" class='avatar avatar-80 photo' height='80' width='80' />
+                                            <%-RENDER_PARAM.article.userId.nickname%>
                                         </a>
                                     </span><!-- .entry-author -->
                                     <span class="entry-date">
-                                        <%-helper.toDate(article.updateTime, 2)%>
+                                        <%-helper.toDate(RENDER_PARAM.article.updateTime, 2)%>
                                     </span><!-- .entry-date -->
                                     <span class="meta-right">
                                         <span class="entry-views">
-                                            <span class="view-count"><%-article.visNumber%></span> 浏览 </span>
-                                        <span class="entry-comment"><a href="/<%-article.serialNumber%>.html#comments"
-                                                class="comments-link"><%-article.commentCount%> 评论</a></span>
+                                            <span class="view-count"><%-RENDER_PARAM.article.visNumber%></span> 浏览 </span>
+                                        <span class="entry-comment"><a href="/<%-RENDER_PARAM.article.numberId%>.html#comments"
+                                                class="comments-link"><%-RENDER_PARAM.article.commentCount%> 评论</a></span>
                                     </span><!-- .meta-right -->
 
                                 </div><!-- .entry-meta -->
-                            </div><!-- #post-<%-article.serialNumber%> -->
+                            </div><!-- #post-<%-RENDER_PARAM.article.numberId%> -->
                             <% }) %>
 
                             <% if ( articles.length === 0 ) { %>
@@ -95,22 +95,22 @@
                     <nav class="navigation pagination" role="navigation">
                         <h2 class="screen-reader-text">文章导航</h2>
                         <div class="nav-links">
-                            <% if ( pagination.current > pagination.start ) { %>
-                            <a class="next page-numbers" href="/<%-pagination.prefix%>&pageNum=<%-pagination.start%>">首页</a>
+                            <% if ( RENDER_PARAM.pagination.current > RENDER_PARAM.pagination.start ) { %>
+                            <a class="next page-numbers" href="/<%-RENDER_PARAM.pagination.prefix%>&pageNum=<%-RENDER_PARAM.pagination.start%>">首页</a>
                             <% } else { %>
                             <a class="next page-numbers invalid" href="javascript:void(0);">首页</a>
                             <% } %>
-                            <% pagination.pages.forEach(function(page, index) { %>
+                            <% RENDER_PARAM.pagination.pages.forEach(function(page, index) { %>
                             <% if ( page.isCurrent ) { %>
                             <span aria-current="page" class="page-numbers current">
                                 <%-page.num%></span>
                             <% } else { %>
-                            <a class="page-numbers" href="/<%-pagination.prefix%>&pageNum=<%-page.num%>">
+                            <a class="page-numbers" href="/<%-RENDER_PARAM.pagination.prefix%>&pageNum=<%-page.num%>">
                                 <%-page.num%></a>
                             <% } %>
                             <% }) %>
-                            <% if ( pagination.current < pagination.end ) { %>
-                            <a class="next page-numbers" href="/<%-pagination.prefix%>&pageNum=<%-pagination.end%>">尾页</a>
+                            <% if ( RENDER_PARAM.pagination.current < RENDER_PARAM.pagination.end ) { %>
+                            <a class="next page-numbers" href="/<%-RENDER_PARAM.pagination.prefix%>&pageNum=<%-RENDER_PARAM.pagination.end%>">尾页</a>
                             <% } else { %>
                             <a class="next page-numbers invalid" href="javascript:void(0);">尾页</a>
                             <% } %>

@@ -1,13 +1,12 @@
 'use strict';
 
 const Model = require('modelman').Model;
-const pageObject = require('../modelman/page');
-const pageModel = new Model({
+const proto = require('./proto/page');
+const model = new Model({
   name: 'Page',
-  displayName: '文章'
+  displayName: '自定义页面'
 });
-pageModel.assign(pageObject);
-let schema = pageModel.to.mongoose();
+model.assign(proto);
 
 module.exports = app => {
   const mongoose = app.mongoose;
@@ -16,6 +15,7 @@ module.exports = app => {
   /*
   * 自定义页面表
   */
+  let schema = model.to.mongoose(Schema);
   const PageSchema = new Schema(schema);
 
   PageSchema.pre('save', function (next) {
@@ -32,5 +32,5 @@ module.exports = app => {
     next();
   });
 
-  return mongoose.model(pageModel.model.name, PageSchema);
+  return mongoose.model(model.model.name, PageSchema);
 };

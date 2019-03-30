@@ -1,9 +1,9 @@
 module.exports = function(app) {
   [ 
+    'defalut',
     'article',
     'author', 
     'category',
-    'defalut',
     'page',
     'search',
     'tags',

@@ -1,35 +1,36 @@
 'use strict';
 
+const Model = require('modelman').Model;
+const proto = require('./proto/config');
+const model = new Model({
+  name: 'Config',
+  displayName: '配置'
+});
+model.assign(proto);
+
 module.exports = app => {
-    const mongoose = app.mongoose;
-    const Schema = mongoose.Schema;
+  const mongoose = app.mongoose;
+  const Schema = mongoose.Schema;
 
-    /*
-    * 站点配置表
-    */
-    const ConfigSchema = new Schema({
+  /*
+  * 站点配置表
+  */
+  let schema = model.to.mongoose(Schema);
+  const ConfigSchema = new Schema(schema);
 
-        name: { type: String }, //配置名称。
-        alias: { type: String }, //英文别名
-        info: { type: Object }, //配置信息
+  ConfigSchema.pre('save', function (next) {
+    const now = (new Date()).getTime();
 
-        createTime: { type: Number },
-        updateTime: { type: Number },
-    });
+    this.createTime = now;
+    this.updateTime = now;
+    next();
+  });
 
-    ConfigSchema.pre('save', function (next) {
-        const now = (new Date()).getTime();
+  ConfigSchema.pre('update', function (next) {
+    const now = (new Date()).getTime();
+    this.updateTime = now;
+    next();
+  });
 
-        this.createTime = now;
-        this.updateTime = now;
-        next();
-    });
-
-    ConfigSchema.pre('update', function (next) {
-        const now = (new Date()).getTime();
-        this.updateTime = now;
-        next();
-    });
-
-    return mongoose.model('Config', ConfigSchema);
+  return mongoose.model(model.model.name, ConfigSchema);
 };

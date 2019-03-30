@@ -1,20 +1,20 @@
 <footer id="colophon" class="site-footer ">
 
-    <div class="footer-columns <% if ( RENDER_TYPE.type === 404 || RENDER_TYPE.type === 'page' ) { %>container<% } else { %>footer-container<% } %> clear >">
+    <div class="footer-columns <% if ( RENDER_PARAM.type === 404 || RENDER_PARAM.type === 'page' ) { %>container<% } else { %>footer-container<% } %> clear >">
 
         <div class="footer-column footer-column-1 ht_grid_1_4">
             <div id="zimeiti_1-recent-2" class="widget footer-widget widget-zimeiti_1-recent widget_posts_thumbnail">
                 <h3 class="widget-title">近期文章</h3>
                 <ul>
-                    <% RENDER_DATA.recentlyArticles.forEach(function(article, index) { %>
+                    <% RENDER_DATA.recentArticles3.forEach(function(article, index) { %>
                     <li class="clear">
-                        <a href="/<%-article.serialNumber%>.html" rel="bookmark">
+                        <a href="/<%-article.numberId%>.html" rel="bookmark">
                             <div class="thumbnail-wrap">
                                 <img width="120" height="80" src="<%-article.poster%>" class="attachment-zimeiti_1_widget_post_thumb size-zimeiti_1_widget_post_thumb wp-post-image" alt="<%-article.title%>">
                             </div>
                         </a>
                         <div class="entry-wrap">
-                            <a href="/<%-article.serialNumber%>.html" rel="bookmark"><%-article.title%></a>
+                            <a href="/<%-article.numberId%>.html" rel="bookmark"><%-article.title%></a>
                         </div>
                     </li>
                     <% }) %>
@@ -26,9 +26,9 @@
             <div id="zimeiti_1-random-2" class="widget footer-widget widget-zimeiti_1-random widget_posts_thumbnail">
                 <h3 class="widget-title">随机文章</h3>
                 <ul>
-                    <% RENDER_DATA.randomArticlesRes.forEach(function(article, index) { %>
+                    <% RENDER_DATA.randomArticles3.forEach(function(article, index) { %>
                     <li class="clear">
-                        <a href="/<%-article.serialNumber%>.html" rel="bookmark">
+                        <a href="/<%-article.numberId%>.html" rel="bookmark">
                             <div class="thumbnail-wrap">
                                 <img width="120" height="80" src="<%-article.poster%>"
                                     class="attachment-zimeiti_1_widget_post_thumb size-zimeiti_1_widget_post_thumb wp-post-image"
@@ -36,7 +36,7 @@
                             </div>
                         </a>
                         <div class="entry-wrap">
-                            <a href="/<%-article.serialNumber%>.html" rel="bookmark">
+                            <a href="/<%-article.numberId%>.html" rel="bookmark">
                                 <%-article.title%>
                             </a>
                         </div>
@@ -49,9 +49,9 @@
             <div id="recent-comments-2" class="widget footer-widget widget_recent_comments">
                 <h3 class="widget-title">近期评论</h3>
                 <ul id="recentcomments">
-                    <% RENDER_DATA.recentlyCommentsRes.forEach(function(comment, index) { %>
+                    <% RENDER_DATA.recentComments3.forEach(function(comment, index) { %>
                     <li class="recentcomments">
-                        <span class="comment-author-link"> <%-comment.authorNickname%></span>发表在《<a href="/<%-comment.articleId.serialNumber%>.html#comment-<%-comment._id%>"><%-comment.articleId.title%></a>》
+                        <span class="comment-author-link"> <%-comment.authorNickname%></span>发表在《<a href="/<%-comment.articleId.numberId%>.html#comment-<%-comment._id%>"><%-comment.articleId.title%></a>》
                     </li>
                     <% }) %>
                 </ul>
@@ -60,10 +60,10 @@
         <div class="footer-column footer-column-4 ht_grid_1_4">
             <div id="text-2" class="widget footer-widget widget_text">
                 <h3 class="widget-title">关于
-                    <%-webConfig.site.subtitle%>
+                    <%-WEB_CONFIG.site.subtitle%>
                 </h3>
                 <div class="textwidget">
-                    <%-webConfig.site.about%>
+                    <%-WEB_CONFIG.site.about%>
                     <p class="tips">本站的部分内容来源于互联网，如不慎侵犯到您的权益，请联系我们，我们会在36小时内删除。</p>
                 </div>
             </div>
@@ -83,11 +83,11 @@
                         </a>
                     </li>
                     <li class="menu-item menu-item-type-custom menu-item-object-custom">
-                        <a href="/<%-webConfig.categories[0].alias%>.html">
+                        <a href="/<%-WEB_CONFIG.categories[0].alias%>.html">
                             信息分类
                         </a>
                     </li>
-                    <% webConfig.menus.forEach(function(menu, index) { %>
+                    <% WEB_CONFIG.menus.forEach(function(menu, index) { %>
                     <li class="menu-item menu-item-type-custom menu-item-object-custom">
                         <a href="<%-menu.link%>"><%-menu.name%></a>
                     </li>
@@ -97,12 +97,12 @@
 
             <div class="site-info">
 
-                <%-webConfig.site.footHTML%>
+                <%-WEB_CONFIG.site.footHTML%>
 
-                <% if ( webConfig.site.icp ) { %>
+                <% if ( WEB_CONFIG.site.icp ) { %>
                 <div class="icp">
                     <a href="http://www.miitbeian.gov.cn/">
-                        <%-webConfig.site.icp%></a>
+                        <%-WEB_CONFIG.site.icp%></a>
                 </div>
                 <% } %>
 
@@ -115,15 +115,15 @@
 
 </footer><!-- #colophon -->
 </div><!-- #page -->
-<script type="text/javascript" src="<%-CONFIG.THEME_STATIC%>/static/js/superfish.js"></script>
-<script type="text/javascript" src="<%-CONFIG.THEME_STATIC%>/static/js/jquery.slicknav.js"></script>
-<script type="text/javascript" src="<%-CONFIG.THEME_STATIC%>/static/js/modernizr.js"></script>
-<script type="text/javascript" src="<%-CONFIG.THEME_STATIC%>/static/js/html5.js"></script>
-<script type="text/javascript" src="<%-CONFIG.THEME_STATIC%>/static/js/jquery.bxslider.js"></script>
-<script type="text/javascript" src="<%-CONFIG.THEME_STATIC%>/static/js/infinite-scroll.pkgd.min.js"></script>
-<script type="text/javascript" src="<%-CONFIG.THEME_STATIC%>/static/js/jquery.sticky.js"></script>
-<script type="text/javascript" src="<%-CONFIG.THEME_STATIC%>/static/js/jquery.custom.js"></script>
-<script type="text/javascript" src="<%-CONFIG.THEME_STATIC%>/static/js/gg.js"></script>
+<script type="text/javascript" src="<%-CONSTANT.THEME_STATIC%>/static/js/superfish.js"></script>
+<script type="text/javascript" src="<%-CONSTANT.THEME_STATIC%>/static/js/jquery.slicknav.js"></script>
+<script type="text/javascript" src="<%-CONSTANT.THEME_STATIC%>/static/js/modernizr.js"></script>
+<script type="text/javascript" src="<%-CONSTANT.THEME_STATIC%>/static/js/html5.js"></script>
+<script type="text/javascript" src="<%-CONSTANT.THEME_STATIC%>/static/js/jquery.bxslider.js"></script>
+<script type="text/javascript" src="<%-CONSTANT.THEME_STATIC%>/static/js/infinite-scroll.pkgd.min.js"></script>
+<script type="text/javascript" src="<%-CONSTANT.THEME_STATIC%>/static/js/jquery.sticky.js"></script>
+<script type="text/javascript" src="<%-CONSTANT.THEME_STATIC%>/static/js/jquery.custom.js"></script>
+<script type="text/javascript" src="<%-CONSTANT.THEME_STATIC%>/static/js/gg.js"></script>
 
 <div id="back-top">
     <a href="#top" title="返回顶部"><span class="genericon genericon-collapse"></span></a>
@@ -139,12 +139,12 @@
                 var aTop = 200;
                 if (($(this).scrollTop() >= aTop)) {
                     $('.single .site-main .entry-header').addClass('sticky-breadcrumbs');
-                    $('.single #primary article.hentry').css('padding-top', '110px');
+                    $('.single #primary RENDER_PARAM.article.hentry').css('padding-top', '110px');
                     $('#single-sticky').addClass(' container');
                     $('.single .left-col').addClass('header-scrolled');
                 } else {
                     $('.single .site-main .entry-header').removeClass('sticky-breadcrumbs');
-                    $('.single #primary article.hentry').css('padding-top', '0');
+                    $('.single #primary RENDER_PARAM.article.hentry').css('padding-top', '0');
                     $('#single-sticky').removeClass(' container');
                     $('.single .left-col').removeClass('header-scrolled');
                 }
