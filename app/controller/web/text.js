@@ -12,7 +12,7 @@ class TextController extends Controller {
     const _articles = await service.article.findAll();
     let articles = "";
     _articles.forEach((item, index) => {
-      let url = ctx.origin + "/" + item.serialNumber + ".html";
+      let url = ctx.origin + "/" + item.numberId + ".html";
       articles = articles + url + (index < _articles.length - 1 ? "\n" : "");
     });
     ctx.body = articles;

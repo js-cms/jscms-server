@@ -78,7 +78,7 @@ class CategoryController extends Controller {
 
   //删除分类
   async delete() {
-    const { ctx, service, config } = this;
+    const { ctx, service } = this;
     if (!ctx.locals.currentUser.auth.isLogin) {
       return ctx.helper.throwError(ctx, '你没有登陆', 403);
     }

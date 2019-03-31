@@ -8,6 +8,7 @@ module.exports = function (app) {
     'model',
     'page',
     'resource',
-    'user'
+    'user',
+    'crud'
   ].map(m => require(`./${m}.js`)(app));
 };
