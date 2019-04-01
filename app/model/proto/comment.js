@@ -11,7 +11,7 @@ module.exports = {
   authorUrl: { n: '评论人主页', type: 'String', f: true, t: true }, //评论人主页
   authorEmail: { n: '评论人邮箱', type: 'String', f: true, t: true }, //评论人邮箱
   authorAvatar: { n: '评论人头像', type: 'String', f: true, t: false, d: '' }, //评论人头像
-  mdContent: { n: 'markdown', type: 'String', f: true, t: false, r: true }, //评论的markdown内容
+  mdContent: { n: '评论内容', type: 'String', f: true, t: false, r: true, p: '评论的内容，支持markdown', extra: {comType: 'textarea'}}, //评论的markdown内容
   htContent: { n: 'html', type: 'String', f: false, t: false }, //评论的html内容
   likeCount: { n: '点赞数量', type: 'Number', default: 0 }, //点赞数量
   commentCount: { n: '回复评论数量', type: 'Number', default: 0 }, //回复评论数量

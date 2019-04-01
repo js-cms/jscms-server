@@ -58,7 +58,7 @@ class ArticleController extends Controller {
     if (validateResult.code === 1) {
       return ctx.helper.throwError(ctx, validateResult.msg, validateResult.code);
     }
-    
+
     //统计文章数量
     let configCountRes = await service.config.findOne({ alias: 'articleCount' });
     let num = Number(configCountRes.info.num) + 1;

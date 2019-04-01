@@ -10,8 +10,9 @@ const JSCMS_THEME = `${EGG_APP}/theme`;
 const JSCMS_MODELMAN = `${EGG_APP}/modelman`;
 const JSCMS_STATIC = `${EGG_APP}/static`;
 const JSCMS_MANAGEMENT = `${JSCMS_STATIC}/management`;
-const JSCMS_UPLOAD = `${EGG_APP}/${JSCMS_STATIC}/upload`;
+const JSCMS_UPLOAD = `${JSCMS_STATIC}/upload`;
 const JSCMS_URL_STATIC = `/static`;
+const JSCMS_URL_UPLOAD = `${JSCMS_URL_STATIC}/upload`;
 const JSCMS_URL_MANAGEMENT = `/management`;
 const JSCMS_URL_THEME_STATIC = `/theme-static`;
 
@@ -28,6 +29,7 @@ module.exports = {
   JSCMS_UPLOAD,
   JSCMS_THEME,
   JSCMS_URL_STATIC,
+  JSCMS_URL_UPLOAD,
   JSCMS_URL_MANAGEMENT,
   JSCMS_URL_THEME_STATIC
 }

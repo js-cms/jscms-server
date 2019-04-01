@@ -5,7 +5,6 @@ const path = require('path');
 const fs = require('fs-extra');
 
 const sendToWormhole = require('stream-wormhole');
-
 class ResourceController extends Controller {
 
   /**
@@ -38,7 +37,7 @@ class ResourceController extends Controller {
 
     //获取列表
     let findRes = await service.resource.find(where, pageNumber, pageSize);
-    //获取文章总数
+    //获取资源总数
     let totalRes = await service.resource.count(where);
 
     ctx.body = {
@@ -59,12 +58,12 @@ class ResourceController extends Controller {
     if (!ctx.locals.currentUser.auth.isLogin) {
       return ctx.helper.throwError(ctx, '你没有登陆', 403);
     }
-
     const id = ctx.request.body.id;
-    const fileName = ctx.request.body.fileName;
+    const filename = ctx.request.body.filename;
     let msg = '';
+
     //本地地址
-    let target = path.join(this.config.baseDir, `app/public/static/${fileName}`);
+    let target = path.join(config.baseDir, `${config.constant.directory.JSCMS_UPLOAD}/${filename}`);
     if (!fs.existsSync(target)) {
       msg = '，资源文件不存在';
     } else {
@@ -99,7 +98,7 @@ class ResourceController extends Controller {
     const newFileName = `${nowTimestamp}.${suffix}`;
 
     //组装本地地址
-    let target = path.join(this.config.baseDir, `app/public/static/${newFileName}`);
+    let target = path.join(this.config.baseDir, `${config.constant.directory.JSCMS_UPLOAD}/${newFileName}`);
     //写入本地硬盘
     const result = await new Promise((resolve, reject) => {
       const remoteFileStream = fs.createWriteStream(target);
@@ -119,13 +118,15 @@ class ResourceController extends Controller {
         });
       });
     });
-    let cUrl = ctx.origin + '/public/static/' + newFileName;
+    
+    let cUrl = `${ctx.origin}${config.constant.directory.JSCMS_URL_UPLOAD}/${newFileName}`;
 
     //写入资源表
     let createRessoureRes = await service.resource.create({
       type: 1,
-      remarks: newFileName,
-      url: cUrl
+      store: 1,
+      filename: newFileName,
+      remarks: cUrl
     });
 
     if (createRessoureRes) {
