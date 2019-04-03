@@ -84,6 +84,7 @@ class ArticleService extends Service {
   async findOne(query) {
     return this.ctx.model.Article.findOne(query)
       .populate('userId')
+      .populate('categoryId')
       .exec();
   }
 
