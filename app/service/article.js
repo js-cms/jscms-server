@@ -1,18 +1,16 @@
 'use strict';
 
 const Service = require('egg').Service;
+const Db = require('./Db');
 
 class ArticleService extends Service {
 
   /*
    * 新建文章
    */
-  async create(ArticleObj) {
-    const Article = new this.ctx.model.Article();
-    for (const key in ArticleObj) {
-      Article[key] = ArticleObj[key];
-    }
-    return Article.save();
+  async create(data) {
+    const db = new Db(this.ctx.model.Article);
+    return db.create(data);
   }
 
   /*

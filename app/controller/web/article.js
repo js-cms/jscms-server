@@ -92,6 +92,8 @@ class ArticleController extends BaseController {
       }
     }
 
+    console.log(relatedArticles);
+
     this.cache('RENDER_PARAM', {
       // 页面类型: String
       pageType: 'article' || 'unknown',

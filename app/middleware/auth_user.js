@@ -4,6 +4,9 @@ module.exports = app => {
   // 验证用户
   return async function (ctx, next) {
     const prefix = ctx.request.path.substring(0, 4);
+    const currentTime = (new Date()).getTime();
+    const token = ctx.headers['authorization'] || ctx.request.body.token || ctx.query.token;
+
     let res = null;
     let currentUser = {
       user: {},
@@ -27,9 +30,7 @@ module.exports = app => {
         }
       }
     };
-    const currentTime = (new Date()).getTime();
-    let token = ctx.headers['authorization'];
-
+    
     //只判断api后缀请求，且不判断login地址
     if (prefix === "/api" && prefix !== "/api/login") {
       if (token) {

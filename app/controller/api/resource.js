@@ -4,7 +4,12 @@ const Controller = require('egg').Controller;
 const path = require('path');
 const fs = require('fs-extra');
 
-const sendToWormhole = require('stream-wormhole');
+const getFileSuffix = function (filename) {
+  let tempArr = filename.split('.');
+  const suffix = tempArr[tempArr.length - 1];
+  return suffix;
+}
+
 class ResourceController extends Controller {
 
   /**
@@ -37,6 +42,25 @@ class ResourceController extends Controller {
 
     //获取列表
     let findRes = await service.resource.find(where, pageNumber, pageSize);
+    let list = [];
+    for (const item of findRes) {
+      let url = '';
+      if (item.store === 1) {
+        url = `${ctx.origin}${config.constant.directory.JSCMS_URL_UPLOAD}/${item.filename}`
+      } else {
+        url = item.filename;
+      }
+      list.push({
+        createTime: item.createTime,
+        filename: item.filename,
+        url: url,
+        remarks: item.remarks,
+        store: item.store,
+        type: item.type,
+        _id: item._id
+      });
+    }
+
     //获取资源总数
     let totalRes = await service.resource.count(where);
 
@@ -44,7 +68,7 @@ class ResourceController extends Controller {
       code: 0,
       msg: '查询成功',
       data: {
-        list: findRes,
+        list,
         total: totalRes
       }
     };
@@ -59,11 +83,14 @@ class ResourceController extends Controller {
       return ctx.helper.throwError(ctx, '你没有登陆', 403);
     }
     const id = ctx.request.body.id;
-    const filename = ctx.request.body.filename;
+    const filename = ctx.request.body.filename.replace(/\//g, '').replace(/\\/g, '');
     let msg = '';
 
     //本地地址
     let target = path.join(config.baseDir, `${config.constant.directory.JSCMS_UPLOAD}/${filename}`);
+
+    console.log('target', target);
+
     if (!fs.existsSync(target)) {
       msg = '，资源文件不存在';
     } else {
@@ -87,55 +114,74 @@ class ResourceController extends Controller {
   }
 
   /*
-   * 资源上传控制器
+   * 资源上传控制器 
    */
   async uploader() {
     const { ctx, service, config } = this;
-    const stream = await ctx.getFileStream();
+    if (!ctx.locals.currentUser.auth.isLogin) {
+      return ctx.helper.throwError(ctx, '你没有登陆', 403);
+    }
+
+    const file = ctx.request.files[0];
+    const suffix = getFileSuffix(file.filename);
     const nowTimestamp = (new Date()).getTime();
-    let tempArr = stream.filename.split('.');
-    const suffix = tempArr[tempArr.length - 1];
     const newFileName = `${nowTimestamp}.${suffix}`;
+    const whiteList = ['png', 'jpg', 'jpeg', 'git', 'bmp'];
+    if (!whiteList.includes(suffix)) {
+      ctx.body = {
+        code: 1,
+        msg: '不允许上传此类型的文件'
+      };
+      return false;
+    }
 
     //组装本地地址
     let target = path.join(this.config.baseDir, `${config.constant.directory.JSCMS_UPLOAD}/${newFileName}`);
-    //写入本地硬盘
+
+    //将文件移动到本地地址
     const result = await new Promise((resolve, reject) => {
-      const remoteFileStream = fs.createWriteStream(target);
-      stream.pipe(remoteFileStream);
-      let errFlag;
-      remoteFileStream.on('error', err => {
-        errFlag = true;
-        sendToWormhole(stream);
-        remoteFileStream.destroy();
-        reject(err);
-      });
-      remoteFileStream.on('finish', async () => {
-        if (errFlag) return;
-        resolve({
-          fileName: newFileName,
-          name: stream.fields.name
-        });
-      });
+      fs.move(file.filepath, target, err => {
+        if (err) {
+          reject(false);
+        } else {
+          resolve(true);
+        }
+      })
     });
+
+    //判断文章操作的结果
+    if (result === false) {
+      //失败，返回错误
+      ctx.body = {
+        code: 1,
+        msg: '上传失败，未知错误！'
+      };
+      return false;
+    } else {
+      //成功，删除临时文件
+      fs.remove(file.filepath, err => {
+        if (err) return console.error(err);
+      });
+    }
     
-    let cUrl = `${ctx.origin}${config.constant.directory.JSCMS_URL_UPLOAD}/${newFileName}`;
+    //组装资源网址
+    const webUrl = `${ctx.origin}${config.constant.directory.JSCMS_URL_UPLOAD}/${newFileName}`;
 
     //写入资源表
     let createRessoureRes = await service.resource.create({
       type: 1,
       store: 1,
       filename: newFileName,
-      remarks: cUrl
+      remarks: webUrl
     });
 
     if (createRessoureRes) {
       ctx.body = {
         code: 0,
-        msg: 'ok',
+        msg: '上传成功',
         data: {
-          fileName: newFileName,
-          imageUrl: cUrl
+          filename: newFileName,
+          imageUrl: webUrl
         }
       };
     } else {
@@ -144,7 +190,6 @@ class ResourceController extends Controller {
         msg: '资源创建失败'
       };
     }
-
   }
 }
 
