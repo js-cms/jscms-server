@@ -89,7 +89,7 @@ class CategoryController extends Controller {
       return ctx.helper.throwError(ctx, '参数错误');
     }
 
-    const deleteRes = await service.category.remove(id);
+    const deleteRes = await service.category.remove({_id: id});
 
     if (deleteRes) {
       ctx.body = {

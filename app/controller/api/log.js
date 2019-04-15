@@ -51,7 +51,7 @@ class LogController extends Controller {
 			return ctx.helper.throwError(ctx, '参数错误');
 		}
 
-		const deleteRes = await service.log.remove(id);
+		const deleteRes = await service.log.remove({_id: id});
 
 		if (deleteRes) {
 			ctx.body = {

@@ -1,18 +1,32 @@
 'use strict';
 
 const Service = require('egg').Service;
+const Db = require('./Db');
 
 class TokenService extends Service {
 
   /*
-   * 新建Token
+  * 创建token
+  */
+  async create(data) {
+    const db = new Db(this.ctx.model.Token);
+    return db.create(data);
+  }
+
+  /*
+  * 更新token
+  */
+  async update(query, target) {
+    const db = new Db(this.ctx.model.Token);
+    return db.update(query, target);
+  }
+
+  /**
+   * 删除token
    */
-  async create(tokenObj) {
-    const Token = new this.ctx.model.Token();
-    for (const key in tokenObj) {
-      Token[key] = tokenObj[key];
-    }
-    return Token.save();
+  async remove(query) {
+    const db = new Db(this.ctx.model.Token);
+    return db.remove(query);
   }
 
   /**
@@ -55,19 +69,6 @@ class TokenService extends Service {
     }).exec();
   }
 
-  /**
-   * 通过条件删除
-   */
-  async remove(query) {
-    return this.ctx.model.Token.remove(query).exec();
-  }
-
-  /**
-   * 统计
-   */
-  async count() {
-    return this.ctx.model.Token.count({}).exec();
-  }
 }
 
 module.exports = TokenService;

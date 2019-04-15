@@ -1,73 +1,47 @@
 'use strict';
 
 const Service = require('egg').Service;
-const modelName = 'Category';
+const Db = require('./Db');
 
 class CategoryService extends Service {
 
   /*
-  * 新建分类
+  * 创建分类
   */
-  async create(categoryObj) {
-    const category = new this.ctx.model.Category();
-    for (const key in categoryObj) {
-      category[key] = categoryObj[key];
-    }
-    return category.save();
+  async create(data) {
+    const db = new Db(this.ctx.model.Category);
+    return db.create(data);
+  }
+
+  /*
+   * 更新分类
+   */
+  async update(query, target) {
+    const db = new Db(this.ctx.model.Category);
+    return db.update(query, target);
+  }
+
+  /**
+   * 删除分类
+   */
+  async remove(query) {
+    const db = new Db(this.ctx.model.Category);
+    return db.remove(query);
   }
 
   /**
    * 查询分类
    */
   async find(query) {
-    return this.ctx.model.Category.find(query).exec();
+    const db = new Db(this.ctx.model.Category);
+    return db.find(query);
   }
-
 
   /**
    * 查询一个分类
    */
   async findOne(query) {
     return this.ctx.model.Category.findOne(query).exec();
-  }
-
-  /**
-   * 通过分类id 获取分类
-   * @param {String} categoryId 
-  */
-  async getCategoryById(categoryId) {
-    return this.ctx.model.Category.findById(categoryId).exec();
-  }
-
-  /**
-   * 通过分类中文名 获取分类
-   * @param {String} categoryId 
-  */
-  async getCategoryByName(categoryName) {
-    return this.ctx.model.Category.findOne({
-      name: categoryName
-    }).exec();
-  }
-
-  /**
-   * 通过分类Id删除分类
-   */
-  async remove(categoryId) {
-    return this.ctx.model.Category.findOneAndRemove({
-      _id: categoryId
-    }).exec();
-  }
-
-  /**
-   * 更新分类信息
-   */
-  async update(categoryId, updateInfo) {
-    if (!categoryId) {
-      return;
-    }
-    const query = { _id: categoryId };
-    const update = updateInfo;
-    return this.ctx.model.Category.update(query, update).exec();
   }
 
   /**

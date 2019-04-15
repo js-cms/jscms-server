@@ -101,7 +101,7 @@ class ResourceController extends Controller {
       return ctx.helper.throwError(ctx, '参数错误');
     }
 
-    const deleteRes = await service.resource.remove(id);
+    const deleteRes = await service.resource.remove({_id: id});
 
     if (deleteRes) {
       ctx.body = {

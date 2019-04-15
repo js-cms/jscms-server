@@ -40,7 +40,7 @@ module.exports = app => {
         });
         if (res) {
           //得到用户信息
-          let user = await ctx.service.user.getUserById(res.userId);
+          let user = await ctx.service.user.findOne({_id: res.userId});
           if (user && currentUser) {
             currentUser.user = user._doc;
             //得到token是否过期

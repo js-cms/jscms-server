@@ -62,8 +62,11 @@ class ArticleController extends Controller {
     //统计文章数量
     let configCountRes = await service.config.findOne({ alias: 'articleCount' });
     let num = Number(configCountRes.info.num) + 1;
-    let saveCountRes = await service.config.update(configCountRes._id, { info: { num: num } });
-
+    let saveCountRes = await service.config.update({
+      _id: configCountRes._id
+    }, { 
+      info: { num: num } 
+    });
     let parameters = validateResult.object;
     parameters.numberId = num;
     //文章创建结果
@@ -91,7 +94,11 @@ class ArticleController extends Controller {
     //更新标签列表
     let findTagsRes = await service.config.findOne({ alias: 'tags' });
     let newTags = mixinArray(parameters.keywords, findTagsRes.info);
-    let saveTagsRes = await service.config.update(findTagsRes._id, { info: newTags });
+    let saveTagsRes = await service.config.update({
+      _id: findTagsRes._id
+    }, {
+      info: newTags 
+    });
 
     //如果文章添加成功
     if (createArticleRes._id && updateCategoryRes) {
@@ -123,13 +130,21 @@ class ArticleController extends Controller {
     if (info.mdContent) {
       info.htContent = marked(info.mdContent);
     }
-    const updateRes = await service.article.update(id, info);
+
+    const updateRes = await service.article.update(
+      { _id: id },
+      info
+    );
 
     if (info.keywords && info.keywords.length) {
       //更新标签列表
       let findTagsRes = await service.config.findOne({ alias: 'tags' });
       let newTags = mixinArray(info.keywords, findTagsRes.info);
-      let saveTagsRes = await service.config.update(findTagsRes._id, { info: newTags });
+      let saveTagsRes = await service.config.update({
+        _id: findTagsRes._id
+      }, {
+        info: newTags 
+      });
     }
 
     if (updateRes) {
@@ -156,7 +171,7 @@ class ArticleController extends Controller {
       return ctx.helper.throwError(ctx, '参数错误');
     }
 
-    const deleteRes = await service.article.remove(id);
+    const deleteRes = await service.article.remove({_id: id});
 
     if (deleteRes) {
       ctx.body = {

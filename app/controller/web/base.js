@@ -77,7 +77,7 @@ class BaseController extends Controller {
       // 随机三篇文章
       randomArticles3: await service.article.findRandom(3),
       // 最近三条评论
-      recentComments3: await service.comment.findByQuery({}, 0, 3),
+      recentComments3: await service.comment.find({}, 0, 3),
       // 获取浏览量最多的5篇文章
       hotArticles5: await service.article.findByHot({}, 0, 5),
       // 获取评论量最多的5篇文章
@@ -114,7 +114,7 @@ class BaseController extends Controller {
 
     // 获取配置项
     async function getWebConfig(name) {
-      let res = await service.config.findByConfigName(name);
+      let res = await service.config.findOne({alias: name});
       return res && res.info ? res.info : false;
     }
 

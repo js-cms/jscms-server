@@ -6,7 +6,7 @@ const Db = require('./Db');
 class ArticleService extends Service {
 
   /*
-   * 新建文章
+   * 创建文章
    */
   async create(data) {
     const db = new Db(this.ctx.model.Article);
@@ -14,20 +14,23 @@ class ArticleService extends Service {
   }
 
   /*
-   * 根据关键字，获取一组文章
-   * Callback:
-   * - err, 数据库异常ß
-   * - Articles, 文章列表
-   * @param {String} query 关键字
-   * @param {Object} opt 选项
-   * @return {Promise[Articles]} 承载文章列表的 Promise 对象
+   * 更新文章
    */
-  async getArticlesByQuery(query, opt) {
-    return this.ctx.model.Article.find(query, '', opt).exec();
+  async update(query, target) {
+    const db = new Db(this.ctx.model.Article);
+    return db.update(query, target);
   }
 
   /**
-   * 查询文章
+   * 删除文章
+   */
+  async remove(query) {
+    const db = new Db(this.ctx.model.Article);
+    return db.remove(query);
+  }
+
+  /**
+   * 查询符合条件的文章
    */
   async find(query, pageNum = 0, pageSize = 10) {
     return this.ctx.model.Article.find(query)
@@ -53,7 +56,6 @@ class ArticleService extends Service {
     return promises
   }
 
-
   /**
    * 获取按浏览量排名的文章
    */
@@ -77,7 +79,7 @@ class ArticleService extends Service {
   }
 
   /**
-   * 查找一个文章
+   * 查找一篇文章
    */
   async findOne(query) {
     return this.ctx.model.Article.findOne(query)
@@ -87,16 +89,7 @@ class ArticleService extends Service {
   }
 
   /**
-   * 
-   * 查找所有文章
-   */
-  async findAll() {
-    return this.ctx.model.Article.find({})
-      .exec();
-  }
-
-  /**
-   * 查找一个文章
+   * 查找一篇文章（网站使用）
    */
   async findOneForWeb(query) {
     return this.ctx.model.Article.findOne(query)
@@ -105,18 +98,8 @@ class ArticleService extends Service {
       .exec();
   }
 
-  /*
-   * 根据文章Id查找文章
-   * @param {Object} obj
-   */
-  async getArticleById(ArticleId) {
-    return this.ctx.model.Article.findById(ArticleId)
-      .populate('questionId')
-      .exec();
-  }
-
   /**
-   * 搜索文章
+   * 根据条件搜索文章
    */
   async search(query, pageNum = 0, pageSize = 10) {
     return this.ctx.model.Article.find(query)
@@ -127,26 +110,13 @@ class ArticleService extends Service {
       .limit(pageSize)
       .exec();
   }
-
+  
   /**
-   * 更新文章信息
+   * 
+   * 查找所有文章
    */
-  async update(ArticleId, updateInfo) {
-    if (!ArticleId) {
-      return;
-    }
-    const query = { _id: ArticleId };
-    const update = updateInfo;
-    return this.ctx.model.Article.update(query, update).exec();
-  }
-
-  /**
-   * 通过文章Id删除文章
-   */
-  async remove(ArticleId) {
-    return this.ctx.model.Article.findOneAndRemove({
-      _id: ArticleId
-    }).exec();
+  async findAll() {
+    return this.ctx.model.Article.find({}).exec();
   }
 
   /**

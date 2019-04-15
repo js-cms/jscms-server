@@ -25,7 +25,7 @@ class AuthorController extends BaseController {
       return this.notFound();
     }
 
-    let findUserRes = await service.user.findOne({ nickname: nickname });
+    let findUserRes = await service.user.findOne({nickname: nickname});
     if (!findUserRes) {
       return this.notFound();
     }

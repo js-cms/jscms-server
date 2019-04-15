@@ -30,7 +30,7 @@ class UserController extends Controller {
   async show() {
     const ctx = this.ctx;
     //获取该用户的数据
-    const users = await ctx.service.user.getUserById(ctx.params.id);
+    const users = await ctx.service.user.findOne({_id: ctx.params.id});
 
     const usersInfo = ctx.helper.filterFields([
       'email',
@@ -54,7 +54,7 @@ class UserController extends Controller {
     const userId = ctx.locals.currentUser.user._id;
 
     //获取当前用户的数据
-    const users = await ctx.service.user.getUserById(userId);
+    const users = await ctx.service.user.findOne({_id: userId});
 
     const usersInfo = ctx.helper.filterFields([
       'email',
@@ -91,7 +91,7 @@ class UserController extends Controller {
       ], _user);
 
     //获取用户总数
-    const count = await ctx.service.user.count();
+    const count = await ctx.service.user.count({});
     userInfo.nickname = '会员' + count;
 
     //没有注册的话就注册该用户
@@ -130,7 +130,7 @@ class UserController extends Controller {
       }
     }
 
-    let res = await ctx.service.user.update(userId, updateInfo);
+    let res = await ctx.service.user.update({_id: userId}, updateInfo);
     if (res) {
       ctx.body = {
         code: 0,
@@ -149,7 +149,7 @@ class UserController extends Controller {
     }
     const password = ctx.request.body.password;
     const userId = ctx.locals.currentUser.user._id;
-    let res = await ctx.service.user.update(userId, {
+    let res = await ctx.service.user.update({_id: userId}, {
       password: this.ctx.helper.bhash(password)
     });
     if (res) {
@@ -260,7 +260,7 @@ class UserController extends Controller {
    */
   async count() {
     const ctx = this.ctx;
-    const countNum = await ctx.service.user.count();
+    const countNum = await ctx.service.user.count({});
     ctx.body = {
       code: 0,
       msg: 'ok',

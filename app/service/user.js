@@ -1,45 +1,43 @@
 'use strict';
 
 const Service = require('egg').Service;
+const Db = require('./Db');
 
 class UserService extends Service {
 
   /*
-   * 新建用户
-   */
-  async create(userObj) {
-    userObj.password = this.ctx.helper.bhash(userObj.password);
-    const user = new this.ctx.model.User();
-    for (const key in userObj) {
-      user[key] = userObj[key];
-    }
-    return user.save();
+  * 创建用户
+  */
+  async create(data) {
+    data.password = this.ctx.helper.bhash(data.password);
+    const db = new Db(this.ctx.model.User);
+    return db.create(data);
   }
 
   /**
-   * 查找一个用户
+   * 查询用户
+   */
+  async find(query) {
+    const db = new Db(this.ctx.model.User);
+    return db.find(query);
+  }
+
+  /*
+  * 更新用户
+  */
+  async update(query, target) {
+    const db = new Db(this.ctx.model.User);
+    return db.update(query, target);
+  }
+
+  /*
+   * 查找一名用户
    */
   async findOne(query) {
     return this.ctx.model.User.findOne(query).exec();
   }
 
   /**
-   * 通过PropertyId查询User
-   */
-  async getUsersByUserIdPropertyId(userId, propertyId) {
-    return this.ctx.model.User.findOne({
-      $and: [
-        {
-          _id: userId,
-        },
-        {
-          starPropertys: propertyId
-        }
-      ]
-    }).exec();
-  }
-
-  /*
    * 根据关键字，获取一组用户
    * Callback:
    * - err, 数据库异常
@@ -52,7 +50,7 @@ class UserService extends Service {
     return this.ctx.model.User.find(query, '', opt).exec();
   }
 
-  /*
+  /**
    * 根据邮箱，查找用户
    * @param {String} email 邮箱地址
    * @return {Promise[user]} 承载用户的 Promise 对象
@@ -61,7 +59,7 @@ class UserService extends Service {
     return this.ctx.model.User.findOne({ email }).exec();
   }
 
-  /*
+  /**
    * 根据昵称，查找用户
    * @param {String} nickname 昵称
    * @return {Promise[user]} 承载用户的 Promise 对象
@@ -70,14 +68,6 @@ class UserService extends Service {
     return this.ctx.model.User.findOne({
       nickname: nickname
     }).exec();
-  }
-
-  /*
-   * 根据用户Id查找用户
-   * @param {String} UserId
-   */
-  async getUserById(id) {
-    return this.ctx.model.User.findOne({ _id: id }).exec();
   }
 
   /**
@@ -90,40 +80,11 @@ class UserService extends Service {
     return this.ctx.model.User.findByIdAndUpdate(query, update).exec();
   }
 
-
-  /**
-   * 更新用户信息
-   */
-  async update(userId, updateInfo) {
-    if (!userId) {
-      return;
-    }
-    const query = { _id: userId };
-    const update = updateInfo;
-    return this.ctx.model.User.update(query, update).exec();
-  }
-
-  /**
-   * 通过Id删除一个用户
-   */
-  async remove(userId) {
-    return this.ctx.model.User.findOneAndRemove({
-      _id: userId
-    }).exec();
-  }
-
-  /**
-   * 查询用户
-   */
-  async find(query) {
-    return this.ctx.model.User.find(query).exec();
-  }
-
   /**
    * 统计
    */
-  async count() {
-    return this.ctx.model.User.count({}).exec();
+  async count(query = {}) {
+    return this.ctx.model.User.count(query).exec();
   }
 }
 

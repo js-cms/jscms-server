@@ -32,7 +32,9 @@ class ConfigController extends Controller {
     }
     const info = ctx.request.body.info;
     const id = ctx.request.body._id;
-    const updateRes = await service.config.update(id, {
+    const updateRes = await service.config.update({
+      _id: id 
+    }, {
       info: info
     });
     if (updateRes) {

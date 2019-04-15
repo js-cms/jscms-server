@@ -71,7 +71,7 @@ class PageController extends Controller {
     delete info.createTime;
     delete info.updateTime;
 
-    const updateRes = await service.page.update(id, info);
+    const updateRes = await service.page.update({_id: id}, info);
 
     if (updateRes) {
       ctx.body = {
@@ -98,7 +98,7 @@ class PageController extends Controller {
       return ctx.helper.throwError(ctx, '参数错误');
     }
 
-    const deleteRes = await service.page.remove(id);
+    const deleteRes = await service.page.remove({_id: id});
 
     if (deleteRes) {
       ctx.body = {
