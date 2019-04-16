@@ -89,8 +89,6 @@ class ResourceController extends Controller {
     //本地地址
     let target = path.join(config.baseDir, `${config.constant.directory.JSCMS_UPLOAD}/${filename}`);
 
-    console.log('target', target);
-
     if (!fs.existsSync(target)) {
       msg = '，资源文件不存在';
     } else {

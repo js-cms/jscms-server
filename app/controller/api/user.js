@@ -23,59 +23,78 @@ const userRule = {
  */
 class UserController extends Controller {
 
-  async index() {
-    this.ctx.body = 'hi, imooyo!';
-  }
-
+  /**
+   * @description 获取单个用户的信息（超级管理员接口）
+   */
   async show() {
-    const ctx = this.ctx;
+    const { ctx, service, config } = this;
+    if (!ctx.locals.currentUser.auth.isLogin) {
+      return ctx.helper.throwError(ctx, '你没有登陆', 403);
+    }
+    if (!ctx.locals.currentUser.hasPower('super')) {
+      return ctx.helper.throwError(ctx, '你没有权限', 403);
+    }
+
     //获取该用户的数据
-    const users = await ctx.service.user.findOne({_id: ctx.params.id});
+    const user = await ctx.service.user.findOne({ _id: ctx.query.id });
 
-    const usersInfo = ctx.helper.filterFields([
-      'email',
-      'nickname',
-      'url',
-      'location',
-      'signature',
-      'avatar',
-      'score',
-      'createTime'
-    ], users);
-
-    ctx.body = usersInfo;
+    if (user) {
+      ctx.body = {
+        code: 0,
+        msg: 'ok',
+        data: user
+      };
+    } else {
+      ctx.body = {
+        code: 1,
+        msg: '没有找到该用户的信息'
+      };
+    }
   }
 
+  /**
+   * @description 获取当前用户的信息（登陆用户接口）
+   */
   async self() {
-    const ctx = this.ctx;
+    const { ctx, service, config } = this;
     if (!ctx.locals.currentUser.auth.isLogin) {
       return ctx.helper.throwError(ctx, '你没有登陆', 403);
     }
     const userId = ctx.locals.currentUser.user._id;
 
     //获取当前用户的数据
-    const users = await ctx.service.user.findOne({_id: userId});
+    const user = await ctx.service.user.findOne({ _id: userId });
 
-    const usersInfo = ctx.helper.filterFields([
-      'email',
-      'nickname',
-      'url',
-      'location',
-      'signature',
-      'avatar',
-      'score',
-      'createTime'
-    ], users);
-
-    ctx.body = usersInfo;
+    if (user) {
+      ctx.body = {
+        code: 0,
+        msg: 'ok',
+        data: user
+      };
+    } else {
+      ctx.body = {
+        code: 1,
+        msg: '没有找到该用户的信息'
+      };
+    }
   }
 
+  /**
+   * @description 创建一个用户（超级管理员接口）
+   */
   async create() {
-    const ctx = this.ctx;
-    ctx.validate(userRule);
+    const { ctx, service, config } = this;
+    if (!ctx.locals.currentUser.auth.isLogin) {
+      return ctx.helper.throwError(ctx, '你没有登陆', 403);
+    }
+    if (!ctx.locals.currentUser.hasPower('super')) {
+      return ctx.helper.throwError(ctx, '你没有权限', 403);
+    }
+
+    //ctx.validate(userRule);
     const _user = ctx.request.body;
 
-    //判断用户是否已经注册
+    //判断用户是否已经被创建
     const users = await ctx.service.user.getUsersByQuery({
       $or: [{ email: _user.email }]
     }, {});
@@ -109,11 +128,18 @@ class UserController extends Controller {
     ctx.status = 201;
   }
 
-  async updateInfo() {
-    const ctx = this.ctx;
+  /**
+   * @description 更新一个用户的信息（超级管理员接口）
+   */
+  async update() {
+    const { ctx, service, config } = this;
     if (!ctx.locals.currentUser.auth.isLogin) {
       return ctx.helper.throwError(ctx, '你没有登陆', 403);
     }
+    if (!ctx.locals.currentUser.hasPower('super')) {
+      return ctx.helper.throwError(ctx, '你没有权限', 403);
+    }
+
     const _user = ctx.request.body;
     const userId = ctx.locals.currentUser.user._id;
     const updateInfo = ctx.helper.filterFields(['nickname',
@@ -130,7 +156,7 @@ class UserController extends Controller {
       }
     }
 
-    let res = await ctx.service.user.update({_id: userId}, updateInfo);
+    let res = await ctx.service.user.update({ _id: userId }, updateInfo);
     if (res) {
       ctx.body = {
         code: 0,
@@ -141,15 +167,59 @@ class UserController extends Controller {
     }
   }
 
-  async changePass() {
-    const ctx = this.ctx;
+  /**
+   * @description 获取用户列表（管理员接口）
+   */
+  async list() {
+    const { ctx, service, config } = this;
+    if (!ctx.locals.currentUser.auth.isLogin) {
+      return ctx.helper.throwError(ctx, '你没有登陆', 403);
+    }
+    const listRes = await ctx.service.user.find({});
+    if (listRes) {
+      ctx.body = {
+        code: 0,
+        mag: '查询成功',
+        data: listRes
+      }
+    } else {
+      return ctx.helper.throwError(ctx, '查询失败');
+    }
+    ctx.status = 201;
+  }
+
+  /**
+   * @description 统计用户（管理员接口）
+   */
+  async count() {
+    const { ctx, service, config } = this;
+    if (!ctx.locals.currentUser.auth.isLogin) {
+      return ctx.helper.throwError(ctx, '你没有登陆', 403);
+    }
+
+    const countNum = await ctx.service.user.count({});
+    ctx.body = {
+      code: 0,
+      msg: 'ok',
+      data: {
+        count: countNum
+      }
+    };
+    ctx.status = 201;
+  }
+
+  /**
+   * @description 修改密码（普通接口）
+   */
+  async password() {
+    const { ctx, service, config } = this;
     ctx.validate(passRule);
     if (!ctx.locals.currentUser.auth.isLogin) {
       return ctx.helper.throwError(ctx, '你没有登陆', 403);
     }
     const password = ctx.request.body.password;
     const userId = ctx.locals.currentUser.user._id;
-    let res = await ctx.service.user.update({_id: userId}, {
+    let res = await ctx.service.user.update({ _id: userId }, {
       password: this.ctx.helper.bhash(password)
     });
     if (res) {
@@ -162,8 +232,8 @@ class UserController extends Controller {
     }
   }
 
-  /*
-   * 登陆
+  /**
+   * @description 登陆（普通接口）
    */
   async login() {
     const { ctx, service, config } = this;
@@ -193,10 +263,10 @@ class UserController extends Controller {
       res = await ctx.service.token.updateToken({
         userId: existUser._id
       }, {
-        token: accessToken,
-        updateTime: now,
-        passwExpiry: tomorrow
-      });
+          token: accessToken,
+          updateTime: now,
+          passwExpiry: tomorrow
+        });
     } else { //创建
       res = await ctx.service.token.create({
         userId: existUser._id,
@@ -218,8 +288,8 @@ class UserController extends Controller {
     };
   }
 
-  /*
-   * 登出
+  /**
+   * @description 登出（普通接口）
    */
   async logout() {
     const { ctx, service } = this;
@@ -239,37 +309,6 @@ class UserController extends Controller {
     }
   }
 
-  //用户列表
-  async list() {
-    const ctx = this.ctx;
-    const listRes = await ctx.service.user.find({});
-    if (listRes) {
-      ctx.body = {
-        code: 0,
-        mag: '查询成功',
-        data: listRes
-      }
-    } else {
-      return ctx.helper.throwError(ctx, '查询失败');
-    }
-    ctx.status = 201;
-  }
-
-  /**
-   * 统计
-   */
-  async count() {
-    const ctx = this.ctx;
-    const countNum = await ctx.service.user.count({});
-    ctx.body = {
-      code: 0,
-      msg: 'ok',
-      data: {
-        count: countNum
-      }
-    };
-    ctx.status = 201;
-  }
 }
 
 module.exports = UserController;
