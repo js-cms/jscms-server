@@ -91,30 +91,26 @@ class UserController extends Controller {
       return ctx.helper.throwError(ctx, '你没有权限', 403);
     }
 
-    //ctx.validate(userRule);
-    const _user = ctx.request.body;
+    const user = ctx.request.body;
 
     //判断用户是否已经被创建
     const users = await ctx.service.user.getUsersByQuery({
-      $or: [{ email: _user.email }]
+      $or: [{ email: user.email }]
     }, {});
     if (users.length > 0) {
       ctx.status = 422;
       return ctx.helper.throwError(ctx, '用户名或邮箱已被使用。')
     }
 
-    const userInfo = ctx.helper.filterFields(
-      [
-        'email',
-        'password'
-      ], _user);
-
     //获取用户总数
     const count = await ctx.service.user.count({});
-    userInfo.nickname = '会员' + count;
+    if ( !user.nickname ) {
+      user.nickname = '会员' + count;
+    }
 
     //没有注册的话就注册该用户
-    const user = await ctx.service.user.create(userInfo);
+    const user = await ctx.service.user.create(user);
+    
     //如果用户添加成功
     if (user._id) {
       // 设置响应体和状态码
@@ -140,23 +136,19 @@ class UserController extends Controller {
       return ctx.helper.throwError(ctx, '你没有权限', 403);
     }
 
-    const _user = ctx.request.body;
-    const userId = ctx.locals.currentUser.user._id;
-    const updateInfo = ctx.helper.filterFields(['nickname',
-      'url',
-      'location',
-      'signature',
-      'avatar'], _user);
+    const user = ctx.request.body;
+    const userId = ctx.locals.currentUser.user.id;
 
     //如果用户准备修改nickname，判断是否重复
-    if (updateInfo.nickname) {
-      const nicknameUser = await ctx.service.user.getUserByNickname(updateInfo.nickname)
-      if (nicknameUser) {
+    if (user.nickname) {
+      const findUser = await ctx.service.user.getUserByNickname(user.nickname)
+      console.log(findUser._id, user.id);
+      if (findUser && String(findUser._id) !== String(user.id)) {
         return ctx.helper.throwError(ctx, '昵称已被人使用');
       }
     }
 
-    let res = await ctx.service.user.update({ _id: userId }, updateInfo);
+    let res = await ctx.service.user.update({ _id: userId }, user);
     if (res) {
       ctx.body = {
         code: 0,
