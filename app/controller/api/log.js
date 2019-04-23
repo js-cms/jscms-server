@@ -31,10 +31,8 @@ class LogController extends Controller {
 		ctx.body = {
 			code: 0,
 			msg: '查询成功',
-			data: {
-				list: findLogRes,
-				total: countLogRes
-			}
+			data: findLogRes,
+			count: countLogRes
 		};
 	}
 

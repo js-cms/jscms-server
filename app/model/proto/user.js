@@ -6,7 +6,7 @@
 
 module.exports = {
   email: { n: '邮箱', type: 'Email', f: true, t: true, r: true }, //邮箱作为登陆用户名
-  password: { n: '密码', type: 'String', f: true, t: false, r: true }, //密码
+  password: { n: '密码密文', type: 'String', f: true, t: false, r: true }, //密码
   nickname: { n: '昵称', type: 'String', f: true, t: true, r: false, d: '匿名' }, //昵称
   location: { n: '地址', type: 'String', f: true, t: true, r: false }, //所在地    
   signature: { n: '个人签名', type: 'String', f: true, t: true, r: false , d: '这个人很懒。'}, //个人签名

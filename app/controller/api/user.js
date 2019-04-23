@@ -94,10 +94,10 @@ class UserController extends Controller {
     const user = ctx.request.body;
 
     //判断用户是否已经被创建
-    const users = await ctx.service.user.getUsersByQuery({
+    const findUsers = await ctx.service.user.getUsersByQuery({
       $or: [{ email: user.email }]
     }, {});
-    if (users.length > 0) {
+    if (findUsers.length > 0) {
       ctx.status = 422;
       return ctx.helper.throwError(ctx, '用户名或邮箱已被使用。')
     }
@@ -109,17 +109,17 @@ class UserController extends Controller {
     }
 
     //没有注册的话就注册该用户
-    const user = await ctx.service.user.create(user);
+    const createUser = await ctx.service.user.create(user);
     
     //如果用户添加成功
-    if (user._id) {
+    if (createUser._id) {
       // 设置响应体和状态码
       ctx.body = {
         code: 0,
-        msg: 'ok',
+        msg: '用户创建成功',
       };
     } else {
-      return ctx.helper.throwError(ctx, '用户注册失败！')
+      return ctx.helper.throwError(ctx, '用户创建失败')
     }
     ctx.status = 201;
   }
@@ -137,13 +137,13 @@ class UserController extends Controller {
     }
 
     const user = ctx.request.body;
-    const userId = ctx.locals.currentUser.user.id;
+    const userId = user.id;
+    delete user.id;
 
     //如果用户准备修改nickname，判断是否重复
     if (user.nickname) {
       const findUser = await ctx.service.user.getUserByNickname(user.nickname)
-      console.log(findUser._id, user.id);
-      if (findUser && String(findUser._id) !== String(user.id)) {
+      if (findUser && String(findUser._id) !== String(userId)) {
         return ctx.helper.throwError(ctx, '昵称已被人使用');
       }
     }
