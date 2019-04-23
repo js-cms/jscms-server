@@ -117,10 +117,7 @@ class PageController extends Controller {
     if (!ctx.locals.currentUser.auth.isLogin) {
       return ctx.helper.throwError(ctx, '你没有登陆', 403);
     }
-    let pageSize = Number(ctx.query.pageSize);
-    let pageNumber = Number(ctx.query.pageNumber);
-    pageSize = isNaN(pageSize) ? 10 : pageSize;
-    pageNumber = isNaN(pageNumber) ? 0 : pageNumber;
+    let { pageSize, pageNumber } = ctx.helper.getPaging(ctx.query);
 
     //获取页面列表
     const findPageRes = await service.page.find({}, pageNumber, pageSize);

@@ -31,12 +31,6 @@ class BaseController extends Controller {
     }
   }
 
-  //404页面
-  notFound(msg) {
-    msg = msg || 'not found';
-    this.ctx.throw(404, msg);
-  }
-
   /**
    * @description 记录访问信息
    */
@@ -58,7 +52,7 @@ class BaseController extends Controller {
         info.params = ctx.request.body || {};
       }
       //将访问者信息插入log表
-      await service.log.create({
+      let res = await service.log.create({
         type: 1,
         info: info
       });
@@ -142,7 +136,7 @@ class BaseController extends Controller {
 
   /**
    * @description 修改页面元信息
-   * @param {Opts} Object 参数
+   * @param {Object} opts object
    */
   async setMeta(opts = {
     title: '',
@@ -158,7 +152,7 @@ class BaseController extends Controller {
 
   /**
    * @description 封装渲染方法
-   * @param {Stirng} viewPath 模版路径
+   * @param {String} viewPath 模版路径
    * @param {Object} data 自定义数据
    */
   async render(viewPath, data) {

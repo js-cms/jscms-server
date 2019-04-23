@@ -1,5 +1,6 @@
 module.exports = function (app) {
   [
+    'analysis',
     'article',
     'category',
     'comment',

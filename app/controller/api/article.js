@@ -191,10 +191,7 @@ class ArticleController extends Controller {
     }
     const categoryId = ctx.query.categoryId;
     const keyword = ctx.helper.escape(ctx.query.keyword);
-    let pageSize = Number(ctx.query.pageSize);
-    let pageNumber = Number(ctx.query.pageNumber);
-    pageSize = isNaN(pageSize) ? 10 : pageSize;
-    pageNumber = isNaN(pageNumber) ? 0 : pageNumber;
+    let { pageSize, pageNumber } = ctx.helper.getPaging(ctx.query);
 
     let reg = new RegExp(keyword, 'i'); //不区分大小写
 

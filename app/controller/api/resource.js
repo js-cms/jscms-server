@@ -30,10 +30,7 @@ class ResourceController extends Controller {
     }
 
     const type = ctx.query.type;
-    let pageSize = Number(ctx.query.pageSize);
-    let pageNumber = Number(ctx.query.pageNumber);
-    pageSize = isNaN(pageSize) ? 8 : pageSize;
-    pageNumber = isNaN(pageNumber) ? 0 : pageNumber;
+    let { pageSize, pageNumber } = ctx.helper.getPaging(ctx.query);
 
     let where = {};
     if (type) {

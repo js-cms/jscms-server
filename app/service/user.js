@@ -42,18 +42,18 @@ class UserService extends Service {
    * Callback:
    * - err, 数据库异常
    * - users, 用户列表
-   * @param {String} query 关键字
+   * @param {Object} query 关键字
    * @param {Object} opt 选项
-   * @return {Promise[users]} 承载用户列表的 Promise 对象
+   * @return {Promise} 承载用户列表的 Promise 对象
    */
-  async getUsersByQuery(query, opt) {
+  async getUsersByQuery(query = {}, opt = {}) {
     return this.ctx.model.User.find(query, '', opt).exec();
   }
 
   /**
    * 根据邮箱，查找用户
    * @param {String} email 邮箱地址
-   * @return {Promise[user]} 承载用户的 Promise 对象
+   * @return {Promise} 承载用户的 Promise 对象
    */
   async getUserByMail(email) {
     return this.ctx.model.User.findOne({ email }).exec();
@@ -62,7 +62,7 @@ class UserService extends Service {
   /**
    * 根据昵称，查找用户
    * @param {String} nickname 昵称
-   * @return {Promise[user]} 承载用户的 Promise 对象
+   * @return {Promise} 承载用户的 Promise 对象
    */
   async getUserByNickname(nickname) {
     return this.ctx.model.User.findOne({

@@ -11,10 +11,7 @@ class LogController extends Controller {
 			return ctx.helper.throwError(ctx, '你没有登陆', 403);
 		}
 		let type = Number(ctx.query.type);
-		let pageSize = Number(ctx.query.pageSize);
-		let pageNumber = Number(ctx.query.pageNumber);
-		pageSize = isNaN(pageSize) ? 10 : pageSize;
-		pageNumber = isNaN(pageNumber) ? 0 : pageNumber;
+		let { pageSize, pageNumber } = ctx.helper.getPaging(ctx.query);
 
 		if (!type || isNaN(type)) {
 			return ctx.helper.throwError(ctx, '参数错误');

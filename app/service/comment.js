@@ -5,24 +5,24 @@ const Db = require('./Db');
 
 class CommentService extends Service {
 
-  /*
-  * 创建评论
-  */
+  /**
+   * @description 创建评论
+   */
   async create(data) {
     const db = new Db(this.ctx.model.Comment);
     return db.create(data);
   }
 
-  /*
-  * 更新评论
-  */
+  /**
+   * @description 更新评论
+   */
   async update(query, target) {
     const db = new Db(this.ctx.model.Comment);
     return db.update(query, target);
   }
 
   /**
-   * 删除评论
+   * @description 删除评论
    */
   async remove(query) {
     const db = new Db(this.ctx.model.Comment);
@@ -30,7 +30,7 @@ class CommentService extends Service {
   }
 
   /**
-   * 查询评论（带分页选项）
+   * @description 查询评论（带分页选项）
    */
   async find(query, pageNum = 0, pageSize = 10) {
     return this.ctx.model.Comment.find(query)
@@ -43,7 +43,7 @@ class CommentService extends Service {
   }
 
   /**
-   * 统计
+   * @description 统计
    */
   async count(query) {
     return this.ctx.model.Comment.count(query).exec();

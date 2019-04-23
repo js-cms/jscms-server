@@ -96,7 +96,7 @@ class UserController extends Controller {
     //判断用户是否已经被创建
     const findUsers = await ctx.service.user.getUsersByQuery({
       $or: [{ email: user.email }]
-    }, {});
+    });
     if (findUsers.length > 0) {
       ctx.status = 422;
       return ctx.helper.throwError(ctx, '用户名或邮箱已被使用。')

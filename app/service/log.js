@@ -5,24 +5,24 @@ const Db = require('./Db');
 
 class LogService extends Service {
 
-  /*
-  * 创建日志
-  */
+  /**
+   * @description 创建日志
+   */
   async create(data) {
     const db = new Db(this.ctx.model.Log);
     return db.create(data);
   }
 
-  /*
-  * 更新日志
-  */
+  /**
+   * @description 更新日志
+   */
   async update(query, target) {
     const db = new Db(this.ctx.model.Log);
     return db.update(query, target);
   }
 
   /**
-   * 删除日志
+   * @description 删除日志
    */
   async remove(query) {
     const db = new Db(this.ctx.model.Log);
@@ -30,7 +30,7 @@ class LogService extends Service {
   }
 
   /**
-   * 查询日志（带分页功能）
+   * @description 查询日志（带分页功能）
    */
   async find(query, pageNum = 0, pageSize = 10) {
     return this.ctx.model.Log.find(query)
@@ -41,10 +41,18 @@ class LogService extends Service {
   }
   
   /**
-   * 统计
+   * @description 统计
    */
   async count(query) {
     return this.ctx.model.Log.count(query).exec();
+  }
+
+
+  /**
+   * @description 查找全部
+   */
+  async findAll(query) {
+    return this.ctx.model.Log.find(query).exec();
   }
 }
 

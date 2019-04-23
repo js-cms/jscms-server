@@ -189,3 +189,17 @@ exports.getAbstract = function (content, number) {
   }
   return this.subString(text, number) + "...";
 }
+
+//获取分页参数
+exports.getPaging = function(query) {
+  let pageSize = Number(query.pageSize);
+  let pageNumber = Number(query.pageNumber);
+  pageSize = isNaN(pageSize) ? 10 : pageSize;
+  pageNumber = isNaN(pageNumber) ? 0 : pageNumber;
+  pageNumber = pageNumber < 1 ? 1 : pageNumber;
+  pageNumber = pageNumber - 1;
+  return {
+    pageSize,
+    pageNumber
+  }
+}
