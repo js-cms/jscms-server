@@ -2,6 +2,7 @@
 
 const Service = require('egg').Service;
 const Db = require('./Db');
+const commentModel = require('../model/proto/comment');
 
 class CommentService extends Service {
 
@@ -10,7 +11,8 @@ class CommentService extends Service {
    */
   async create(data) {
     const db = new Db(this.ctx.model.Comment);
-    return db.create(data);
+    let newData = db.parseModelman(data, commentModel);
+    return db.create(newData);
   }
 
   /**
@@ -26,6 +28,7 @@ class CommentService extends Service {
    */
   async remove(query) {
     const db = new Db(this.ctx.model.Comment);
+    query.authorAvatar = query.authorAvatar ? query.authorAvatar : '';
     return db.remove(query);
   }
 

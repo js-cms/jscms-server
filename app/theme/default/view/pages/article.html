@@ -151,22 +151,24 @@
 
             <% if ( RENDER_PARAM.article.userId.about ) { %>
             <div class="author-box clear">
-              <a href="https://www.zhutibaba.com/demo/zimeiti1/author/zhutibaba"><img alt=""
-                  src="https://secure.gravatar.com/avatar/4c2ed72c6be86742f05e9750110d5731?s=120&amp;d=mm&amp;r=g"
-                  srcset="https://secure.gravatar.com/avatar/4c2ed72c6be86742f05e9750110d5731?s=240&amp;d=mm&amp;r=g 2x"
-                  class="avatar avatar-120 photo" height="120" width="120"></a>
+              <a href="/author/<%-RENDER_PARAM.article.userId.nickname%>.html">
+                <img alt="<%-RENDER_PARAM.article.userId.nickname%>" src="<%-RENDER_PARAM.article.userId.avatar%>"
+                   class="avatar avatar-120 photo" height="120" width="120"></a>
               <div class="author-meta">
-                <h4 class="author-name">关于作者: <span class="hover-underline"><a
-                      href="https://www.zhutibaba.com/demo/zimeiti1/author/zhutibaba">网站小编</a></span></h4>
+                <h4 class="author-name">关于作者: 
+                  <span class="hover-underline">
+                    <a href="/author/<%-RENDER_PARAM.article.userId.nickname%>.html"><%-RENDER_PARAM.article.userId.nickname%></a>
+                  </span>
+                </h4>
                 <div class="author-desc">
-                  主题巴巴团队从2009年开始专注于WordPress主题设计开发，致力于为更多用户能轻松使用WordPress打造出更漂亮、更好用、更专业的网站。已累计开发近100款主题，全球付费客户超过3万人。主题巴巴，是您可以长期信赖的伙伴。
+                  <%-RENDER_PARAM.article.userId.about%>
                 </div>
               </div>
             </div><!-- .author-box -->
             <% } %>
 
-            <div class="warning">
-              <p><span class="font-red">声明：</span>本站大部分内容来自于互联网且仅供参考，涉及功效药用等内容请自行判断或咨询相关领域专业人士，本站概不对相关内容负责。</p>
+            <div class="article-statement">
+              <%-WEB_CONFIG.site.articleStatement%>
             </div>
 
             <div class="entry-related clear">
@@ -280,7 +282,7 @@
     <script>
       window.articleId = '<%-RENDER_PARAM.article._id%>';
     </script>
-    <script type="text/javascript" src="<%-CONSTANT.THEME_STATIC%>/static/js/RENDER_PARAM.article.js"></script>
+    <script type="text/javascript" src="<%-CONSTANT.THEME_STATIC%>/static/js/article.js"></script>
 </body>
 
 </html>

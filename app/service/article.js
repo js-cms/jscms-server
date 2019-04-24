@@ -2,6 +2,7 @@
 
 const Service = require('egg').Service;
 const Db = require('./Db');
+const articleModel = require('../model/proto/article');
 
 class ArticleService extends Service {
 
@@ -10,7 +11,8 @@ class ArticleService extends Service {
    */
   async create(data) {
     const db = new Db(this.ctx.model.Article);
-    return db.create(data);
+    let newData = db.parseModelman(data, articleModel);
+    return db.create(newData);
   }
 
   /*

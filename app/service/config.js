@@ -2,6 +2,7 @@
 
 const Service = require('egg').Service;
 const Db = require('./Db');
+const configModel = require('../model/proto/config');
 
 class ConfigService extends Service {
 
@@ -10,7 +11,8 @@ class ConfigService extends Service {
   */
   async create(data) {
     const db = new Db(this.ctx.model.Config);
-    return db.create(data);
+    let newData = db.parseModelman(data, configModel);
+    return db.create(newData);
   }
 
   /*

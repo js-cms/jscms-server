@@ -1,5 +1,7 @@
 'use strict';
 
+const is = require('ispro');
+
 /**
  * 获取当前时间
  */
@@ -49,6 +51,23 @@ class Db {
    */
   async find(query) {
     return this.Model.find(query).exec();
+  }
+
+  /**
+   * @description 填充默认值
+   * @param {Object} object 目标对象
+   * @param {Object} model modelman
+   */
+  parseModelman(object, model) {
+    for (const key in model) {
+      if (model.hasOwnProperty(key)) {
+        const element = model[key];
+        if (!object[key] && is.valid(element.d)) {
+          object[key] = element.d;
+        }
+      }
+    }
+    return object;
   }
 }
 

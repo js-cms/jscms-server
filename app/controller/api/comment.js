@@ -36,7 +36,9 @@ class CommentController extends Controller {
     if (createCommentRes._id) {
       //给文章增加评论数
       const updateArticleRes = await service.article.update(
-        findArticleRes._id,
+        {
+          _id: findArticleRes._id
+        },
         {
           $inc: { commentCount: Number(1) }
         }
@@ -71,7 +73,7 @@ class CommentController extends Controller {
       info.htContent = marked(info.mdContent);
     }
 
-    const updateRes = await service.comment.update(id, info);
+    const updateRes = await service.comment.update({_id: id}, info);
     if (updateRes) {
       ctx.body = {
         code: 0,
@@ -96,7 +98,7 @@ class CommentController extends Controller {
       return ctx.helper.throwError(ctx, '参数错误');
     }
 
-    const deleteRes = await service.comment.remove({_id: id});
+    const deleteRes = await service.comment.remove({ _id: id });
 
     if (deleteRes) {
       ctx.body = {

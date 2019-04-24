@@ -2,6 +2,7 @@
 
 const Service = require('egg').Service;
 const Db = require('./Db');
+const logModel = require('../model/proto/log');
 
 class LogService extends Service {
 
@@ -10,7 +11,8 @@ class LogService extends Service {
    */
   async create(data) {
     const db = new Db(this.ctx.model.Log);
-    return db.create(data);
+    let newData = db.parseModelman(data, logModel);
+    return db.create(newData);
   }
 
   /**

@@ -2,6 +2,7 @@
 
 const Service = require('egg').Service;
 const Db = require('./Db');
+const userModel = require('../model/proto/user');
 
 class UserService extends Service {
 
@@ -11,7 +12,8 @@ class UserService extends Service {
   async create(data) {
     data.password = this.ctx.helper.bhash(data.password);
     const db = new Db(this.ctx.model.User);
-    return db.create(data);
+    let newData = db.parseModelman(data, userModel);
+    return db.create(newData);
   }
 
   /**

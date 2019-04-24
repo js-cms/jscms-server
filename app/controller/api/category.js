@@ -64,7 +64,7 @@ class CategoryController extends Controller {
     delete info.createTime;
     delete info.updateTime;
 
-    const updateRes = await service.category.update(id, info);
+    const updateRes = await service.category.update({_id: id}, info);
     if (updateRes) {
       ctx.body = {
         code: 0,

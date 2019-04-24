@@ -40,8 +40,8 @@ class ArticleController extends BaseController {
     let updateArticle = await service.article.update({
       _id: findArticleRes._id
     }, {
-        $inc: { 'visNumber': Number(1) }
-      });
+      $inc: { 'visNumber': Number(1) }
+    });
 
     //定义内部搜索函数
     const searchArticle = async function (keyword) {
@@ -91,7 +91,7 @@ class ArticleController extends BaseController {
         relatedArticles = relatedArticles.slice(0, 6);
       }
     }
-    
+
     this.cache('RENDER_PARAM', {
       // 页面类型: String
       pageType: 'article' || 'unknown',

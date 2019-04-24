@@ -32,12 +32,10 @@ class ArticleController extends Controller {
     }
 
     //给文章增加点赞数
-    const updateArticleRes = await service.article.update(
-      id,
-      {
-        $inc: { likeCount: Number(1) }
-      }
-    );
+    const updateArticleRes = await service.article.update({ _id: id }, {
+      $inc: { likeCount: Number(1) }
+    });
+
     ctx.body = {
       code: 0,
       data: {
@@ -64,8 +62,8 @@ class ArticleController extends Controller {
     let num = Number(configCountRes.info.num) + 1;
     let saveCountRes = await service.config.update({
       _id: configCountRes._id
-    }, { 
-      info: { num: num } 
+    }, {
+      info: { num: num }
     });
     let parameters = validateResult.object;
     parameters.numberId = num;
@@ -85,7 +83,9 @@ class ArticleController extends Controller {
     const createArticleRes = await service.article.create(parameters);
     //给分类增加文章数结果
     const updateCategoryRes = await service.category.update(
-      parameters.categoryId,
+      {
+        _id: parameters.categoryId
+      },
       {
         $inc: { articleCount: Number(1) }
       }
@@ -97,7 +97,7 @@ class ArticleController extends Controller {
     let saveTagsRes = await service.config.update({
       _id: findTagsRes._id
     }, {
-      info: newTags 
+      info: newTags
     });
 
     //如果文章添加成功
@@ -143,7 +143,7 @@ class ArticleController extends Controller {
       let saveTagsRes = await service.config.update({
         _id: findTagsRes._id
       }, {
-        info: newTags 
+        info: newTags
       });
     }
 
@@ -171,7 +171,7 @@ class ArticleController extends Controller {
       return ctx.helper.throwError(ctx, '参数错误');
     }
 
-    const deleteRes = await service.article.remove({_id: id});
+    const deleteRes = await service.article.remove({ _id: id });
 
     if (deleteRes) {
       ctx.body = {
