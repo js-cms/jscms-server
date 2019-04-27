@@ -1,7 +1,6 @@
 'use strict';
 
 const marked = require('marked');
-const modelman = require('modelman');
 
 const BaseController = require('./base');
 const article = require('../../model/proto/article');
@@ -21,20 +20,18 @@ class ArticleController extends BaseController {
   //点赞文章
   async like() {
     const { ctx, service, config } = this;
-		let params = {
-			id: {
-				type: 'ObjectId',
-				errorMsg: '参数不正确'
-			}
-		};
-    this.decorator({post: params});
+    let params = {
+      id: {
+        type: 'ObjectId',
+        errorMsg: '参数不正确'
+      }
+    };
+    this.decorator({ post: params });
 
-    console.log(model);
-    
-    const findArticle = await service.article.findOne({_id: params.id});
+    const findArticle = await service.article.findOne({ _id: params.id });
 
     //给文章增加点赞数
-    const updateArticleRes = await service.article.updateOne({_id: params.id}, {
+    await service.article.updateOne({ _id: params.id }, {
       $inc: { likeCount: Number(1) }
     });
 
@@ -54,7 +51,7 @@ class ArticleController extends BaseController {
     //统计文章数量
     let configCountRes = await service.config.findOne({ alias: 'articleCount' });
     let num = Number(configCountRes.info.num) + 1;
-    let saveCountRes = await service.config.update({
+    await service.config.update({
       _id: configCountRes._id
     }, {
       info: { num: num }
@@ -92,7 +89,7 @@ class ArticleController extends BaseController {
     //更新标签列表
     let findTagsRes = await service.config.findOne({ alias: 'tags' });
     let newTags = mixinArray(parameters.keywords, findTagsRes.info);
-    let saveTagsRes = await service.config.update({
+    await service.config.update({
       _id: findTagsRes._id
     }, {
       info: newTags
@@ -141,8 +138,8 @@ class ArticleController extends BaseController {
       let saveTagsRes = await service.config.update({
         _id: findTagsRes._id
       }, {
-        info: newTags
-      });
+          info: newTags
+        });
     }
 
     if (updateRes) {
