@@ -17,6 +17,7 @@
     "egg-validate": "^2.0.2",
     "egg-view-ejs": "^2.0.0",
     "fs-extra": "^7.0.1",
+    "jscms-bak": "^0.0.2",
     "lodash": "^4.17.11",
     "markdown-it": "^8.4.2",
     "marked": "^0.6.1",
@@ -34,7 +35,7 @@
     "egg-mock": "^3.21.0",
     "eslint": "^5.13.0",
     "eslint-config-egg": "^7.1.0",
-    "jscms-server-build": "^0.0.2",
+    "jscms-server-build": "^0.0.3",
     "webstorm-disable-index": "^1.2.0"
   },
   "engines": {
@@ -43,6 +44,8 @@
   "scripts": {
     "start": "egg-scripts start --daemon --title=egg-server-example --port=7011",
     "stop": "egg-scripts stop --title=egg-server-example --port=7011",
+    "backup": "jscms-bak backup .",
+    "restore": "jscms-bak restore .",
     "dev": "egg-bin dev --port=7011",
     "debug": "egg-bin debug",
     "test": "npm run lint -- --fix && npm run test-local",
