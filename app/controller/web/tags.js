@@ -14,6 +14,9 @@ class TagsController extends BaseController {
     await this.handler();
   }
 
+  /**
+   * 处理器
+   */
   async handler() {
     const { ctx, service } = this;
     let webConfig = this.cache('WEB_CONFIG');

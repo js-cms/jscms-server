@@ -124,6 +124,39 @@ class UserController extends Controller {
     ctx.status = 201;
   }
 
+ /**
+   * @description 删除一个用户（超级管理员接口）
+   */
+  async remove() {
+    const { ctx, service, config } = this;
+    if (!ctx.locals.currentUser.auth.isLogin) {
+      return ctx.helper.throwError(ctx, '你没有登陆', 403);
+    }
+    if (!ctx.locals.currentUser.hasPower('super')) {
+      return ctx.helper.throwError(ctx, '你没有权限', 403);
+    }
+
+    const id = ctx.request.body.id;
+    if (!id) {
+
+    }
+ 
+    //没有注册的话就注册该用户
+    const createUser = await ctx.service.user.create(user);
+    
+    //如果用户添加成功
+    if (createUser._id) {
+      // 设置响应体和状态码
+      ctx.body = {
+        code: 0,
+        msg: '用户创建成功',
+      };
+    } else {
+      return ctx.helper.throwError(ctx, '用户创建失败')
+    }
+    ctx.status = 201;
+  }
+
   /**
    * @description 更新一个用户的信息（超级管理员接口）
    */

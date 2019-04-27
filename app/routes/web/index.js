@@ -4,9 +4,9 @@ module.exports = function(app) {
     'article',
     'author', 
     'category',
-    'page',
     'search',
     'tags',
-    'text'
+    'text',
+    'page'
   ].map(m => require(`./${m}.js`)(app));
 };

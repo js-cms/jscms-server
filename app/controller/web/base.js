@@ -3,6 +3,9 @@
 const path = require('path');
 const Controller = require('egg').Controller;
 
+/**
+ * @description web渲染基类控制器
+ */
 class BaseController extends Controller {
 
   /**
@@ -171,6 +174,23 @@ class BaseController extends Controller {
       }
     }
     await ctx.render(`/${config.theme.THEME_NAME}/view/${viewPath}`, Object.assign(commonData, data));
+  }
+
+  /**
+   * @description 自定义页面路由
+   */
+  async customRoute() {
+    const { ctx, service } = this;
+    let route = ctx.params.route || ctx.path;
+    route = route[0] === '/' ? route : '/' + route;
+    let findPageRes = await service.page.findOne({ route: route });
+    if (!findPageRes) {
+      return this.notFound();
+    }
+    let contentType = findPageRes.contentType || 'text/html; charset=utf-8';
+    let content = findPageRes.html;
+    ctx.response.set('content-type', contentType);
+    ctx.body = content;
   }
 
   /**

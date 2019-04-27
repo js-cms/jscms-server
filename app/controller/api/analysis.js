@@ -1,30 +1,32 @@
 'use strict';
 
-const Controller = require('egg').Controller;
+const BaseController = require('./base');
 
-class AnalysisController extends Controller {
+class AnalysisController extends BaseController {
 
 	/**
    * @description 统计独立ip
    */
 	async ip() {
 		const { ctx, service, config } = this;
-		if (!ctx.locals.currentUser.auth.isLogin) {
-			return ctx.helper.throwError(ctx, '你没有登陆', 403);
-    }
-    
-    let { startTime, endTime } = ctx.query;
-    startTime = startTime || 0;
-    endTime = endTime || new Date().getTime();
+		this.decorator({
+			login: true,
+			get: {
+				startTime: {n: '开始时间', type: 'Timestamp', d: 0, f: true, r: true},
+				endTime: {n: '结束时间', type: 'Timestamp', d: new Date().getTime(), f: true, r: true}
+			}
+		});
 
-		//获取日志总数
-    const logs = await service.log.findAll({type: 1, createTime: {$gte: startTime, $lt: endTime}});
+		// 获取日志总数
+    const logs = await service.log.findAll({
+			type: 1,
+			createTime: {
+				$gte: this.params.startTime, 
+				$lt: this.params.endTime
+			}
+		});
 
-		ctx.body = {
-			code: 0,
-			msg: '查询成功',
-			data: logs
-		};
+		this.throwCorrect(logs);
 	}
 
 	/**
@@ -32,22 +34,24 @@ class AnalysisController extends Controller {
    */
 	async pv() {
 		const { ctx, service, config } = this;
-		if (!ctx.locals.currentUser.auth.isLogin) {
-			return ctx.helper.throwError(ctx, '你没有登陆', 403);
-    }
-    
-    let { startTime, endTime } = ctx.query;
-    startTime = startTime || 0;
-    endTime = endTime || new Date().getTime();
+		this.decorator({
+			login: true,
+			get: {
+				startTime: {type: 'Timestamp', d: 0, f: true, r: true},
+				endTime: {type: 'Timestamp', d: new Date().getTime(), f: true, r: true}
+			}
+		});
 
-		//获取日志总数
-    const logs = await service.log.findAll({type: 1, createTime: {$gte: startTime, $lt: endTime}});
+		// 获取日志总数
+    const logs = await service.log.findAll({
+			type: 1, 
+			createTime: {
+				$gte: this.params.startTime, 
+				$lt: this.params.endTime
+			}
+		});
 
-		ctx.body = {
-			code: 0,
-			msg: '查询成功',
-			data: logs
-		};
+		this.throwCorrect(logs);
 	}
 }
 

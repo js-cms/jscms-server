@@ -10,11 +10,13 @@ class TextController extends Controller {
   async sitemap() {
     const { ctx, service } = this;
     const _articles = await service.article.findAll();
-    let articles = "";
+    let articles = '';
     _articles.forEach((item, index) => {
-      let url = ctx.origin + "/" + item.numberId + ".html";
-      articles = articles + url + (index < _articles.length - 1 ? "\n" : "");
+      let url = ctx.origin + '/' + item.numberId + '.html';
+      articles = articles + url + (index < _articles.length - 1 ? '\n' : '');
     });
+    ctx.response.set('cache-control', 'no-cache');
+    ctx.response.set('content-type', 'text/plain; charset=utf-8');
     ctx.body = articles;
   }
 
@@ -23,10 +25,10 @@ class TextController extends Controller {
    */
   async robots() {
     const { ctx, service, config } = this;
-    ctx.body = `# robots.txt
-User-agent: *
-Disallow: 
-`;
+    const findRes = await service.config.findOne({ 'alias': 'robots' });
+    ctx.response.set('cache-control', 'no-cache');
+    ctx.response.set('content-type', 'text/plain; charset=utf-8');
+    ctx.body = findRes.info;
   }
 }
 

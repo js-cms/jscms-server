@@ -14,6 +14,9 @@ class HomeController extends BaseController {
     await this.handler();
   }
 
+  /**
+   * 处理器
+   */
   async handler() {
     const { ctx, service, config } = this;
     let pageSize = 10;

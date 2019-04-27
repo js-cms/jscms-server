@@ -23,6 +23,13 @@ class ArticleService extends Service {
     return db.update(query, target);
   }
 
+  /*
+   * 更新单个文章
+   */
+  async updateOne(query, target) {
+    return this.ctx.model.Article.updateOne(query, target).exec();;
+  }
+
   /**
    * 删除文章
    */

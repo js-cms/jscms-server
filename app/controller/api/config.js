@@ -47,44 +47,6 @@ class ConfigController extends Controller {
       return ctx.helper.throwError(ctx, '更新失败');
     }
   }
-
-  //初始化配置信息
-  async install() {
-    const { ctx, service, config } = this;
-    if (ctx.app.config.env !== 'local') {
-      return ctx.helper.throwError(ctx, '没有操作权限');
-    }
-
-    let params = ctx.request.body;
-
-    let findRes = await service.config.findOne({
-      name: params.name,
-      alias: params.alias
-    });
-
-    if (findRes) {
-      return ctx.helper.throwError(ctx, params.name + '配置已存在');
-    }
-
-    let createRes = await service.config.create(params);
-
-    if (createRes._id) {
-      ctx.body = {
-        code: 0,
-        msg: '安装完成',
-        data: createRes
-      }
-    } else {
-      return ctx.helper.throwError(ctx, params.name + '配置插入失败');
-    }
-  }
-
-  //robots.txt
-  async robots() {
-    const { ctx, service, config } = this;
-    ctx.body = '';
-  }
-
 }
 
 module.exports = ConfigController;

@@ -14,6 +14,9 @@ class CategoryController extends BaseController {
     await this.handler();
   }
 
+  /**
+   * 处理器
+   */
   async handler() {
     const { ctx, service, config } = this;
     let webConfig = this.cache('WEB_CONFIG');
@@ -31,7 +34,7 @@ class CategoryController extends BaseController {
     let findCategoryRes = await service.category.findOne({ alias: catAlias });
 
     if (!findCategoryRes) {
-      return this.notFound();
+      return this.customRoute();
     }
 
     let articlesRes = await service.article.find({ categoryId: findCategoryRes._id }, pageNumber, pageSize);

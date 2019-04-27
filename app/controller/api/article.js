@@ -1,15 +1,10 @@
 'use strict';
 
-const Controller = require('egg').Controller;
 const marked = require('marked');
+const modelman = require('modelman');
 
-// 数据校验函数
-const validate = function (object) {
-  return {
-    code: 0,
-    object: object
-  }
-}
+const BaseController = require('./base');
+const article = require('../../model/proto/article');
 
 // 数组混合
 const mixinArray = function (arr1, arr2) {
@@ -21,41 +16,40 @@ const mixinArray = function (arr1, arr2) {
 /**
  * 文章相关api
  */
-class ArticleController extends Controller {
+class ArticleController extends BaseController {
 
   //点赞文章
   async like() {
     const { ctx, service, config } = this;
-    const id = ctx.request.body.id;
-    if (!id) {
-      return ctx.helper.throwError(ctx, '参数错误');
-    }
+		let params = {
+			id: {
+				type: 'ObjectId',
+				errorMsg: '参数不正确'
+			}
+		};
+    this.decorator({post: params});
+
+    console.log(model);
+    
+    const findArticle = await service.article.findOne({_id: params.id});
 
     //给文章增加点赞数
-    const updateArticleRes = await service.article.update({ _id: id }, {
+    const updateArticleRes = await service.article.updateOne({_id: params.id}, {
       $inc: { likeCount: Number(1) }
     });
 
-    ctx.body = {
-      code: 0,
-      data: {
-        count: updateArticleRes.likeCount + 1
-      }
-    }
+    this.throwCorrect({
+      count: findArticle.likeCount + 1
+    }, '点赞成功');
   }
 
   //新增文章
   async create() {
     const { ctx, service, config } = this;
-    if (!ctx.locals.currentUser.auth.isLogin) {
-      return ctx.helper.throwError(ctx, '你没有登陆', 403);
-    }
-    const userId = ctx.locals.currentUser.user._id;
-    const validateResult = validate(ctx.request.body);
-    //校验失败
-    if (validateResult.code === 1) {
-      return ctx.helper.throwError(ctx, validateResult.msg, validateResult.code);
-    }
+    this.decorator({
+      login: true,
+      post: article
+    });
 
     //统计文章数量
     let configCountRes = await service.config.findOne({ alias: 'articleCount' });
@@ -65,11 +59,13 @@ class ArticleController extends Controller {
     }, {
       info: { num: num }
     });
-    let parameters = validateResult.object;
+
+    let parameters = this.params;
     parameters.numberId = num;
+
     //文章创建结果
     parameters.htContent = marked(parameters.mdContent);
-    parameters.userId = userId;
+    parameters.userId = this.userId;
 
     //如果有分类名称，就查分类，并带入id
     if (parameters.categoryName) {
@@ -80,8 +76,10 @@ class ArticleController extends Controller {
       delete parameters.categoryName;
     }
 
+    //创建文章
     const createArticleRes = await service.article.create(parameters);
-    //给分类增加文章数结果
+
+    //给分类增加文章
     const updateCategoryRes = await service.category.update(
       {
         _id: parameters.categoryId

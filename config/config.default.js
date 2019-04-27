@@ -11,8 +11,6 @@ module.exports = appInfo => {
   // use for cookie sign key, should change to your own and keep security
   config.keys = appInfo.name + '_1532073849273_2285';
 
-  config.password = "bba76d0c6606b500";
-
   config.view = {
     defaultViewEngine: 'ejs',
     mapping: {
@@ -66,5 +64,4 @@ module.exports = appInfo => {
   };
 
   return config;
-
 };

@@ -59,8 +59,7 @@
                 id: window.articleId
             }, function(res) {
                 if ( res.code === 0 ) {
-                    var num = Number($(".sl-count").text().split(" ")[1]);
-                    $(".sl-count").text(" " + (num + 1) + " 赞");
+                    $(".sl-count").text(" " + (res.data.count) + " 赞");
                 } else {
                     alert(res.msg);
                 }

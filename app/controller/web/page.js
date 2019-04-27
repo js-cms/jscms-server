@@ -14,6 +14,9 @@ class PageController extends BaseController {
     await this.handler();
   }
 
+  /**
+   * 处理器
+   */
   async handler() {
     const { ctx, service, config } = this;
     let webConfig = this.cache('WEB_CONFIG');
@@ -43,6 +46,13 @@ class PageController extends BaseController {
     });
 
     await this.render('/pages/page', {});
+  }
+
+  /**
+   * 自定义路由
+   */
+  async route() {
+    return this.customRoute();
   }
 
 }

@@ -166,10 +166,12 @@
               </div>
             </div><!-- .author-box -->
             <% } %>
-
+            
+            <% if ( WEB_CONFIG.site.articleStatement !== '') {%>
             <div class="article-statement">
               <%-WEB_CONFIG.site.articleStatement%>
             </div>
+            <% } %>
 
             <div class="entry-related clear">
               <h3>为您推荐</h3>

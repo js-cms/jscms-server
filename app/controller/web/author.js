@@ -13,7 +13,10 @@ class AuthorController extends BaseController {
     // 加载处理器
     await this.handler();
   }
-
+  
+  /**
+   * 处理器
+   */
   async handler() {
     const { ctx, service } = this;
     let webConfig = this.cache('WEB_CONFIG');
