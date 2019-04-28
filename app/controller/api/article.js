@@ -5,13 +5,6 @@ const marked = require('marked');
 const BaseController = require('./base');
 const article = require('../../model/proto/article');
 
-// 数组混合
-const mixinArray = function (arr1, arr2) {
-  let _arr2 = arr2 ? arr2 : [];
-  let newArr = arr1.concat(_arr2);
-  return [...new Set(newArr)];
-}
-
 /**
  * 文章相关api
  */
@@ -19,19 +12,17 @@ class ArticleController extends BaseController {
 
   //点赞文章
   async like() {
-    const { ctx, service, config } = this;
-    let params = {
-      id: {
-        type: 'ObjectId',
-        errorMsg: '参数不正确'
+    const { service } = this;
+    this.decorator({ 
+      post: {
+        id: {type: 'ObjectId', f: true, r: true }
       }
-    };
-    this.decorator({ post: params });
+    });
 
-    const findArticle = await service.article.findOne({ _id: params.id });
+    const findArticle = await service.article.findOne({ _id: this.params.id });
 
     //给文章增加点赞数
-    await service.article.updateOne({ _id: params.id }, {
+    await service.article.updateOne({ _id: this.params.id }, {
       $inc: { likeCount: Number(1) }
     });
 
@@ -42,7 +33,7 @@ class ArticleController extends BaseController {
 
   //新增文章
   async create() {
-    const { ctx, service, config } = this;
+    const { ctx, service } = this;
     this.decorator({
       login: true,
       post: article
@@ -54,8 +45,8 @@ class ArticleController extends BaseController {
     await service.config.update({
       _id: configCountRes._id
     }, {
-      info: { num: num }
-    });
+        info: { num: num }
+      });
 
     let parameters = this.params;
     parameters.numberId = num;
@@ -88,12 +79,12 @@ class ArticleController extends BaseController {
 
     //更新标签列表
     let findTagsRes = await service.config.findOne({ alias: 'tags' });
-    let newTags = mixinArray(parameters.keywords, findTagsRes.info);
+    let newTags = ctx.helper.mixinArray(parameters.keywords, findTagsRes.info);
     await service.config.update({
       _id: findTagsRes._id
     }, {
-      info: newTags
-    });
+        info: newTags
+      });
 
     //如果文章添加成功
     if (createArticleRes._id && updateCategoryRes) {
@@ -104,42 +95,32 @@ class ArticleController extends BaseController {
         data: createArticleRes
       };
     } else {
-      return ctx.helper.throwError(ctx, '文章创建失败');
+      return this.throwError('文章创建失败');
     }
   }
 
   //更新文章
   async update() {
-    const { ctx, service, config } = this;
-    if (!ctx.locals.currentUser.auth.isLogin) {
-      return ctx.helper.throwError(ctx, '你没有登陆', 403);
-    }
+    const { ctx, service } = this;
+    this.decorator({
+      login: true,
+      post: article
+    });
 
-    const id = ctx.request.body.id;
-
-    if (!id) {
-      return ctx.helper.throwError(ctx, '参数错误');
-    }
-
-    let info = ctx.request.body;
-    if (info.mdContent) {
-      info.htContent = marked(info.mdContent);
+    if (this.params.mdContent) {
+      this.params.htContent = marked(info.mdContent);
     }
 
     const updateRes = await service.article.update(
-      { _id: id },
-      info
+      { _id: this.params.id },
+      this.params
     );
 
-    if (info.keywords && info.keywords.length) {
+    if (this.params.keywords && this.params.keywords.length) {
       //更新标签列表
       let findTagsRes = await service.config.findOne({ alias: 'tags' });
-      let newTags = mixinArray(info.keywords, findTagsRes.info);
-      let saveTagsRes = await service.config.update({
-        _id: findTagsRes._id
-      }, {
-          info: newTags
-        });
+      let newTags = ctx.helper.mixinArray(this.params.keywords, findTagsRes.info);
+      await service.config.update({ _id: findTagsRes._id }, { info: newTags });
     }
 
     if (updateRes) {
@@ -149,7 +130,7 @@ class ArticleController extends BaseController {
         data: updateRes
       };
     } else {
-      return ctx.helper.throwError(ctx, '更新失败');
+      return this.throwError('更新失败');
     }
   }
 
@@ -157,13 +138,13 @@ class ArticleController extends BaseController {
   async delete() {
     const { ctx, service, config } = this;
     if (!ctx.locals.currentUser.auth.isLogin) {
-      return ctx.helper.throwError(ctx, '你没有登陆', 403);
+      return this.throwError('你没有登陆', 403);
     }
 
     const id = ctx.request.body.id;
 
     if (!id) {
-      return ctx.helper.throwError(ctx, '参数错误');
+      return this.throwError('参数错误');
     }
 
     const deleteRes = await service.article.remove({ _id: id });
@@ -174,7 +155,7 @@ class ArticleController extends BaseController {
         msg: '文章删除完成'
       }
     } else {
-      return ctx.helper.throwError(ctx, '文章删除失败');
+      return this.throwError('文章删除失败');
     }
   }
 
@@ -182,7 +163,7 @@ class ArticleController extends BaseController {
   async list() {
     const { ctx, service, config } = this;
     if (!ctx.locals.currentUser.auth.isLogin) {
-      return ctx.helper.throwError(ctx, '你没有登陆', 403);
+      return this.throwError('你没有登陆', 403);
     }
     const categoryId = ctx.query.categoryId;
     const keyword = ctx.helper.escape(ctx.query.keyword);
@@ -227,11 +208,11 @@ class ArticleController extends BaseController {
   async show() {
     const { ctx, service, config } = this;
     if (!ctx.locals.currentUser.auth.isLogin) {
-      return ctx.helper.throwError(ctx, '你没有登陆', 403);
+      return this.throwError('你没有登陆', 403);
     }
     const id = ctx.query.id;
     if (!id) {
-      return ctx.helper.throwError(ctx, '参数错误');
+      return this.throwError('参数错误');
     }
 
     //获取文章
@@ -244,7 +225,7 @@ class ArticleController extends BaseController {
         data: findArticleRes
       };
     } else {
-      return ctx.helper.throwError(ctx, '文章查询失败');
+      return this.throwError('文章查询失败');
     }
   }
 }

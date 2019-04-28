@@ -46,6 +46,17 @@ const utils = module.exports = {
   },
 
   /**
+   * 数组混合并去重
+   */
+  mixinArray(...argv) {
+    let arr = []
+    argv.forEach((array)=>{
+      arr = arr.concat(array);
+    });
+    return [...new Set(arr)];
+  },
+
+  /**
    * 截取字符串 中英文混合
    * @param str	待处理字符串
    * @param len	截取字节长度 中文2字节 英文1字节

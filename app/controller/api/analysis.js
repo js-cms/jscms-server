@@ -33,12 +33,12 @@ class AnalysisController extends BaseController {
    * @description 统计pv浏览量
    */
 	async pv() {
-		const { ctx, service, config } = this;
+		const { service } = this;
 		this.decorator({
 			login: true,
 			get: {
-				startTime: { type: 'Timestamp', d: 0, f: true, r: true },
-				endTime: { type: 'Timestamp', d: new Date().getTime(), f: true, r: true }
+				startTime: { n: '开始时间', type: 'Timestamp', d: 0, f: true, r: true },
+				endTime: { n: '结束时间', type: 'Timestamp', d: new Date().getTime(), f: true, r: true }
 			}
 		});
 

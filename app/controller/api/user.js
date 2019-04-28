@@ -1,54 +1,34 @@
 'use strict';
 
-const Controller = require('egg').Controller;
+const BaseController = require('./base');
 const uuid = require('uuid');
-
-// 定义创建接口的请求参数规则
-
-const _passRule = {
-  type: 'password', required: true, max: 16, min: 8
-}
-
-const passRule = {
-  password: _passRule
-}
-
-const userRule = {
-  email: { type: 'email', required: true },
-  password: _passRule
-};
+const user = require('../../model/proto/user');
 
 /**
  * 用户相关的api接口
  */
-class UserController extends Controller {
+class UserController extends BaseController {
 
   /**
    * @description 获取单个用户的信息（超级管理员接口）
    */
   async show() {
-    const { ctx, service, config } = this;
-    if (!ctx.locals.currentUser.auth.isLogin) {
-      return ctx.helper.throwError(ctx, '你没有登陆', 403);
-    }
-    if (!ctx.locals.currentUser.hasPower('super')) {
-      return ctx.helper.throwError(ctx, '你没有权限', 403);
-    }
+    const { ctx } = this;
+    this.decorator({
+      powers: ['super'],
+      login: true,
+      get: {
+        id: { n: '用户id', type: 'ObjectId', f: true, r: true }
+      }
+    });
 
     //获取该用户的数据
-    const user = await ctx.service.user.findOne({ _id: ctx.query.id });
+    const user = await ctx.service.user.findOne({ _id: this.params.id });
 
     if (user) {
-      ctx.body = {
-        code: 0,
-        msg: 'ok',
-        data: user
-      };
+      this.throwCorrect(user);
     } else {
-      ctx.body = {
-        code: 1,
-        msg: '没有找到该用户的信息'
-      };
+      this.throwError('没有找到该用户的信息');
     }
   }
 
@@ -56,26 +36,18 @@ class UserController extends Controller {
    * @description 获取当前用户的信息（登陆用户接口）
    */
   async self() {
-    const { ctx, service, config } = this;
-    if (!ctx.locals.currentUser.auth.isLogin) {
-      return ctx.helper.throwError(ctx, '你没有登陆', 403);
-    }
-    const userId = ctx.locals.currentUser.user._id;
+    const { ctx } = this;
+    this.decorator({
+      login: true
+    });
 
     //获取当前用户的数据
-    const user = await ctx.service.user.findOne({ _id: userId });
+    const findUser = await ctx.service.user.findOne({ _id: this.userId });
 
-    if (user) {
-      ctx.body = {
-        code: 0,
-        msg: 'ok',
-        data: user
-      };
+    if (findUser) {
+      this.throwCorrect(findUser);
     } else {
-      ctx.body = {
-        code: 1,
-        msg: '没有找到该用户的信息'
-      };
+      this.throwError('没有找到该用户的信息');
     }
   }
 
@@ -83,112 +55,89 @@ class UserController extends Controller {
    * @description 创建一个用户（超级管理员接口）
    */
   async create() {
-    const { ctx, service, config } = this;
-    if (!ctx.locals.currentUser.auth.isLogin) {
-      return ctx.helper.throwError(ctx, '你没有登陆', 403);
-    }
-    if (!ctx.locals.currentUser.hasPower('super')) {
-      return ctx.helper.throwError(ctx, '你没有权限', 403);
-    }
-
-    const user = ctx.request.body;
+    const { ctx } = this;
+    this.decorator({
+      powers: ['super'],
+      login: true,
+      post: user
+    });
 
     //判断用户是否已经被创建
     const findUsers = await ctx.service.user.getUsersByQuery({
-      $or: [{ email: user.email }]
+      $or: [{ email: this.params.email }]
     });
     if (findUsers.length > 0) {
-      ctx.status = 422;
-      return ctx.helper.throwError(ctx, '用户名或邮箱已被使用。')
+      this.throwError('用户名或邮箱已被使用。')
     }
 
     //获取用户总数
     const count = await ctx.service.user.count({});
-    if ( !user.nickname ) {
-      user.nickname = '会员' + count;
+    if (!this.params.nickname) {
+      this.params.nickname = '会员' + count;
     }
 
     //没有注册的话就注册该用户
-    const createUser = await ctx.service.user.create(user);
-    
+    const createUser = await ctx.service.user.create(this.params);
+
     //如果用户添加成功
     if (createUser._id) {
-      // 设置响应体和状态码
-      ctx.body = {
-        code: 0,
-        msg: '用户创建成功',
-      };
+      this.throwCorrect({}, '用户创建成功');
     } else {
-      return ctx.helper.throwError(ctx, '用户创建失败')
+      this.throwError('用户创建失败')
     }
-    ctx.status = 201;
   }
 
- /**
-   * @description 删除一个用户（超级管理员接口）
-   */
-  async remove() {
-    const { ctx, service, config } = this;
-    if (!ctx.locals.currentUser.auth.isLogin) {
-      return ctx.helper.throwError(ctx, '你没有登陆', 403);
-    }
-    if (!ctx.locals.currentUser.hasPower('super')) {
-      return ctx.helper.throwError(ctx, '你没有权限', 403);
-    }
+  /**
+    * @description 删除某个用户（超级管理员接口）
+    */
+  async delete() {
+    const { service } = this;
+    this.decorator({
+      powers: ['super'],
+      login: true,
+      get: {
+        id: { n: '用户id', type: 'ObjectId', f: true, r: true }
+      }
+    });
 
-    const id = ctx.request.body.id;
-    if (!id) {
+    const deleteRes = await service.log.remove({ _id: this.params.id });
 
-    }
- 
-    //没有注册的话就注册该用户
-    const createUser = await ctx.service.user.create(user);
-    
-    //如果用户添加成功
-    if (createUser._id) {
-      // 设置响应体和状态码
-      ctx.body = {
-        code: 0,
-        msg: '用户创建成功',
-      };
+    if (deleteRes) {
+      this.throwCorrect({}, '删除用户成功');
     } else {
-      return ctx.helper.throwError(ctx, '用户创建失败')
+      this.throwError('删除用户失败');
     }
-    ctx.status = 201;
   }
 
   /**
    * @description 更新一个用户的信息（超级管理员接口）
    */
   async update() {
-    const { ctx, service, config } = this;
-    if (!ctx.locals.currentUser.auth.isLogin) {
-      return ctx.helper.throwError(ctx, '你没有登陆', 403);
-    }
-    if (!ctx.locals.currentUser.hasPower('super')) {
-      return ctx.helper.throwError(ctx, '你没有权限', 403);
-    }
+    const { service } = this;
+    this.decorator({
+      powers: ['super'],
+      login: true,
+      post: user
+    });
 
-    const user = ctx.request.body;
-    const userId = user.id;
-    delete user.id;
+    //缓存参数
+    const user = this.params;
 
     //如果用户准备修改nickname，判断是否重复
     if (user.nickname) {
-      const findUser = await ctx.service.user.getUserByNickname(user.nickname)
+      const findUser = await service.user.getUserByNickname(user.nickname)
       if (findUser && String(findUser._id) !== String(userId)) {
-        return ctx.helper.throwError(ctx, '昵称已被人使用');
+        this.throwError('昵称已被人使用');
       }
     }
 
-    let res = await ctx.service.user.update({ _id: userId }, user);
-    if (res) {
-      ctx.body = {
-        code: 0,
-        msg: '用户信息更新成功！'
-      }
+    //更新用户信息
+    let updateRes = await service.user.update({ _id: userId }, user);
+
+    if (updateRes) {
+      this.throwCorrect({}, '用户信息更新成功');
     } else {
-      return ctx.helper.throwError(ctx, '用户信息更新失败。');
+      this.throwError('用户信息更新失败。');
     }
   }
 
@@ -196,64 +145,69 @@ class UserController extends Controller {
    * @description 获取用户列表（管理员接口）
    */
   async list() {
-    const { ctx, service, config } = this;
-    if (!ctx.locals.currentUser.auth.isLogin) {
-      return ctx.helper.throwError(ctx, '你没有登陆', 403);
-    }
-    const listRes = await ctx.service.user.find({});
-    if (listRes) {
-      ctx.body = {
-        code: 0,
-        mag: '查询成功',
-        data: listRes
-      }
+    const { ctx } = this;
+    this.decorator({
+      login: true
+    });
+
+    const usersRes = await ctx.service.user.find({});
+
+    if (usersRes) {
+      this.throwCorrect(usersRes);
     } else {
-      return ctx.helper.throwError(ctx, '查询失败');
+      this.throwError('查询失败');
     }
-    ctx.status = 201;
   }
 
   /**
    * @description 统计用户（管理员接口）
    */
   async count() {
-    const { ctx, service, config } = this;
-    if (!ctx.locals.currentUser.auth.isLogin) {
-      return ctx.helper.throwError(ctx, '你没有登陆', 403);
-    }
+    const { ctx } = this;
+    this.decorator({
+      login: true
+    });
 
     const countNum = await ctx.service.user.count({});
-    ctx.body = {
-      code: 0,
-      msg: 'ok',
-      data: {
-        count: countNum
-      }
-    };
-    ctx.status = 201;
+
+    this.throwCorrect({
+      count: countNum || 0
+    });
   }
 
   /**
    * @description 修改密码（普通接口）
    */
   async password() {
-    const { ctx, service, config } = this;
-    ctx.validate(passRule);
-    if (!ctx.locals.currentUser.auth.isLogin) {
-      return ctx.helper.throwError(ctx, '你没有登陆', 403);
-    }
-    const password = ctx.request.body.password;
-    const userId = ctx.locals.currentUser.user._id;
-    let res = await ctx.service.user.update({ _id: userId }, {
-      password: this.ctx.helper.bhash(password)
-    });
-    if (res) {
-      ctx.body = {
-        code: 0,
-        msg: '密码修改成功'
+    const { ctx } = this;
+    this.decorator({
+      login: true,
+      post: {
+        oldpass: { n: '旧密码', type: 'Password', f: true, r: true, extra: {errorMsg: '密码格式不正确'}}, // 旧密码
+        newpass: { n: '新密码', type: 'Password', f: true, r: true, extra: {errorMsg: '密码格式不正确'}} // 新密码
       }
+    });
+
+    // 获取当前用户信息
+    let findUser = ctx.service.user.findOne({ _id: this.userId });
+
+    // 比较密码
+    const equal = ctx.helper.bcompare(this.params.oldpass, findUser.password);
+
+    // 密码不匹配
+    if (!equal) {
+      this.throwError('密码不正确');
+    }
+
+    // 修改密码
+    let updateRes = await ctx.service.user.update({ _id: this.userId }, {
+      password: this.ctx.helper.bhash(this.params.newpass)
+    });
+
+    if (updateRes) {
+      this.throwCorrect({}, '密码修改成功');
     } else {
-      return ctx.helper.throwError(ctx, '密码修改失败');
+      this.throwError('密码修改失败');
     }
   }
 
@@ -261,26 +215,36 @@ class UserController extends Controller {
    * @description 登陆（普通接口）
    */
   async login() {
-    const { ctx, service, config } = this;
-    ctx.validate(userRule);
-    const _user = ctx.request.body;
+    const { ctx } = this;
+    this.decorator({
+      post: {
+        email: { n: '邮箱', type: 'Email', f: true, r: true },
+        password: { n: '密码密文', type: 'Password', f: true, r: true, extra: {errorMsg: '密码格式不正确'}}
+      }
+    });
+
     //判断用户是否存在
-    const existUser = await ctx.service.user.getUserByMail(_user.email);
+    const existUser = await ctx.service.user.getUserByMail(this.params.email);
+
     // 用户不存在
     if (!existUser) {
-      return ctx.helper.throwError(ctx, '用户不存在');
+      this.throwError('用户不存在');
     }
-    // TODO: change to async compare
-    const equal = ctx.helper.bcompare(_user.password, existUser.password);
+
+    // 比较密码
+    const equal = ctx.helper.bcompare(this.params.password, existUser.password);
+
     // 密码不匹配
     if (!equal) {
-      return ctx.helper.throwError(ctx, '密码不正确');
+      this.throwError('密码不正确');
     }
 
     //创建新的token
     let accessToken = uuid.v4();
 
+    //获取用户的token
     let res = await ctx.service.token.getByUserId(existUser._id);
+
     //更新用户的token，没有则自动创建。
     if (res) { //更新 
       const now = (new Date()).getTime();
@@ -299,38 +263,37 @@ class UserController extends Controller {
       });
     }
 
-    if (!res) {
-      return ctx.helper.throwError(ctx, '登陆失败');
-    }
-
-    ctx.body = {
-      code: 0,
-      msg: '登陆成功',
-      data: {
+    if (res) {
+      this.throwCorrect({
         token: accessToken,
         userInfo: existUser
-      }
-    };
+      }, '登陆成功');
+    } else {
+      this.throwError('登陆失败');
+    }
   }
 
   /**
    * @description 登出（普通接口）
    */
   async logout() {
-    const { ctx, service } = this;
-    let token = ctx.query.token;
-    let userId = ctx.query.userId;
-    let removeRes = await service.token.remove({
-      token,
-      userId
+    const { service } = this;
+    this.decorator({
+      get: {
+        token: { n: 'token', type: 'String', f: true, r: true },
+        userId: { n: '用户id', type: 'ObjectId', f: true, r: true }
+      }
     });
-    if (!removeRes) {
-      return ctx.helper.throwError(ctx, '登出失败');
+
+    let removeRes = await service.token.remove({
+      token: this.params.token,
+      userId: this.params.userId
+    });
+
+    if (removeRes) {
+      this.throwCorrect({}, '登出成功');
     } else {
-      ctx.body = {
-        code: 0,
-        msg: '登出成功'
-      };
+      this.throwError('登出失败');
     }
   }
 
