@@ -7,8 +7,8 @@ let article = require('../../model/proto/article');
 
 class ArticleController extends BaseController {
 
-	/**
-   * @description 点赞某文章，无权限验证api
+  /**
+   * @description 点赞某个文章
    */
   async like() {
     const { service } = this;
@@ -30,7 +30,7 @@ class ArticleController extends BaseController {
     }, '点赞成功');
   }
 
-	/**
+  /**
    * @description 创建文章
    */
   async create() {
@@ -86,7 +86,7 @@ class ArticleController extends BaseController {
     }
   }
 
-	/**
+  /**
    * @description 更新文章
    */
   async update() {
@@ -119,7 +119,7 @@ class ArticleController extends BaseController {
     }
   }
 
-	/**
+  /**
    * @description 删除文章
    */
   async delete() {
@@ -140,7 +140,7 @@ class ArticleController extends BaseController {
     }
   }
 
-	/**
+  /**
    * @description 获取文章列表
    */
   async list() {
@@ -189,7 +189,7 @@ class ArticleController extends BaseController {
     }, '查询成功');
   }
 
-	/**
+  /**
    * @description 获取单篇文章
    */
   async show() {
