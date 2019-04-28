@@ -13,12 +13,12 @@ class ArticleController extends BaseController {
     // 加载处理器
     await this.handler();
   }
-  
+
   /**
    * 处理器
    */
   async handler() {
-    const { ctx, service, config } = this;
+    const { ctx, service } = this;
     let webConfig = this.cache('WEB_CONFIG');
     const { subtitle, separator } = webConfig.site;
     let numberId = ctx.params[0];
@@ -40,9 +40,7 @@ class ArticleController extends BaseController {
     });
 
     //更新文章浏览量
-    let updateArticle = await service.article.update({
-      _id: findArticleRes._id
-    }, {
+    await service.article.update({ _id: findArticleRes._id }, {
       $inc: { 'visNumber': Number(1) }
     });
 

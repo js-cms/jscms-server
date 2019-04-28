@@ -1,15 +1,18 @@
 'use strict';
 
-const path = require('path');
-
 const Controller = require('egg').Controller;
 const Model = require('modelman').Model;
-const is = require('ispro');
 
 /**
  * @description api错误类型，继承Error。
  */
 class ApiError extends Error {
+
+  /**
+   * @description api错误类型，继承Error。
+   * @param {String} message 消息文本
+   * @param {Number} code 错误代码
+   */
   constructor(
     message = '未知错误',
     code = 1
@@ -28,6 +31,7 @@ class BaseController extends Controller {
 
   /**
    * @description 预处理/拦截/解析 公共函数
+   * @param {Object} options 
    */
   decorator(options) {
     const { ctx } = this;
@@ -54,6 +58,11 @@ class BaseController extends Controller {
 
     this.params = {};
 
+    /**
+     * @description 参数解析器
+     * @param {String} method 
+     * @param {Object} params 
+     */
     const parseParams = (method, params) => {
       if (!params || typeof params !== 'object') return;
       const model = new Model({
@@ -76,7 +85,8 @@ class BaseController extends Controller {
       let res = model.validator.all();
       let errorMsg = '参数不正确';
       if (res.length === 0) {
-        this.params = model.to.json();
+        let params = model.to.json();
+        this.params = params;
       } else {
         let key = res[0].name;
         let item = model.fields[key];
@@ -95,8 +105,13 @@ class BaseController extends Controller {
 
   /**
    * @description 抛出错误
+   * @param {String} msg
+   * @param {Number} code
    */
-  throwError(msg, code) {
+  throwError(
+    msg = '未知错误',
+    code = 1
+  ) {
     throw new ApiError(
       msg,
       code
@@ -104,13 +119,20 @@ class BaseController extends Controller {
   }
 
   /**
-   * @description 输出正确数据
+   * @description 返回数据
+   * @param {*} data
+   * @param {String} msg
+   * @param {Number} code
    */
-  throwCorrect(data, msg, code) {
+  throwCorrect(
+    data,
+    msg = '查询成功',
+    code = 0
+  ) {
     const ctx = this.ctx;
     ctx.body = {
-      code: code || 0,
-      msg: msg || '查询成功',
+      code: code,
+      msg: msg,
       data: data
     };
     return true;

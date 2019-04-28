@@ -18,7 +18,7 @@ class PageController extends BaseController {
    * 处理器
    */
   async handler() {
-    const { ctx, service, config } = this;
+    const { ctx, service } = this;
     let webConfig = this.cache('WEB_CONFIG');
     const { subtitle, separator } = webConfig.site;
     const pageAlias = ctx.params[0] || '';

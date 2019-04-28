@@ -1,127 +1,123 @@
 'use strict';
 
-const Controller = require('egg').Controller;
+const BaseController = require('./base');
+let category = require('../../model/proto/category');
 
-//数据校验函数
-const validate = function (object) {
-  return {
-    code: 0,
-    object: object
-  };
-}
+class CategoryController extends BaseController {
 
-/**
- * 分类相关api
- */
-class CategoryController extends Controller {
-
-  //新增分类
+	/**
+   * @description 创建分类
+   */
   async create() {
-    const { ctx, service, config } = this;
-    if (!ctx.locals.currentUser.auth.isLogin) {
-      return ctx.helper.throwError(ctx, '你没有登陆', 403);
-    }
-    const validateResult = validate(ctx.request.body);
-    //校验失败
-    if (validateResult.code === 1) {
-      return ctx.helper.throwError(ctx, validateResult.msg, validateResult.code);
-    }
-    let parameters = validateResult.object;
+    const { service } = this;
+    this.decorator({
+      login: true,
+      post: category
+    });
+    
+    let params = this.params;
 
+    //查找分类
     let findRes = await service.category.findOne({
-      name: parameters.name,
-      alias: parameters.alias
+      name: params.name,
+      alias: params.alias
     });
 
     //判断是否存在重复分类
     if (findRes) {
-      return ctx.helper.throwError(ctx, '分类已存在');
+      this.throwError('分类已存在');
     }
 
     //分类创建结果
-    const createCatRes = await service.category.create(parameters);
+    const createCatRes = await service.category.create(params);
 
     if (createCatRes._id) {
-      ctx.body = {
-        code: 0,
-        msg: '分类创建完成',
-        data: createCatRes
-      }
+      this.throwCorrect(createCatRes, '分类创建完成');
     } else {
-      return ctx.helper.throwError(ctx, '分类创建失败');
+      this.throwError('分类创建失败');
     }
   }
 
-  //更新分类
+	/**
+   * @description 更新分类
+   */
   async update() {
-    const { ctx, service, config } = this;
-    if (!ctx.locals.currentUser.auth.isLogin) {
-      return ctx.helper.throwError(ctx, '你没有登陆', 403);
-    }
-    const id = ctx.request.body._id;
-    let info = ctx.request.body;
-    delete info._id;
-    delete info.createTime;
-    delete info.updateTime;
+    const { service } = this;
+    category.id = { type: 'ObjectId', f: true, r: true };
+    this.decorator({
+      login: true,
+      post: category
+    });
 
-    const updateRes = await service.category.update({_id: id}, info);
+    const updateRes = await service.category.update({_id: this.params.id}, this.params);
+
     if (updateRes) {
-      ctx.body = {
-        code: 0,
-        msg: '更新成功',
-        data: updateRes
-      };
+      this.throwCorrect(updateRes, '分类更新成功');
     } else {
-      return ctx.helper.throwError(ctx, '更新失败');
+      this.throwError('分类更新失败');
     }
   }
 
-  //删除分类
+	/**
+   * @description 删除分类
+   */
   async delete() {
-    const { ctx, service } = this;
-    if (!ctx.locals.currentUser.auth.isLogin) {
-      return ctx.helper.throwError(ctx, '你没有登陆', 403);
-    }
+    const { service } = this;
+    this.decorator({
+      login: true,
+      get: {
+        id: { type: 'ObjectId', f: true, r: true }
+      }
+    });
 
-    const id = ctx.request.body.id;
-
-    if (!id) {
-      return ctx.helper.throwError(ctx, '参数错误');
-    }
-
-    const deleteRes = await service.category.remove({_id: id});
+    const deleteRes = await service.category.remove({_id: this.params.id});
 
     if (deleteRes) {
-      ctx.body = {
-        code: 0,
-        msg: '分类删除完成'
-      }
+      this.throwCorrect({}, '分类删除完成');
     } else {
-      return ctx.helper.throwError(ctx, '分类创建失败');
+      this.throwError('分类创建失败');
     }
   }
 
-  //获取分类列表
+	/**
+   * @description 获取分类列表
+   */
   async list() {
-    const { ctx, service, config } = this;
-    if (!ctx.locals.currentUser.auth.isLogin) {
-      return ctx.helper.throwError(ctx, '你没有登陆', 403);
-    }
+    const { service } = this;
+    this.decorator({
+      login: true
+    });
 
     //获取分类列表
     const findCategoryRes = await service.category.find({});
 
-    ctx.body = {
-      code: 0,
-      msg: '查询成功',
-      data: findCategoryRes
-    };
+    if (findCategoryRes) {
+      this.throwCorrect(findCategoryRes);
+    } else {
+      this.throwError('分类创建失败');
+    }
   }
 
-  //获取单个分类信息
+	/**
+   * @description 获取单个分类
+   */
   async show() {
-    const { ctx, service, config } = this;
-    ctx.body = 'hi!';
+    const { service } = this;
+    this.decorator({
+      login: true,
+      get: {
+        id: { type: 'ObjectId', f: true, r: true }
+      }
+    });
+
+    //获取文章
+    const findRes = await service.category.findOne({ _id: this.params.id });
+
+    if (findRes) {
+      this.throwCorrect(findRes);
+    } else {
+      this.throwError('文章查询失败');
+    }
   }
 }
 

@@ -1,60 +1,55 @@
 'use strict';
 
-const Controller = require('egg').Controller;
+const BaseController = require('./base');
 
-class LogController extends Controller {
+class LogController extends BaseController {
 
-	//获取日志列表
+  /**
+   * @description 获取配置列表
+   */
 	async list() {
-		const { ctx, service, config } = this;
-		if (!ctx.locals.currentUser.auth.isLogin) {
-			return ctx.helper.throwError(ctx, '你没有登陆', 403);
-		}
-		let type = Number(ctx.query.type);
+		const { ctx, service } = this;
+		this.decorator({
+			login: true,
+			get: {
+				type: { n: '日志类型', type: 'Number', f: true, r: true }
+			}
+		});
+
+		let type = this.params.type;
 		let { pageSize, pageNumber } = ctx.helper.getPaging(ctx.query);
 
-		if (!type || isNaN(type)) {
-			return ctx.helper.throwError(ctx, '参数错误');
-		}
-
 		//获取日志列表
-		const findLogRes = await service.log.find({
-			type: type
-		}, pageNumber, pageSize);
+		const findLogRes = await service.log.find({ type: type }, pageNumber, pageSize);
+
 		//获取日志总数
-		const countLogRes = await service.log.count({
-			type: type
-		});
-		ctx.body = {
-			code: 0,
-			msg: '查询成功',
-			data: findLogRes,
-			count: countLogRes
-		};
+		const countLogRes = await service.log.count({ type: type });
+
+		//输出结果
+		this.throwCorrect({
+			list: findLogRes,
+			total: countLogRes
+		}, '查询成功');
 	}
 
-	//删除日志记录
+  /**
+   * @description 删除某条日志
+   */
 	async delete() {
-		const { ctx, service, config } = this;
-		if (!ctx.locals.currentUser.auth.isLogin) {
-			return ctx.helper.throwError(ctx, '你没有登陆', 403);
-		}
+		const { service } = this;
+		this.decorator({
+			login: true,
+			get: {
+				id: { type: 'ObjectId', f: true, r: true }
+			}
+		});
 
-		const id = ctx.request.body.id;
-
-		if (!id) {
-			return ctx.helper.throwError(ctx, '参数错误');
-		}
-
-		const deleteRes = await service.log.remove({_id: id});
+		const deleteRes = await service.log.remove({ _id: this.params.id });
 
 		if (deleteRes) {
-			ctx.body = {
-				code: 0,
-				msg: '日志记录删除完成'
-			}
+			this.throwCorrect({}, '日志记录删除完成')
 		} else {
-			return ctx.helper.throwError(ctx, '日志记录删除失败');
+			this.throwError('日志记录删除失败');
 		}
 	}
 }

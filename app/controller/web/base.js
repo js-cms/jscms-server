@@ -10,7 +10,6 @@ class BaseController extends Controller {
 
   /**
    * @description 初始化公共数据
-   * @param {Object} data 
    */
   async init() {
     // 记录访问信息
@@ -55,7 +54,7 @@ class BaseController extends Controller {
         info.params = ctx.request.body || {};
       }
       //将访问者信息插入log表
-      let res = await service.log.create({
+      await service.log.create({
         type: 1,
         info: info
       });

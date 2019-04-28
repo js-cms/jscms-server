@@ -2,12 +2,13 @@
 
 const moment = require('moment');
 const bcrypt = require('bcryptjs');
-const cheerio = require('cheerio');
 
 const utils = module.exports = {
 
   /**
-   * 模版中转化日期格式
+   * @description 模版中时间戳转化日期格式
+   * @param {Number} time 时间戳
+   * @param {Number} type 类型
    */
   toDate(time, type) {
     if (type === 1 || !type) {
@@ -18,35 +19,42 @@ const utils = module.exports = {
   },
 
   /**
-   * 加密密码
+   * @description 加密密码
+   * @param {String} str 明文
    */
   bhash(str) {
     return bcrypt.hashSync(str, 10);
   },
 
   /**
-   * 比较密码和密文
+   * @description 比较密码和密文
+   * @param {String} str 明文
+   * @param {String} hash 密文
    */
   bcompare(str, hash) {
     return bcrypt.compareSync(str, hash);
   },
 
   /**
-   * 随机数字
+   * @description 随机数字
+   * @param {Number} min 最小值
+   * @param {Number} max 最大值
    */
   randNum(min, max) {
     return parseInt(Math.random() * (max - min + 1) + min, 10);
   },
 
   /**
-   * http转化为https
+   * @description http转化为https
+   * @param {String} url 网址
    */
   toHttps(url) {
     return url.replace("http://", "https://");
   },
 
   /**
-   * 数组混合并去重
+   * @description 数组混合并去重
+   * @param {*} argv 数组参数
    */
   mixinArray(...argv) {
     let arr = []
@@ -57,9 +65,9 @@ const utils = module.exports = {
   },
 
   /**
-   * 截取字符串 中英文混合
-   * @param str	待处理字符串
-   * @param len	截取字节长度 中文2字节 英文1字节
+   * @description 截取字符串 中英文混合
+   * @param {String} str	待处理字符串
+   * @param {Number} len	截取字节长度 中文2字节 英文1字节
    */
   subString(str, len) {
     let regexp = /[^\x00-\xff]/g;// 正在表达式匹配中文
@@ -79,7 +87,7 @@ const utils = module.exports = {
   },
 
   /**
-   * 获取分页参数
+   * @description 获取分页参数
    * @param {Object} query 
    */
   getPaging(query) {
@@ -93,5 +101,15 @@ const utils = module.exports = {
       pageSize,
       pageNumber
     }
+  },
+
+  /**
+   * @description 获取文件后缀
+   * @param {String} filename 
+   */
+  getFileSuffix(filename) {
+    let tempArr = filename.split('.');
+    const suffix = tempArr[tempArr.length - 1];
+    return suffix;
   }
 };

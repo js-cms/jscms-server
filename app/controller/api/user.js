@@ -1,8 +1,9 @@
 'use strict';
 
-const BaseController = require('./base');
 const uuid = require('uuid');
-const user = require('../../model/proto/user');
+
+const BaseController = require('./base');
+let user = require('../../model/proto/user');
 
 /**
  * 用户相关的api接口
@@ -114,25 +115,23 @@ class UserController extends BaseController {
    */
   async update() {
     const { service } = this;
+    user.id = { type: 'ObjectId', f: true, r: true };
     this.decorator({
       powers: ['super'],
       login: true,
       post: user
     });
 
-    //缓存参数
-    const user = this.params;
-
     //如果用户准备修改nickname，判断是否重复
     if (user.nickname) {
-      const findUser = await service.user.getUserByNickname(user.nickname)
-      if (findUser && String(findUser._id) !== String(userId)) {
+      const findUser = await service.user.getUserByNickname(this.params.nickname)
+      if (findUser && String(findUser._id) !== String(this.params.id)) {
         this.throwError('昵称已被人使用');
       }
     }
 
     //更新用户信息
-    let updateRes = await service.user.update({ _id: userId }, user);
+    let updateRes = await service.user.update({ _id: this.params.id }, this.params);
 
     if (updateRes) {
       this.throwCorrect({}, '用户信息更新成功');
@@ -183,8 +182,8 @@ class UserController extends BaseController {
     this.decorator({
       login: true,
       post: {
-        oldpass: { n: '旧密码', type: 'Password', f: true, r: true, extra: {errorMsg: '密码格式不正确'}}, // 旧密码
-        newpass: { n: '新密码', type: 'Password', f: true, r: true, extra: {errorMsg: '密码格式不正确'}} // 新密码
+        oldpass: { n: '旧密码', type: 'Password', f: true, r: true, extra: { errorMsg: '密码格式不正确' } }, // 旧密码
+        newpass: { n: '新密码', type: 'Password', f: true, r: true, extra: { errorMsg: '密码格式不正确' } } // 新密码
       }
     });
 
@@ -219,7 +218,7 @@ class UserController extends BaseController {
     this.decorator({
       post: {
         email: { n: '邮箱', type: 'Email', f: true, r: true },
-        password: { n: '密码密文', type: 'Password', f: true, r: true, extra: {errorMsg: '密码格式不正确'}}
+        password: { n: '密码密文', type: 'Password', f: true, r: true, extra: { errorMsg: '密码格式不正确' } }
       }
     });
 
@@ -249,13 +248,11 @@ class UserController extends BaseController {
     if (res) { //更新 
       const now = (new Date()).getTime();
       const tomorrow = now + 1000 * 60 * 60 * 24;
-      res = await ctx.service.token.updateToken({
-        userId: existUser._id
-      }, {
-          token: accessToken,
-          updateTime: now,
-          passwExpiry: tomorrow
-        });
+      res = await ctx.service.token.updateToken({ userId: existUser._id }, {
+        token: accessToken,
+        updateTime: now,
+        passwExpiry: tomorrow
+      });
     } else { //创建
       res = await ctx.service.token.create({
         userId: existUser._id,

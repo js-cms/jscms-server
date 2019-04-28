@@ -1,50 +1,45 @@
 'use strict';
 
-const Controller = require('egg').Controller;
+const BaseController = require('./base');
+let config = require('../../model/proto/config');
 
-/**
- * 分类相关api
- */
-class ConfigController extends Controller {
+class ConfigController extends BaseController {
 
-  //获取配置信息
+  /**
+   * @description 获取单个配置信息
+   */
   async show() {
-    const { ctx, service, config } = this;
-    if (!ctx.locals.currentUser.auth.isLogin) {
-      return ctx.helper.throwError(ctx, '你没有登陆', 403);
-    }
-    const userId = ctx.locals.currentUser.user._id;
-    const alias = ctx.query.alias;
-    const findRes = await service.config.findOne({ 'alias': alias });
+    const { service } = this;
+    this.decorator({
+      login: true,
+      get: {
+        alias: { n: '英文别名', type: 'String', f: false, r: true }, //英文别名
+      }
+    });
 
-    ctx.body = {
-      code: 0,
-      msg: '查询成功',
-      data: findRes
-    };
+    //查询
+    const findRes = await service.config.findOne({ 'alias': this.params.alias });
+    //输出结果
+    this.throwCorrect(findRes);
   }
 
-  //更新配置信息
+  /**
+   * @description 更新配置信息
+   */
   async update() {
-    const { ctx, service, config } = this;
-    if (!ctx.locals.currentUser.auth.isLogin) {
-      return ctx.helper.throwError(ctx, '你没有登陆', 403);
-    }
-    const info = ctx.request.body.info;
-    const id = ctx.request.body._id;
-    const updateRes = await service.config.update({
-      _id: id 
-    }, {
-      info: info
+    const { service } = this;
+    config.id = { type: 'ObjectId', f: true, r: true };
+    this.decorator({
+      login: true,
+      post: config
     });
+
+    const updateRes = await service.config.update({_id: this.params.id }, this.params);
+
     if (updateRes) {
-      ctx.body = {
-        code: 0,
-        msg: '更新成功',
-        data: updateRes
-      };
+      this.throwCorrect(updateRes, '更新成功');
     } else {
-      return ctx.helper.throwError(ctx, '更新失败');
+      this.throwError('更新失败');
     }
   }
 }

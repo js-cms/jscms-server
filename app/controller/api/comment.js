@@ -1,121 +1,108 @@
 'use strict';
 
-const Controller = require('egg').Controller;
 const marked = require('marked');
+
+const BaseController = require('./base');
+let comment = require('../../model/proto/comment');
 
 /**
  * 评论相关api
  */
-class CommentController extends Controller {
+class CommentController extends BaseController {
 
-  //新增评论
+  /**
+   * @description 新增评论
+   */
   async create() {
-    const { ctx, service } = this;
-    let parameters = ctx.request.body;
+    const { service } = this;
+    this.decorator({
+      post: comment
+    });
 
-    if (!parameters.articleId) {
-      return ctx.helper.throwError(ctx, '缺少参数');
-    }
+    let params = this.params;
 
     //查找所属文章
     let findArticleRes = await service.article.findOne({
-      _id: parameters.articleId
+      _id: params.articleId
     });
 
     if (!findArticleRes) {
-      return ctx.helper.throwError(ctx, '文章不存在');
+      this.throwError('文章不存在');
     }
 
-    if (parameters.mdContent) {
-      parameters.htContent = marked(parameters.mdContent);
+    //转化markdown代码
+    if (params.mdContent) {
+      params.htContent = marked(params.mdContent);
     }
 
     //创建评论
-    let createCommentRes = await service.comment.create(parameters);
+    let createCommentRes = await service.comment.create(params);
 
     if (createCommentRes._id) {
       //给文章增加评论数
-      const updateArticleRes = await service.article.update(
-        {
-          _id: findArticleRes._id
-        },
-        {
-          $inc: { commentCount: Number(1) }
-        }
-      );
-    }
-
-    if (createCommentRes._id) {
-      ctx.body = {
-        code: 0,
-        msg: '评论创建完成',
-        data: createCommentRes
-      }
+      await service.article.update({ _id: findArticleRes._id }, {
+        $inc: { commentCount: Number(1) }
+      });
+      this.throwCorrect(createCommentRes, '评论创建完成');
     } else {
-      return ctx.helper.throwError(ctx, '评论创建失败');
+      this.throwError('评论创建失败');
     }
   }
 
-  //更新评论
+  /**
+   * @description 更新评论
+   */
   async update() {
-    const { ctx, service, config } = this;
-    if (!ctx.locals.currentUser.auth.isLogin) {
-      return ctx.helper.throwError(ctx, '你没有登陆', 403);
-    }
-    const id = ctx.request.body._id;
-    let info = ctx.request.body;
+    const { service } = this;
+    comment.id = { type: 'ObjectId', f: true, r: true };
+    this.decorator({
+      login: true,
+      post: comment
+    });
 
-    delete info._id;
-    delete info.createTime;
-    delete info.updateTime;
-
-    if (info.mdContent) {
-      info.htContent = marked(info.mdContent);
+    if (this.params.mdContent) {
+      this.params.htContent = marked(this.params.mdContent);
     }
 
-    const updateRes = await service.comment.update({_id: id}, info);
+    const updateRes = await service.comment.update({ _id: this.params.id }, this.params);
+
     if (updateRes) {
-      ctx.body = {
-        code: 0,
-        msg: '更新成功',
-        data: updateRes
-      };
+      this.throwCorrect(updateRes, '评论更新成功');
     } else {
-      return ctx.helper.throwError(ctx, '更新失败');
+      this.throwError('评论更新失败');
     }
   }
 
-  //删除评论
+  /**
+   * @description 删除评论
+   */
   async delete() {
-    const { ctx, service, config } = this;
-    if (!ctx.locals.currentUser.auth.isLogin) {
-      return ctx.helper.throwError(ctx, '你没有登陆', 403);
-    }
+    const { service } = this;
+    this.decorator({
+      login: true,
+      get: {
+        id: { type: 'ObjectId', f: true, r: true }
+      }
+    });
 
-    const id = ctx.request.body.id;
-
-    if (!id) {
-      return ctx.helper.throwError(ctx, '参数错误');
-    }
-
-    const deleteRes = await service.comment.remove({ _id: id });
+    const deleteRes = await service.comment.remove({ _id: this.params.id });
 
     if (deleteRes) {
-      ctx.body = {
-        code: 0,
-        msg: '评论删除完成'
-      }
+      this.throwCorrect({}, '评论删除完成');
     } else {
-      return ctx.helper.throwError(ctx, '评论删除失败');
+      this.throwError('评论删除失败');
     }
   }
 
-  //获取评论列表
+  /**
+   * @description 获取列表
+   */
   async list() {
-    const { ctx, service, config } = this;
-    if (!ctx.locals.currentUser.auth.isLogin) {
-      return ctx.helper.throwError(ctx, '你没有登陆', 403);
-    }
+    const { ctx, service } = this;
+    this.decorator({
+      login: true
+    });
+
     let { pageSize, pageNumber } = ctx.helper.getPaging(ctx.query);
 
     //获取评论列表
@@ -123,20 +110,32 @@ class CommentController extends Controller {
     //获取文章总数
     const countCommentRes = await service.comment.count({});
 
-    ctx.body = {
-      code: 0,
-      msg: '查询成功',
-      data: {
-        list: findCommentRes,
-        total: countCommentRes
-      }
-    };
+    this.throwCorrect({
+      list: findCommentRes,
+      total: countCommentRes
+    });
   }
 
-  //获取单个评论信息
+  /**
+   * @description 获取单个评论信息
+   */
   async show() {
-    const { ctx, service, config } = this;
-    ctx.body = 'hi!';
+    const { service } = this;
+    this.decorator({
+      login: true,
+      get: {
+        id: { type: 'ObjectId', f: true, r: true }
+      }
+    });
+
+    //查询评论
+    const findRes = await service.category.findOne({ _id: this.params.id });
+
+    if (findRes) {
+      this.throwCorrect(findRes);
+    } else {
+      this.throwError('文章查询失败');
+    }
   }
 }
 

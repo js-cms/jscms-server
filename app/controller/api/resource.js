@@ -1,35 +1,33 @@
 'use strict';
 
-const Controller = require('egg').Controller;
 const path = require('path');
 const fs = require('fs-extra');
 
-const getFileSuffix = function (filename) {
-  let tempArr = filename.split('.');
-  const suffix = tempArr[tempArr.length - 1];
-  return suffix;
-}
+const BaseController = require('./base');
 
-class ResourceController extends Controller {
+class ResourceController extends BaseController {
 
   /**
-   * 创建资源
+   * @description 创建资源
    */
   async create() {
-    const { ctx, service, config } = this;
-    ctx.body = 'hi';
+    const { ctx } = this;
+    ctx.body = 'todo';
   }
 
   /**
-   * 获取资源列表
+   * @description 获取资源列表
    */
   async list() {
     const { ctx, service, config } = this;
-    if (!ctx.locals.currentUser.auth.isLogin) {
-      return ctx.helper.throwError(ctx, '你没有登陆', 403);
-    }
+    this.decorator({
+      login: true,
+      get: {
+        type: { type: 'Number', f: true, r: true }
+      }
+    });
 
-    const type = ctx.query.type;
+    const type = this.params.type;
     let { pageSize, pageNumber } = ctx.helper.getPaging(ctx.query);
 
     let where = {};
@@ -40,6 +38,7 @@ class ResourceController extends Controller {
     //获取列表
     let findRes = await service.resource.find(where, pageNumber, pageSize);
     let list = [];
+
     for (const item of findRes) {
       let url = '';
       if (item.store === 1) {
@@ -61,73 +60,69 @@ class ResourceController extends Controller {
     //获取资源总数
     let totalRes = await service.resource.count(where);
 
-    ctx.body = {
-      code: 0,
-      msg: '查询成功',
-      data: {
-        list,
-        total: totalRes
-      }
-    };
+    //输出结果
+    this.throwCorrect({
+      list,
+      total: totalRes
+    });
   }
 
   /**
-   * 删除资源
+   * @description 删除资源
    */
   async delete() {
-    const { ctx, service, config } = this;
-    if (!ctx.locals.currentUser.auth.isLogin) {
-      return ctx.helper.throwError(ctx, '你没有登陆', 403);
-    }
-    const id = ctx.request.body.id;
-    const filename = ctx.request.body.filename.replace(/\//g, '').replace(/\\/g, '');
-    let msg = '';
+    const { service, config } = this;
+    this.decorator({
+      login: true,
+      post: {
+        id: { type: 'ObjectId', f: true, r: true },
+        filename: { type: 'String', f: true, r: true }
+      }
+    });
 
+    const id = this.params.id;
+    const filename = this.params.filename.replace(/\//g, '').replace(/\\/g, '');
+
+    let msg = '';
+    
     //本地地址
     let target = path.join(config.baseDir, `${config.constant.directory.JSCMS_UPLOAD}/${filename}`);
 
+    //删除文件
     if (!fs.existsSync(target)) {
       msg = '，资源文件不存在';
     } else {
       fs.removeSync(target);
     }
-
-    if (!id) {
-      return ctx.helper.throwError(ctx, '参数错误');
-    }
-
+    
+    //删除数据库记录
     const deleteRes = await service.resource.remove({_id: id});
 
     if (deleteRes) {
-      ctx.body = {
-        code: 0,
-        msg: '资源信息删除完成' + msg
-      }
+      this.throwCorrect({}, '资源信息删除完成' + msg); 
     } else {
-      return ctx.helper.throwError(ctx, '资源删除失败');
+      this.throwError('资源删除失败');
     }
   }
 
-  /*
-   * 资源上传控制器 
+  /**
+   * @description 资源上传控制器 
    */
   async uploader() {
     const { ctx, service, config } = this;
-    if (!ctx.locals.currentUser.auth.isLogin) {
-      return ctx.helper.throwError(ctx, '你没有登陆', 403);
-    }
+    this.decorator({
+      login: true
+    });
 
     const file = ctx.request.files[0];
-    const suffix = getFileSuffix(file.filename);
+    const suffix = ctx.helper.getFileSuffix(file.filename);
     const nowTimestamp = (new Date()).getTime();
     const newFileName = `${nowTimestamp}.${suffix}`;
     const whiteList = ['png', 'jpg', 'jpeg', 'git', 'bmp'];
+
+    //判断文件类型
     if (!whiteList.includes(suffix)) {
-      ctx.body = {
-        code: 1,
-        msg: '不允许上传此类型的文件'
-      };
-      return false;
+      this.throwError('不允许上传此类型的文件');
     }
 
     //组装本地地址
@@ -147,18 +142,14 @@ class ResourceController extends Controller {
     //判断文章操作的结果
     if (result === false) {
       //失败，返回错误
-      ctx.body = {
-        code: 1,
-        msg: '上传失败，未知错误！'
-      };
-      return false;
+      this.throwError('上传失败，未知错误');
     } else {
       //成功，删除临时文件
       fs.remove(file.filepath, err => {
         if (err) return console.error(err);
       });
     }
-    
+  
     //组装资源网址
     const webUrl = `${ctx.origin}${config.constant.directory.JSCMS_URL_UPLOAD}/${newFileName}`;
 
@@ -171,19 +162,12 @@ class ResourceController extends Controller {
     });
 
     if (createRessoureRes) {
-      ctx.body = {
-        code: 0,
-        msg: '上传成功',
-        data: {
-          filename: newFileName,
-          imageUrl: webUrl
-        }
-      };
+      this.throwCorrect({
+        filename: newFileName,
+        imageUrl: webUrl
+      }, '上传成功');
     } else {
-      ctx.body = {
-        code: 1,
-        msg: '资源创建失败'
-      };
+      this.throwError('资源创建失败');
     }
   }
 }

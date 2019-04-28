@@ -3,19 +3,18 @@
 const marked = require('marked');
 
 const BaseController = require('./base');
-const article = require('../../model/proto/article');
+let article = require('../../model/proto/article');
 
-/**
- * 文章相关api
- */
 class ArticleController extends BaseController {
 
-  //点赞文章
+	/**
+   * @description 点赞某文章，无权限验证api
+   */
   async like() {
     const { service } = this;
-    this.decorator({ 
+    this.decorator({
       post: {
-        id: {type: 'ObjectId', f: true, r: true }
+        id: { type: 'ObjectId', f: true, r: true }
       }
     });
 
@@ -31,7 +30,9 @@ class ArticleController extends BaseController {
     }, '点赞成功');
   }
 
-  //新增文章
+	/**
+   * @description 创建文章
+   */
   async create() {
     const { ctx, service } = this;
     this.decorator({
@@ -42,79 +43,67 @@ class ArticleController extends BaseController {
     //统计文章数量
     let configCountRes = await service.config.findOne({ alias: 'articleCount' });
     let num = Number(configCountRes.info.num) + 1;
-    await service.config.update({
-      _id: configCountRes._id
-    }, {
-        info: { num: num }
-      });
+    await service.config.update({ _id: configCountRes._id }, {
+      info: { num: num }
+    });
 
-    let parameters = this.params;
-    parameters.numberId = num;
+    let params = this.params;
+    params.numberId = num;
 
     //文章创建结果
-    parameters.htContent = marked(parameters.mdContent);
-    parameters.userId = this.userId;
+    params.htContent = marked(params.mdContent);
+    params.userId = this.userId;
 
     //如果有分类名称，就查分类，并带入id
-    if (parameters.categoryName) {
+    if (params.categoryName) {
       let findCatRes = await service.category.findOne({
-        name: parameters.categoryName
+        name: params.categoryName
       });
-      parameters.categoryId = findCatRes._id;
-      delete parameters.categoryName;
+      params.categoryId = findCatRes._id;
+      delete params.categoryName;
     }
 
     //创建文章
-    const createArticleRes = await service.article.create(parameters);
+    const createArticleRes = await service.article.create(params);
 
     //给分类增加文章
-    const updateCategoryRes = await service.category.update(
-      {
-        _id: parameters.categoryId
-      },
-      {
-        $inc: { articleCount: Number(1) }
-      }
-    );
+    const updateCategoryRes = await service.category.update({ _id: params.categoryId }, {
+      $inc: { articleCount: Number(1) }
+    });
 
     //更新标签列表
     let findTagsRes = await service.config.findOne({ alias: 'tags' });
-    let newTags = ctx.helper.mixinArray(parameters.keywords, findTagsRes.info);
-    await service.config.update({
-      _id: findTagsRes._id
-    }, {
-        info: newTags
-      });
+    let newTags = ctx.helper.mixinArray(params.keywords, findTagsRes.info);
+    await service.config.update({ _id: findTagsRes._id }, {
+      info: newTags
+    });
 
     //如果文章添加成功
     if (createArticleRes._id && updateCategoryRes) {
-      // 设置响应体和状态码
-      ctx.body = {
-        code: 0,
-        msg: '文章创建成功',
-        data: createArticleRes
-      };
+      this.throwCorrect(createArticleRes, '文章创建成功');
     } else {
-      return this.throwError('文章创建失败');
+      this.throwError('文章创建失败');
     }
   }
 
-  //更新文章
+	/**
+   * @description 更新文章
+   */
   async update() {
     const { ctx, service } = this;
+    article.id = { type: 'ObjectId', f: true, r: true };
     this.decorator({
       login: true,
       post: article
     });
 
+    //转化markdown代码
     if (this.params.mdContent) {
-      this.params.htContent = marked(info.mdContent);
+      this.params.htContent = marked(this.params.mdContent);
     }
 
-    const updateRes = await service.article.update(
-      { _id: this.params.id },
-      this.params
-    );
+    //更新文章
+    const updateRes = await service.article.update({ _id: this.params.id }, this.params);
 
     if (this.params.keywords && this.params.keywords.length) {
       //更新标签列表
@@ -124,49 +113,49 @@ class ArticleController extends BaseController {
     }
 
     if (updateRes) {
-      ctx.body = {
-        code: 0,
-        msg: '更新成功',
-        data: updateRes
-      };
+      this.throwCorrect(updateRes, '更新成功');
     } else {
-      return this.throwError('更新失败');
+      this.throwError('更新失败');
     }
   }
 
-  //删除文章
+	/**
+   * @description 删除文章
+   */
   async delete() {
-    const { ctx, service, config } = this;
-    if (!ctx.locals.currentUser.auth.isLogin) {
-      return this.throwError('你没有登陆', 403);
-    }
+    const { service } = this;
+    this.decorator({
+      login: true,
+      get: {
+        id: { type: 'ObjectId', f: true, r: true }
+      }
+    });
 
-    const id = ctx.request.body.id;
-
-    if (!id) {
-      return this.throwError('参数错误');
-    }
-
-    const deleteRes = await service.article.remove({ _id: id });
+    const deleteRes = await service.article.remove({ _id: this.params.id });
 
     if (deleteRes) {
-      ctx.body = {
-        code: 0,
-        msg: '文章删除完成'
-      }
+      this.throwCorrect({}, '文章删除成功');
     } else {
-      return this.throwError('文章删除失败');
+      this.throwError('文章删除失败');
     }
   }
 
-  //获取文章列表
+	/**
+   * @description 获取文章列表
+   */
   async list() {
-    const { ctx, service, config } = this;
-    if (!ctx.locals.currentUser.auth.isLogin) {
-      return this.throwError('你没有登陆', 403);
-    }
-    const categoryId = ctx.query.categoryId;
-    const keyword = ctx.helper.escape(ctx.query.keyword);
+    const { ctx, service } = this;
+    this.decorator({
+      login: true,
+      get: {
+        categoryId: { type: 'ObjectId', f: true, r: true },
+        keyword: { type: 'String', f: true, r: true }
+      }
+    });
+
+    const categoryId = this.params.categoryId;
+    const keyword = this.params.keyword;
+
     let { pageSize, pageNumber } = ctx.helper.getPaging(ctx.query);
 
     let reg = new RegExp(keyword, 'i'); //不区分大小写
@@ -175,10 +164,10 @@ class ArticleController extends BaseController {
     let where = {}
     if (categoryId && categoryId != 0) {
       whereAnd.push({
-        categoryId: categoryId
+        categoryId
       });
     }
-    if (ctx.query.keyword) {
+    if (keyword) {
       whereAnd.push({
         title: { $regex: reg }
       });
@@ -194,38 +183,31 @@ class ArticleController extends BaseController {
     //获取文章总数
     const countArticleRes = await service.article.count(where);
 
-    ctx.body = {
-      code: 0,
-      msg: '查询成功',
-      data: {
-        list: findArticleRes,
-        total: countArticleRes
-      }
-    };
+    this.throwCorrect({
+      list: findArticleRes,
+      total: countArticleRes
+    }, '查询成功');
   }
 
-  //获取单个文章信息
+	/**
+   * @description 获取单篇文章
+   */
   async show() {
-    const { ctx, service, config } = this;
-    if (!ctx.locals.currentUser.auth.isLogin) {
-      return this.throwError('你没有登陆', 403);
-    }
-    const id = ctx.query.id;
-    if (!id) {
-      return this.throwError('参数错误');
-    }
+    const { service } = this;
+    this.decorator({
+      login: true,
+      get: {
+        id: { type: 'ObjectId', f: true, r: true }
+      }
+    });
 
-    //获取文章
-    const findArticleRes = await service.article.findOne({ _id: id });
+    //查询文章
+    const findArticle = await service.article.findOne({ _id: this.params.id });
 
-    if (findArticleRes) {
-      ctx.body = {
-        code: 0,
-        msg: '查询成功',
-        data: findArticleRes
-      };
+    if (findArticle) {
+      this.throwCorrect(findArticle);
     } else {
-      return this.throwError('文章查询失败');
+      this.throwError('文章查询失败');
     }
   }
 }
