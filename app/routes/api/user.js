@@ -9,5 +9,6 @@ module.exports = function(app) {
   router.post('/api/user/password', controller.api.user.password); // 更改某个用户的密码（登陆用户）
   router.post('/api/user/create', controller.api.user.create); // 创建用户（超级管理员接口）
   router.post('/api/user/update', controller.api.user.update); // 更改某个用户的信息（超级管理员接口）
+  router.post('/api/user/updateme', controller.api.user.updateme); // 更改当前用户的信息（管理员接口）
   router.post('/api/user/delete', controller.api.user.delete); // 删除某个用户（超级管理员接口）
 }

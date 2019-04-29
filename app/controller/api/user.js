@@ -141,6 +141,35 @@ class UserController extends BaseController {
   }
 
   /**
+   * @description 更新当前登陆用户的信息（管理员接口）
+   */
+  async updateme() {
+    const { service } = this;
+    delete user.password;
+    this.decorator({
+      login: true,
+      post: user
+    });
+
+    //如果用户准备修改nickname，判断是否重复
+    if (user.nickname) {
+      const findUser = await service.user.getUserByNickname(this.params.nickname)
+      if (findUser && String(findUser._id) !== String(this.userId)) {
+        this.throwError('昵称已被人使用');
+      }
+    }
+
+    //更新用户信息
+    let updateRes = await service.user.update({ _id: this.userId }, this.params);
+
+    if (updateRes) {
+      this.throwCorrect({}, '用户信息更新成功');
+    } else {
+      this.throwError('用户信息更新失败。');
+    }
+  }
+
+  /**
    * @description 获取用户列表（管理员接口）
    */
   async list() {

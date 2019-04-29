@@ -100,7 +100,7 @@ class SearchController extends BaseController {
     });
 
     //最后将搜索者信息和搜索信息插入搜索结果表
-    let res = await service.log.create({
+    await service.log.create({
       type: 2,
       info: {
         fullUrl: ctx.origin + ctx.url,
