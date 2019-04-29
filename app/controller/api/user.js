@@ -207,7 +207,7 @@ class UserController extends BaseController {
    * @description 修改密码（普通接口）
    */
   async password() {
-    const { ctx } = this;
+    const { ctx, service } = this;
     this.decorator({
       login: true,
       post: {
@@ -217,19 +217,19 @@ class UserController extends BaseController {
     });
 
     // 获取当前用户信息
-    let findUser = ctx.service.user.findOne({ _id: this.userId });
+    let findUser = await service.user.findOne({ _id: this.userId });
 
     // 比较密码
     const equal = ctx.helper.bcompare(this.params.oldpass, findUser.password);
 
     // 密码不匹配
     if (!equal) {
-      this.throwError('密码不正确');
+      this.throwError('旧密码不正确');
     }
 
     // 修改密码
-    let updateRes = await ctx.service.user.update({ _id: this.userId }, {
-      password: this.ctx.helper.bhash(this.params.newpass)
+    let updateRes = await service.user.update({ _id: this.userId }, {
+      password: ctx.helper.bhash(this.params.newpass)
     });
 
     if (updateRes) {

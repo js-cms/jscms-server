@@ -94,7 +94,6 @@ class BaseController extends Controller {
         if (item.extra && item.extra.errorMsg) {
           errorMsg = item.extra.errorMsg || errorMsg;
         }
-        console.log(res);
         this.throwError(errorMsg, 1);
       }
     }

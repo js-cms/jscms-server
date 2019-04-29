@@ -32,6 +32,7 @@ const utils = module.exports = {
    * @param {String} hash 密文
    */
   bcompare(str, hash) {
+    if (!str || !hash) return false;
     return bcrypt.compareSync(str, hash);
   },
 

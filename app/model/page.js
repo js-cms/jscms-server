@@ -10,7 +10,7 @@ model.assign(proto);
 
 module.exports = app => {
   const mongoose = app.mongoose;
-  const Schema = mongoose.Schema;
+  const Schema = mongoose.Schema
   const Types = mongoose.Types;
 
   /*
