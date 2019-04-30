@@ -5,6 +5,15 @@
  */
 
 module.exports = {
+  isIndepMeta: { n: '开启独立元信息', type: 'Boolean', f: true, t: true, r: true }, // 是否需要独立元信息
+  isIndepUser: { n: '开启独立发布者', type: 'Boolean', f: true, t: true, r: true }, // 是否需要独立发布者
+  indepMetaTitle: { n: '元信息标题', type: 'String', f: true, t: false, r: false }, // 独立元信息标题
+  indepMetaKeywords: { n: '元信息关键字', type: 'String', f: true, t: false, r: false }, // 独立元信息关键字
+  indepMetaDescription: { n: '元信息描述', type: 'String', f: true, t: false, r: false }, // 独立元信息描述
+  indepUserAvatar: { n: '发布者头像', type: 'String', f: true, t: false, r: false }, // 独立发布者头像地址
+  indepUserNickname: { n: '发布者昵称', type: 'String', f: true, t: false, r: false }, // 独立发布者昵称
+  indepUserAbout: { n: '发布者介绍', type: 'String', f: true, t: false, r: false }, // 独立发布者介绍
+
   numberId: { n: '文章序号', type: 'Number', f: false, t: true }, //文章序号
   title: { n: '文章标题', type: 'String', f: true, t: true, r: true, p: '文章的标题。' }, //文章标题
   categoryId: { n: '所属分类', type: 'ObjectId', f: true, t: true, ref: 'Category', extra: {displayField: 'name', comType: 'select', options: 'categories'}}, //所属分类对象
@@ -14,8 +23,13 @@ module.exports = {
   keywords: { n: '文章关键字', type: 'Array', f: true, r: true, d: [], extra: {comType: 'tagInput'}}, //文章关键字
   description: { n: '文章摘要', type: 'String', f: true, r: true, p: '文章的摘要，用于元信息或页面头部渲染。', min: 10, max: 200, extra: {comType: 'textarea'}}, //文章摘要
   poster: { n: '文章封面', type: 'Url', f: true, r: true, p: '图片的网址。' }, //文章封面
-  mdContent: { n: 'markdown', type: 'String', f: true, t: false, r: true, extra: {comType: 'markdown'}}, //文章markdown内容
-  htContent: { n: 'html', type: 'String', f: false, t: false, r: false }, //文章html内容
+
+  contentType: { n: '内容类型', type: 'Number', f: true, t: false, r: true, d: 0, extra: {comType: 'select', options: '0:Markdown,1:html代码2:富文本编辑器'}}, //文章内容类型  //0:Markdown,1:html代码2:富文本编辑器
+  content: { n: '前端展示内容', type: 'String', f: false, t: false, r: false }, //前端展示的html内容。
+  mdContent: { n: 'markdown', type: 'String', f: true, t: false, r: true, extra: {comType: 'markdown'}}, //markdown代码
+  htmlContent: { n: 'html', type: 'String', f: false, t: false, r: false, extra: {comType: 'codeEdit'}}, //纯html代码
+  richContent: { n: 'richtext', type: 'String', f: false, t: false, r: false, extra: {comType: 'richText'}}, //富文本html代码
+  
   likeCount: { n: '点赞数量', type: 'Number', f: false, d: 0 }, //点赞数量
   commentCount: { n: '评论数量', type: 'Number', f: false, d: 0 }, //评论数量
   visNumber: { n: '浏览数量', type: 'Number', f: false, d: 0 }, //评论数量
