@@ -5,8 +5,8 @@
  */
 
 module.exports = {
-  isIndepMeta: { n: '开启独立元信息', type: 'Boolean', f: true, t: true, r: true }, // 是否需要独立元信息
-  isIndepUser: { n: '开启独立发布者', type: 'Boolean', f: true, t: true, r: true }, // 是否需要独立发布者
+  isIndepMeta: { n: '开启独立元信息', type: 'Boolean', f: true, t: false, r: true }, // 是否需要独立元信息
+  isIndepUser: { n: '开启独立发布者', type: 'Boolean', f: true, t: false, r: true }, // 是否需要独立发布者
   indepMetaTitle: { n: '元信息标题', type: 'String', f: true, t: false, r: false }, // 独立元信息标题
   indepMetaKeywords: { n: '元信息关键字', type: 'String', f: true, t: false, r: false }, // 独立元信息关键字
   indepMetaDescription: { n: '元信息描述', type: 'String', f: true, t: false, r: false }, // 独立元信息描述
@@ -18,7 +18,7 @@ module.exports = {
   title: { n: '文章标题', type: 'String', f: true, t: true, r: true, p: '文章的标题。' }, //文章标题
   categoryId: { n: '所属分类', type: 'ObjectId', f: true, t: true, ref: 'Category', extra: {displayField: 'name', comType: 'select', options: 'categories'}}, //所属分类对象
   userId: { n: '发布用户', type: 'ObjectId', f: false, t: true, ref: 'User', extra: {displayField: 'nickname'}}, //发布用户
-  type: { n: '文章类型', type: 'Number', f: true, r: true, extra: {comType: 'select', options: '1:单封面文章,2:多封面文章'}}, //文章类型：1.单封面文章 2.多封面文章
+  type: { n: '文章类型', type: 'Number', f: true, r: true, d: 1, extra: {comType: 'select', options: '1:单封面文章'}}, //文章类型：1.单封面文章
   topType: { n: '置顶方式', type: 'Number', f: true, r: true, d: 0, extra: {comType: 'select', options: '0:无置顶,1:主要置顶,2:次要置顶'}}, //置顶方式 0、无置顶 1、主要置顶 2、次要置顶
   keywords: { n: '文章关键字', type: 'Array', f: true, r: true, d: [], extra: {comType: 'tagInput'}}, //文章关键字
   description: { n: '文章摘要', type: 'String', f: true, r: true, p: '文章的摘要，用于元信息或页面头部渲染。', min: 10, max: 200, extra: {comType: 'textarea'}}, //文章摘要
