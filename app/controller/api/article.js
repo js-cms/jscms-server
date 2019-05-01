@@ -5,6 +5,33 @@ const marked = require('marked');
 const BaseController = require('./base');
 let article = require('../../model/proto/article');
 
+/**
+ * 文章内容转化
+ * @param {Object} params 文章对象
+ */
+const toContent = function name(params) {
+  //内容转换
+  switch (params.contentType) {
+    case 0: //markdown
+      if (params.mdContent) {
+        params.content = marked(params.mdContent);
+      }
+      break;
+    case 1: //html
+      if (params.htmlContent) {
+        params.content = params.htmlContent;
+      }
+      break;
+    case 2: //richtext
+      if (params.richContent) {
+        params.content = params.richContent;
+      }
+      break;
+    default:
+      break;
+  }
+}
+
 class ArticleController extends BaseController {
 
   /**
@@ -22,11 +49,11 @@ class ArticleController extends BaseController {
 
     //给文章增加点赞数
     await service.article.updateOne({ _id: this.params.id }, {
-      $inc: { likeCount: Number(1) }
+      $inc: { likeTotal: Number(1) }
     });
 
     this.throwCorrect({
-      count: findArticle.likeCount + 1
+      count: findArticle.likeTotal + 1
     }, '点赞成功');
   }
 
@@ -37,22 +64,23 @@ class ArticleController extends BaseController {
     const { ctx, service } = this;
     this.decorator({
       login: true,
-      post: article
+      post: article,
+      toParams: { formField: true }
     });
 
     //统计文章数量
-    let configCountRes = await service.config.findOne({ alias: 'articleCount' });
-    let num = Number(configCountRes.info.num) + 1;
-    await service.config.update({ _id: configCountRes._id }, {
-      info: { num: num }
+    let findConfig = await service.config.findOne({ alias: 'articleCount' });
+    let numberId = Number(findConfig.info.num) + 1;
+    await service.config.update({ _id: findConfig._id }, {
+      info: { num: numberId }
     });
 
     let params = this.params;
-    params.numberId = num;
-
-    //文章创建结果
-    params.htContent = marked(params.mdContent);
+    params.numberId = numberId;
     params.userId = this.userId;
+
+    //内容转换
+    toContent(params);
 
     //如果有分类名称，就查分类，并带入id
     if (params.categoryName) {
@@ -94,13 +122,12 @@ class ArticleController extends BaseController {
     article.id = { type: 'ObjectId', f: true, r: true };
     this.decorator({
       login: true,
-      post: article
+      post: article,
+      toParams: { formField: true }
     });
 
-    //转化markdown代码
-    if (this.params.mdContent) {
-      this.params.htContent = marked(this.params.mdContent);
-    }
+    //内容转换
+    toContent(this.params);
 
     //更新文章
     const updateRes = await service.article.update({ _id: this.params.id }, this.params);

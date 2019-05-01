@@ -67,7 +67,7 @@
 
                         <span class="entry-views">
                           <span class="view-count">
-                            <%-RENDER_PARAM.article.visNumber%></span> 浏览 </span>
+                            <%-RENDER_PARAM.article.visTotal%></span> 浏览 </span>
 
                         <span class="entry-comment"><a href="/<%-RENDER_PARAM.value%>.html#comments"
                             class="comments-link">
@@ -95,7 +95,7 @@
                   class="attachment-zimeiti_1_single_thumb size-zimeiti_1_single_thumb wp-post-image"
                   alt="<%-RENDER_PARAM.article.title%>">
 
-                <%-RENDER_PARAM.article.htContent%>
+                <%-RENDER_PARAM.article.content%>
               </div><!-- .entry-content -->
 
               <div class="entry-footer clear">
@@ -135,7 +135,7 @@
                     <span class="sl-wrapper">
                       <a id="btnLike" href="javascript:void(0);" class="sl-button" title="点赞这篇文章">
                         <span class="sl-count">
-                          <%-RENDER_PARAM.article.likeCount%> <em>赞</em></span>
+                          <%-RENDER_PARAM.article.likeTotal%> <em>赞</em></span>
                       </a>
                       <span class="sl-loader"></span>
                     </span>

@@ -11,7 +11,7 @@ model.assign(proto);
 module.exports = app => {
   const mongoose = app.mongoose;
   const Schema = mongoose.Schema;
-  const Types = mongoose.Schema.Types;
+  const Types = Schema.Types;
 
   /*
   * 站点配置表

@@ -15,7 +15,7 @@
                     <a href="/<%-article.numberId%>.html" rel="bookmark"><%-article.title%></a>
                     <div class="entry-meta">
                         <div class="entry-date"><%-helper.toDate(article.updateTime, 2)%></div>
-                        <div class="entry-views">浏览 <%-article.visNumber%></div> 
+                        <div class="entry-views">浏览 <%-article.visTotal%></div> 
                     </div>
                 </div>
             </li>
@@ -39,7 +39,7 @@
                     <a href="/<%-article.numberId%>.html" rel="bookmark"><%-article.title%></a>
                     <div class="entry-meta">
                         <div class="entry-date"><%-helper.toDate(article.updateTime, 2)%></div>
-                        <div class="entry-views">评论 <%-article.commentCount%></div> 
+                        <div class="entry-views">评论 <%-article.commentTotal%></div> 
                     </div>
                 </div>
             </li>

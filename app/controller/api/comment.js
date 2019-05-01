@@ -41,7 +41,7 @@ class CommentController extends BaseController {
     if (createCommentRes._id) {
       //给文章增加评论数
       await service.article.update({ _id: findArticleRes._id }, {
-        $inc: { commentCount: Number(1) }
+        $inc: { commentTotal: Number(1) }
       });
       this.throwCorrect(createCommentRes, '评论创建完成');
     } else {

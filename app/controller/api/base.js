@@ -35,6 +35,7 @@ class BaseController extends Controller {
    */
   decorator(options) {
     const { ctx } = this;
+    const toParams = options.toParams;
     //验证权限
     if (typeof options.powers === 'object' && options.powers.length) {
       let resArray = [];
@@ -85,7 +86,7 @@ class BaseController extends Controller {
       let res = model.validator.all();
       let errorMsg = '参数不正确';
       if (res.length === 0) {
-        let params = model.to.json();
+        let params = model.to.json(toParams);
         this.params = params;
       } else {
         let key = res[0].name;
@@ -94,6 +95,7 @@ class BaseController extends Controller {
         if (item.extra && item.extra.errorMsg) {
           errorMsg = item.extra.errorMsg || errorMsg;
         }
+        console.log(res);
         this.throwError(errorMsg, 1);
       }
     }

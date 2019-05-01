@@ -148,7 +148,7 @@ class BaseController extends Controller {
     let webConfig = this.cache('WEB_CONFIG');
     if (opts.title) { webConfig.site.title = opts.title; };
     if (opts.keywords) { webConfig.site.keywords = opts.keywords; };
-    if (opts.titdescriptionle) { webConfig.site.description = opts.description; };
+    if (opts.description) { webConfig.site.description = opts.description; };
     this.cache('WEB_CONFIG', webConfig);
   }
 

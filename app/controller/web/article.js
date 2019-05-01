@@ -32,16 +32,9 @@ class ArticleController extends BaseController {
     //获取文章评论
     let findCommentRes = await service.comment.find({ articleId: findArticleRes._id });
 
-    //重写页面元信息
-    this.setMeta({
-      title: `${findArticleRes.title}${separator}${subtitle}`,
-      keywords: findArticleRes.keywords.join(','),
-      description: findArticleRes.description,
-    });
-
     //更新文章浏览量
     await service.article.update({ _id: findArticleRes._id }, {
-      $inc: { 'visNumber': Number(1) }
+      $inc: { 'visTotal': Number(1) }
     });
 
     //定义内部搜索函数
@@ -92,6 +85,22 @@ class ArticleController extends BaseController {
         relatedArticles = relatedArticles.slice(0, 6);
       }
     }
+
+    //重新组织元信息
+    let meta = {};
+    let keywords = findArticleRes.keywords.join(',');
+    if (findArticleRes.isIndepMeta === true) {
+      meta.title = findArticleRes.indepMetaTitle || findArticleRes.title;
+      meta.keywords = findArticleRes.indepMetaKeywords || keywords;
+      meta.description = findArticleRes.indepMetaDescription || findArticleRes.description;
+    } else {
+      meta.title = findArticleRes.title; 
+      meta.keywords = keywords;
+      meta.description = findArticleRes.description;
+    }
+
+    //重写页面元信息
+    this.setMeta(meta);
 
     this.cache('RENDER_PARAM', {
       // 页面类型: String

@@ -11,7 +11,7 @@ model.assign(proto);
 module.exports = app => {
   const mongoose = app.mongoose;
   const Schema = mongoose.Schema;
-  const Types = mongoose.Types;
+  const Types = Schema.Types;
 
   /*
   * 日志记录表

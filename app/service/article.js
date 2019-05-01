@@ -70,7 +70,7 @@ class ArticleService extends Service {
    */
   async findByHot(query, pageNum = 0, pageSize = 10) {
     return this.ctx.model.Article.find(query)
-      .sort({ 'visNumber': -1 })
+      .sort({ 'visTotal': -1 })
       .skip(pageNum * pageSize)
       .limit(pageSize)
       .exec();
@@ -81,7 +81,7 @@ class ArticleService extends Service {
    */
   async findByComment(query, pageNum = 0, pageSize = 10) {
     return this.ctx.model.Article.find(query)
-      .sort({ 'commentCount': -1 })
+      .sort({ 'commentTotal': -1 })
       .skip(pageNum * pageSize)
       .limit(pageSize)
       .exec();
