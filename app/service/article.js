@@ -13,7 +13,6 @@ class ArticleService extends Service {
    */
   indepUser(data) {
     const cover = function (article) {
-      console.log(article.title, article.isIndepUser);
       if (article.isIndepUser === true) {
         article.userId = _.cloneDeep(article.userId);
         article.userId.avatar = article.indepUserAvatar || article.userId.avatar;
