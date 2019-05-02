@@ -21,59 +21,23 @@ class SearchController extends BaseController {
     const { ctx, service } = this;
     let webConfig = this.cache('WEB_CONFIG');
     const { subtitle, separator } = webConfig.site;
-    let pageNumber = this.ctx.query.pageNumber || 1;
-    let keyword = this.ctx.query.s;
-    let pageSize = 10;
-
-    if ( pageNumber < 1 ) {
+    let pageNumber = this.ctx.query.pageNumber - 1;
+    pageNumber = isNaN(pageNumber) || pageNumber < 0 ? 0 : pageNumber;
+    
+    if ( pageNumber < 0 ) {
       return this.notFound();
     }
-    pageNumber = pageNumber - 1;
+    let pageSize = 10;
+    let keyword = this.ctx.query.s;
 
-    let regKeyword = new RegExp(keyword, 'i'); //不区分大小写
-    let whereOr = [];
-    let where = {}
-    if (keyword) {
-      whereOr.push({
-        title: { $regex: regKeyword }
-      });
-      whereOr.push({
-        htContent: { $regex: regKeyword }
-      });
-    }
-    if (whereOr.length) {
-      where = {
-        '$or': whereOr
-      }
-    }
-    let articlesRes = await service.article.search(where, pageNumber, pageSize);
-    let totalRes = await service.article.count(where);
+    let { articles, total } = await service.article.searchForWeb(keyword, pageNumber, pageSize);
 
-    let pages = [];
-    let totalNum = Math.ceil(totalRes / pageSize);
-    let showLen = 10;
-    let pos = 3 - 1;
-    Array.from({ length: showLen }).forEach((i, index) => {
-      let beforNum = (pageNumber - (pos - index)) + 1;
-      let currentNum = pageNumber + 1;
-      let afterNum = (pageNumber + (index - pos)) + 1;
-      if (beforNum > 0 && index < pos) {
-        pages.push({
-          num: beforNum,
-          isCurrent: false
-        });
-      } else if (index === pos) {
-        pages.push({
-          num: currentNum,
-          isCurrent: true
-        });
-      } else if (afterNum <= totalNum && index > pos) {
-        pages.push({
-          num: afterNum,
-          isCurrent: false
-        });
-      }
-    });
+    //分页算法
+    let pages = this.paging(
+      total,
+      pageNumber,
+      pageSize
+    );
 
     //重写页面元信息
     this.setMeta({
@@ -88,14 +52,14 @@ class SearchController extends BaseController {
       // 搜索关键字：String
       keyword: keyword || '',
       // 搜索结果文章列表：Array
-      articles: articlesRes || [],
+      articles: articles || [],
       // 分页信息：Object
       pagination: {
         prefix: `s?s=${keyword}`,
         start: 1,
         pages: pages,
         current: pageNumber + 1,
-        end: Math.ceil(totalRes / pageSize)
+        end: Math.ceil(total / pageSize)
       }
     });
 
@@ -111,6 +75,7 @@ class SearchController extends BaseController {
       }
     });
 
+    //显示搜索结果
     await this.render('/pages/search', {});
   }
 

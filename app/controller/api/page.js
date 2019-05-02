@@ -1,7 +1,9 @@
 'use strict';
 
+const _ = require('lodash');
+
 const BaseController = require('./base');
-let page = require('../../model/proto/page');
+let pageModel = require('../../model/proto/page');
 
 class PageController extends BaseController {
 
@@ -12,7 +14,7 @@ class PageController extends BaseController {
     const { service } = this;
     this.decorator({
       login: true,
-      post: page
+      post: pageModel
     });
 
     let params = this.params;
@@ -42,6 +44,7 @@ class PageController extends BaseController {
    */
   async update() {
     const { service } = this;
+    let page = _.cloneDeep(pageModel); 
     page.id = { type: 'ObjectId', f: true, r: true };
     this.decorator({
       login: true,

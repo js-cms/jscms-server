@@ -36,40 +36,21 @@ class HomeController extends BaseController {
       topType: 2
     }, 0, 2);
 
-    let articlesRes = await service.article.find({}, pageNumber, pageSize);
-    let totalRes = await service.article.count({});
+    let articles = await service.article.find({}, pageNumber, pageSize);
+    let total = await service.article.count({});
 
-    let pages = [];
-    let totalNum = Math.ceil(totalRes / pageSize);
-    let showLen = 10;
-    let pos = 3 - 1;
-    Array.from({ length: showLen }).forEach((i, index) => {
-      let beforNum = (pageNumber - (pos - index)) + 1;
-      let currentNum = pageNumber + 1;
-      let afterNum = (pageNumber + (index - pos)) + 1;
-      if (beforNum > 0 && index < pos) {
-        pages.push({
-          num: beforNum,
-          isCurrent: false
-        })
-      } else if (index === pos) {
-        pages.push({
-          num: currentNum,
-          isCurrent: true
-        })
-      } else if (afterNum <= totalNum && index > pos) {
-        pages.push({
-          num: afterNum,
-          isCurrent: false
-        })
-      }
-    });
+    //分页算法
+    let pages = this.paging(
+      total,
+      pageNumber,
+      pageSize
+    );
 
     this.cache('RENDER_PARAM', {
       // 页面类型: String
       pageType: 'home' || 'unknown',
       // 文章列表：Array
-      articles: articlesRes,
+      articles: articles,
       // 主要置顶文章：Array
       topMainArticles: topMainArticles || [],
       // 次要置顶文章：Array
@@ -84,7 +65,7 @@ class HomeController extends BaseController {
         start: 1,
         pages: pages,
         current: pageNumber + 1,
-        end: Math.ceil(totalRes / pageSize)
+        end: Math.ceil(total / pageSize)
       }
     });
     

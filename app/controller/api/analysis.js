@@ -26,6 +26,7 @@ class AnalysisController extends BaseController {
 			}
 		});
 
+		// 输出数据
 		this.throwCorrect(logs);
 	}
 
@@ -51,6 +52,33 @@ class AnalysisController extends BaseController {
 			}
 		});
 
+		// 输出数据
+		this.throwCorrect(logs);
+	}
+
+	/**
+   * @description 统计搜索量
+   */
+	async search() {
+		const { service } = this;
+		this.decorator({
+			login: true,
+			get: {
+				startTime: { n: '开始时间', type: 'Timestamp', d: 0, f: true, r: true },
+				endTime: { n: '结束时间', type: 'Timestamp', d: new Date().getTime(), f: true, r: true }
+			}
+		});
+
+		// 获取日志总数
+		const logs = await service.log.findAll({
+			type: 2,
+			createTime: {
+				$gte: this.params.startTime,
+				$lt: this.params.endTime
+			}
+		});
+
+		// 输出数据
 		this.throwCorrect(logs);
 	}
 }

@@ -40,7 +40,7 @@
                         if ( this.form.authorEmail ) {
                             data.authorEmail = this.form.authorEmail;
                         }
-                        $.post("/api/comment/create", data, function(res) {
+                        $.post("/api/comment/webcreate", data, function(res) {
                             if ( res.code === 0 ) {
                                 var url = window.location.origin + window.location.pathname + "?id="+ res.data._id +"#comment-" + res.data._id;
                                 window.location.href = url;

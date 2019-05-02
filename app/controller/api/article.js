@@ -1,9 +1,10 @@
 'use strict';
 
 const marked = require('marked');
+const _ = require('lodash');
 
 const BaseController = require('./base');
-let article = require('../../model/proto/article');
+let articleModel = require('../../model/proto/article');
 
 /**
  * 文章内容转化
@@ -68,50 +69,29 @@ class ArticleController extends BaseController {
       toParams: { formField: true }
     });
 
-    //统计文章数量
-    let findConfig = await service.config.findOne({ alias: 'articleCount' });
-    let numberId = Number(findConfig.info.num) + 1;
-    await service.config.update({ _id: findConfig._id }, {
-      info: { num: numberId }
-    });
-
+    this.params.userId = this.userId;
     let params = this.params;
-    params.numberId = numberId;
-    params.userId = this.userId;
 
     //内容转换
     toContent(params);
 
+    //numberId自增
+    await service.config.numberId(params);
+
     //如果有分类名称，就查分类，并带入id
-    if (params.categoryName) {
-      let findCatRes = await service.category.findOne({
-        name: params.categoryName
-      });
-      params.categoryId = findCatRes._id;
-      delete params.categoryName;
-    }
+    await service.category.parseNameForArticle(params);
 
     //创建文章
-    const createArticleRes = await service.article.create(params);
+    await service.article.create(this, true);
 
-    //给分类增加文章
-    const updateCategoryRes = await service.category.update({ _id: params.categoryId }, {
-      $inc: { articleCount: Number(1) }
-    });
+    //给分类增加文章数量
+    await service.category.addNumForArticle(params);
 
     //更新标签列表
-    let findTagsRes = await service.config.findOne({ alias: 'tags' });
-    let newTags = ctx.helper.mixinArray(params.keywords, findTagsRes.info);
-    await service.config.update({ _id: findTagsRes._id }, {
-      info: newTags
-    });
+    await service.config.updateTagsForArticle(params);
 
-    //如果文章添加成功
-    if (createArticleRes._id && updateCategoryRes) {
-      this.throwCorrect(createArticleRes, '文章创建成功');
-    } else {
-      this.throwError('文章创建失败');
-    }
+    //输出
+    this.throwCorrect({}, '文章创建成功');
   }
 
   /**
@@ -119,6 +99,7 @@ class ArticleController extends BaseController {
    */
   async update() {
     const { ctx, service } = this;
+    let article = _.cloneDeep(articleModel); 
     article.id = { type: 'ObjectId', f: true, r: true };
     this.decorator({
       login: true,
@@ -132,12 +113,8 @@ class ArticleController extends BaseController {
     //更新文章
     const updateRes = await service.article.update({ _id: this.params.id }, this.params);
 
-    if (this.params.keywords && this.params.keywords.length) {
-      //更新标签列表
-      let findTagsRes = await service.config.findOne({ alias: 'tags' });
-      let newTags = ctx.helper.mixinArray(this.params.keywords, findTagsRes.info);
-      await service.config.update({ _id: findTagsRes._id }, { info: newTags });
-    }
+    //更新标签列表
+    await service.config.updateTagsForArticle(this.params);
 
     if (updateRes) {
       this.throwCorrect(updateRes, '更新成功');

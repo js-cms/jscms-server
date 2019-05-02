@@ -7,6 +7,7 @@
 module.exports = {
   commentId: { n: '所属评论', type: 'ObjectId', f: false, t: false, r: false, ref: 'Comment' }, //所属评论。
   articleId: { n: '所属文章', type: 'ObjectId', f: false, t: true, r: false, ref: 'Article', extra: {displayField: 'title'}}, //所属文章
+  articleNumberId: { n: '所属文章序号', type: 'Number', f: true, t: false, r: true, d: 0 }, // 所属文章序号
   authorNickname: { n: '评论人昵称', type: 'String', f: true, t: true, d: '匿名网友' }, //评论人昵称
   authorUrl: { n: '评论人主页', type: 'String', f: true, t: true }, //评论人主页
   authorEmail: { n: '评论人邮箱', type: 'String', f: true, t: true }, //评论人邮箱

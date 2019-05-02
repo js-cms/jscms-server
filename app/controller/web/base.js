@@ -114,7 +114,7 @@ class BaseController extends Controller {
       return res && res.info ? res.info : false;
     }
 
-    let categories = await service.category.find({});
+    let categories = await service.category.listForWeb();
     let domains = await getWebConfig(config.constant.webConfigNames.DOMAIN_NAME);
     let site = await getWebConfig(config.constant.webConfigNames.SITE_NAME);
     let menus = await getWebConfig(config.constant.webConfigNames.MENU_NAME);
@@ -173,6 +173,45 @@ class BaseController extends Controller {
       }
     }
     await ctx.render(`/${config.theme.THEME_NAME}/view/${viewPath}`, Object.assign(commonData, data));
+  }
+
+  /**
+   * @description 分页算法
+   * @param {Number} total 数据总数
+   * @param {Number} pageNumber 当前页码
+   * @param {Number} pageSize 每页显示数量
+   * @param {Number} pos 偏移量
+   */
+  paging(
+    total = 0,
+    pageNumber = 0,
+    pageSize = 10,
+    pos = 2
+  ) {
+    let pages = [];
+    let totalNum = Math.ceil(total / pageSize);
+    Array.from({ length: pageSize }).forEach((i, index) => {
+      let beforeNum = (pageNumber - (pos - index)) + 1;
+      let currentNum = pageNumber + 1;
+      let afterNum = (pageNumber + (index - pos)) + 1;
+      if (beforeNum > 0 && index < pos) {
+        pages.push({
+          num: beforeNum,
+          isCurrent: false
+        });
+      } else if (index === pos) {
+        pages.push({
+          num: currentNum,
+          isCurrent: true
+        });
+      } else if (afterNum <= totalNum && index > pos) {
+        pages.push({
+          num: afterNum,
+          isCurrent: false
+        }); 
+      }
+    });
+    return pages;
   }
 
   /**

@@ -4,7 +4,7 @@ jscms-server，jscms服务端，基于阿里的 [eggjs](https://github.com/eggjs
 
 ## 等待完善
 
-1. API 相关控制器代码优化（未完成
+1. API 相关控制器代码优化（完成
 1. 验证码系统
 1. 前台注册/登陆
 

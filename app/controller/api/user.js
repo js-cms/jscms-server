@@ -1,9 +1,10 @@
 'use strict';
 
 const uuid = require('uuid');
+const _ = require('lodash');
 
 const BaseController = require('./base');
-let user = require('../../model/proto/user');
+let userModel = require('../../model/proto/user');
 
 /**
  * 用户相关的api接口
@@ -60,24 +61,22 @@ class UserController extends BaseController {
     this.decorator({
       powers: ['super'],
       login: true,
-      post: user
+      post: userModel
     });
 
     //判断用户是否已经被创建
     const findUsers = await ctx.service.user.getUsersByQuery({
       $or: [{ email: this.params.email }]
     });
-    if (findUsers.length > 0) {
-      this.throwError('用户名或邮箱已被使用。')
-    }
-
+    if (findUsers.length > 0) this.throwError('用户名或邮箱已被使用。');
+    
     //获取用户总数
     const count = await ctx.service.user.count({});
     if (!this.params.nickname) {
       this.params.nickname = '会员' + count;
     }
 
-    //没有注册的话就注册该用户
+    //创建用户
     const createUser = await ctx.service.user.create(this.params);
 
     //如果用户添加成功
@@ -115,6 +114,7 @@ class UserController extends BaseController {
    */
   async update() {
     const { service } = this;
+    let user = _.cloneDeep(userModel); 
     user.id = { type: 'ObjectId', f: true, r: true };
     this.decorator({
       powers: ['super'],
@@ -240,14 +240,14 @@ class UserController extends BaseController {
   }
 
   /**
-   * @description 登陆（普通接口）
+   * @description 登陆（管理员接口）
    */
   async login() {
     const { ctx } = this;
     this.decorator({
       post: {
         email: { n: '邮箱', type: 'Email', f: true, r: true },
-        password: { n: '密码密文', type: 'Password', f: true, r: true, extra: { errorMsg: '密码格式不正确' } }
+        password: { n: '密码', type: 'Password', f: true, r: true, extra: { errorMsg: '密码格式不正确' } }
       }
     });
 
@@ -255,17 +255,16 @@ class UserController extends BaseController {
     const existUser = await ctx.service.user.getUserByMail(this.params.email);
 
     // 用户不存在
-    if (!existUser) {
-      this.throwError('用户不存在');
-    }
+    if (!existUser) this.throwError('用户不存在');
 
     // 比较密码
     const equal = ctx.helper.bcompare(this.params.password, existUser.password);
 
     // 密码不匹配
-    if (!equal) {
-      this.throwError('密码不正确');
-    }
+    if (!equal) this.throwError('密码不正确');
+
+    // 判断是否具有后台登陆权限
+    if (!ctx.helper.hasPower(existUser, 'admin')) this.throwError('您没有后台系统的登录权限', 403);
 
     //创建新的token
     let accessToken = uuid.v4();
@@ -274,7 +273,7 @@ class UserController extends BaseController {
     let res = await ctx.service.token.getByUserId(existUser._id);
 
     //更新用户的token，没有则自动创建。
-    if (res) { //更新 
+    if (res) { //更新
       const now = (new Date()).getTime();
       const tomorrow = now + 1000 * 60 * 60 * 24;
       res = await ctx.service.token.updateToken({ userId: existUser._id }, {

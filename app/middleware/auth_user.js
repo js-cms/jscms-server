@@ -12,22 +12,7 @@ module.exports = app => {
       user: {},
       auth: {},
       hasPower: function (powerStr) {
-        let power = this.user.power;
-        if (!power) {
-          return false;
-        } else {
-          if (power[0] === "super") {
-            return true;
-          } else {
-            let result = false;
-            power.forEach(element => {
-              if (element === powerStr) {
-                result = true;
-              }
-            });
-            return result;
-          }
-        }
+        return ctx.helper.hasPower(this.user, powerStr);
       }
     };
     

@@ -1,18 +1,49 @@
 'use strict';
 
+const _ = require('lodash');
+
 const Service = require('egg').Service;
 const Db = require('./Db');
 const articleModel = require('../model/proto/article');
 
 class ArticleService extends Service {
 
+  /**
+   * 覆盖原有发布者
+   */
+  indepUser(data) {
+    const cover = function (article) {
+      console.log(article.title, article.isIndepUser);
+      if (article.isIndepUser === true) {
+        article.userId = _.cloneDeep(article.userId);
+        article.userId.avatar = article.indepUserAvatar || article.userId.avatar;
+        article.userId.nickname = article.indepUserNickname || article.userId.nickname;
+        article.userId.about = article.indepUserAbout || article.userId.about;
+      }
+    }
+    if (data.constructor === Array) {
+      data.forEach(i => {cover(i)});
+    } else {
+      cover(data);
+    }
+  }
+
   /*
    * 创建文章
    */
-  async create(data) {
-    const db = new Db(this.ctx.model.Article);
-    let newData = db.parseModelman(data, articleModel);
-    return db.create(newData);
+  async create(data, isBreak) {
+    if ( isBreak === true ) {
+      const db = new Db(this.ctx.model.Article);
+      let newData = db.parseModelman(data.params, articleModel);
+      let createRes = db.create(newData);
+      if (!createRes) {
+        data.throwError('文章创建失败');
+      }
+    } else {
+      const db = new Db(this.ctx.model.Article);
+      let newData = db.parseModelman(data, articleModel);
+      return db.create(newData);
+    }
   }
 
   /*
@@ -42,13 +73,15 @@ class ArticleService extends Service {
    * 查询符合条件的文章
    */
   async find(query, pageNum = 0, pageSize = 10) {
-    return this.ctx.model.Article.find(query)
+    let articles = await this.ctx.model.Article.find(query)
       .populate('userId')
       .populate('categoryId')
       .sort({ 'createTime': -1 })
       .skip(pageNum * pageSize)
       .limit(pageSize)
       .exec();
+    this.indepUser(articles);
+    return articles;
   }
 
   /**
@@ -101,10 +134,12 @@ class ArticleService extends Service {
    * 查找一篇文章（网站使用）
    */
   async findOneForWeb(query) {
-    return this.ctx.model.Article.findOne(query)
+    let article = await this.ctx.model.Article.findOne(query)
       .populate('userId')
       .populate('categoryId')
       .exec();
+    this.indepUser(article);
+    return article;
   }
 
   /**
@@ -118,6 +153,32 @@ class ArticleService extends Service {
       .skip(pageNum * pageSize)
       .limit(pageSize)
       .exec();
+  }
+
+  /**
+   * 网站站内搜索封装
+   */
+  async searchForWeb(keyword, pageNumber, pageSize) {
+    let regKeyword = new RegExp(keyword, 'i'); //不区分大小写
+    let whereOr = [];
+    let where = {}
+    if (keyword) {
+      whereOr.push({
+        title: { $regex: regKeyword }
+      });
+      whereOr.push({
+        content: { $regex: regKeyword }
+      });
+    }
+    if (whereOr.length) {
+      where = {
+        '$or': whereOr
+      }
+    }
+    let articles = await this.search(where, pageNumber, pageSize);
+    let total = await this.count(where);
+    this.indepUser(articles);
+    return { articles, total };
   }
   
   /**

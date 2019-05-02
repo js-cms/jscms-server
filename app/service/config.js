@@ -1,5 +1,7 @@
 'use strict';
 
+const _ = require('lodash');
+
 const Service = require('egg').Service;
 const Db = require('./Db');
 const configModel = require('../model/proto/config');
@@ -52,6 +54,31 @@ class ConfigService extends Service {
    */
   async count(query) {
     return this.ctx.model.Config.count(query).exec();
+  }
+
+  /**
+   * numberId自增（活动控制器使用）
+   */
+  async numberId(params) {
+    let findConfig = await this.ctx.model.Config.findOne({ alias: 'articleCount' });
+    let numberId = Number(findConfig.info.num) + 1;
+    await this.update({ _id: findConfig._id }, {
+      info: { num: numberId }
+    });
+    params.numberId = numberId;
+  }
+
+  /**
+   * 更新标签信息（活动控制器使用）
+   */
+  async updateTagsForArticle(params) {
+    if (params.keywords && params.keywords.length) {
+      let findTagsRes = await this.ctx.model.Config.findOne({ alias: 'tags' });
+      let newTags = _.uniq([...params.keywords, ...findTagsRes.info]);
+      return this.update({ _id: findTagsRes._id }, {
+        info: newTags
+      });
+    }
   }
 }
 

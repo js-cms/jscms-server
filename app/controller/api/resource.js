@@ -23,22 +23,24 @@ class ResourceController extends BaseController {
     this.decorator({
       login: true,
       get: {
-        type: { type: 'Number', f: true, r: true }
+        type: { type: 'Number', f: true, r: true },
+        keyword: { type: 'String', f: true, r: false }
       }
     });
 
     const type = this.params.type;
+    const keyword = this.params.keyword;
+
     let { pageSize, pageNumber } = ctx.helper.getPaging(ctx.query);
 
-    let where = {};
-    if (type) {
-      where.type = type;
-    }
+    let query = { '$and': [] };
+    if (type) query.$and.push({type: type});
+    if (keyword) query.$and.push({ filename: { $regex: new RegExp(keyword, 'i') }});
 
     //获取列表
-    let findRes = await service.resource.find(where, pageNumber, pageSize);
+    let findRes = await service.resource.find(query, pageNumber, pageSize);
     let list = [];
-
+ 
     for (const item of findRes) {
       let url = '';
       if (item.store === 1) {
@@ -58,12 +60,12 @@ class ResourceController extends BaseController {
     }
 
     //获取资源总数
-    let totalRes = await service.resource.count(where);
+    let total = await service.resource.count(query);
 
     //输出结果
     this.throwCorrect({
       list,
-      total: totalRes
+      total: total
     });
   }
 

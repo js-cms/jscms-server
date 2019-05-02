@@ -112,5 +112,37 @@ const utils = module.exports = {
     let tempArr = filename.split('.');
     const suffix = tempArr[tempArr.length - 1];
     return suffix;
+  },
+
+  /**
+   * @description 判断是否拥有某个权限
+   * @param {Object} user 用户对象 
+   * @param {*} powers 权限值
+   */
+  hasPower(user, powers) {
+    let userPowers = user.power;
+    if (!userPowers) return false; 
+    if (userPowers[0] === "super") return true;
+    if (typeof powers === 'string') powers = [powers];
+    let result = [];
+    powers.forEach(p => {
+      if (userPowers.includes(p)) result.push(true);
+    });
+    return result.length === powers.length;
+  },
+
+  /**
+   * @description 判断数组某个值是否部分匹配目标字符串
+   * @param {Array} array 数组
+   * @param {String} targetStr 目标值
+   */
+  includesPart(array, targetStr) {
+    let has = false;
+    array.forEach(item => {
+      if (targetStr.indexOf(item) !== -1) {
+        has = true;
+      }
+    });
+    return has;
   }
 };

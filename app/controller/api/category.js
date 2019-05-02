@@ -1,5 +1,7 @@
 'use strict';
 
+const marked = require('marked');
+
 const BaseController = require('./base');
 let category = require('../../model/proto/category');
 
@@ -12,7 +14,8 @@ class CategoryController extends BaseController {
     const { service } = this;
     this.decorator({
       login: true,
-      post: category
+      post: category,
+      toParams: { formField: true }
     });
     
     let params = this.params;
@@ -43,10 +46,11 @@ class CategoryController extends BaseController {
    */
   async update() {
     const { service } = this;
-    category.id = { type: 'ObjectId', f: true, r: true };
+    category.id = { n: '分类id', type: 'ObjectId', f: true, r: true };
     this.decorator({
       login: true,
-      post: category
+      post: category,
+      toParams: { formField: true }
     });
 
     const updateRes = await service.category.update({_id: this.params.id}, this.params);

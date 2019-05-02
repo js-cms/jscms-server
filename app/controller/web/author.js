@@ -33,34 +33,15 @@ class AuthorController extends BaseController {
       return this.notFound();
     }
 
-    let articlesRes = await service.article.find({ userId: findUserRes._id }, pageNumber, pageSize);
-    let totalRes = await service.article.count({ userId: findUserRes._id });
+    let articles = await service.article.find({ userId: findUserRes._id }, pageNumber, pageSize);
+    let total = await service.article.count({ userId: findUserRes._id });
 
-    let pages = [];
-    let totalNum = Math.ceil(totalRes / pageSize);
-    let showLen = 10;
-    let pos = 3 - 1;
-    Array.from({ length: showLen }).forEach((i, index) => {
-      let beforNum = (pageNumber - (pos - index)) + 1;
-      let currentNum = pageNumber + 1;
-      let afterNum = (pageNumber + (index - pos)) + 1;
-      if (beforNum > 0 && index < pos) {
-        pages.push({
-          num: beforNum,
-          isCurrent: false
-        })
-      } else if (index === pos) {
-        pages.push({
-          num: currentNum,
-          isCurrent: true
-        })
-      } else if (afterNum <= totalNum && index > pos) {
-        pages.push({
-          num: afterNum,
-          isCurrent: false
-        })
-      }
-    });
+    //分页算法
+    let pages = this.paging(
+      total,
+      pageNumber,
+      pageSize
+    );
 
     //重写页面元信息
     this.setMeta({
@@ -75,17 +56,18 @@ class AuthorController extends BaseController {
       // 作者页对象: Object
       author: findUserRes || {},
       // 所属该作者的文章列表：Array
-      articles: articlesRes || [],
+      articles: articles || [],
       // 分页信息：Object
       pagination: {
-        prefix: nickname,
+        prefix: `author/${nickname}`,
         start: 1,
         pages: pages,
         current: pageNumber + 1,
-        end: Math.ceil(totalRes / pageSize)
+        end: Math.ceil(total / pageSize)
       }
     });
 
+    //输出作者文章页
     await this.render('/pages/author', {});
   }
 
@@ -97,7 +79,7 @@ class AuthorController extends BaseController {
     let tempArr = params.split('-');
     let nickname = tempArr[0].replace('.html', '');
     let pageNumber = tempArr[1] || '0.html';
-    pageNumber = Number(pageNumber.replace('.html', ''));
+    pageNumber = Number(pageNumber.replace('.html', '')) - 1;
     pageNumber = isNaN(pageNumber) || pageNumber < 0 ? 0 : pageNumber;
     return {
       nickname: nickname,

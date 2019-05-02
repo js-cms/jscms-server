@@ -33,9 +33,14 @@ class BaseController extends Controller {
    * @description 预处理/拦截/解析 公共函数
    * @param {Object} options 
    */
-  decorator(options) {
+  async decorator(options) {
     const { ctx } = this;
+
+    // 记录请求
+    this.log();
+    
     const toParams = options.toParams;
+
     //验证权限
     if (typeof options.powers === 'object' && options.powers.length) {
       let resArray = [];
@@ -138,6 +143,77 @@ class BaseController extends Controller {
       data: data
     };
     return true;
+  }
+
+  /**
+   * @description 记录请求
+   */
+  log() {
+    const { ctx, service } = this;
+    let visPath = ctx.request.path;
+    const table = {
+      '/api/login': '登陆',
+      '/api/logout': '登出',
+      '/api/article/create': '创建文章',
+      '/api/article/update': '修改文章',
+      '/api/article/delete': '创建文章',
+      '/api/analysis/ip': '查看ip统计',
+      '/api/analysis/pv': '查看pv统计',
+      '/api/analysis/search': '查看搜索统计'
+    };
+    const exclude = [
+      '/api/article/like',
+      '/api/comment/webcreate',
+      '/api/log/'
+    ];
+
+    /**
+     * 获取操作名称
+     */
+    const getOpName = () => {
+      let name = table[visPath];
+      if ( name ) {
+        return name;
+      } else {
+        return '其他操作';
+      }
+    }
+    
+    /**
+     * 检查是否允许记录
+     */
+    const checkValid = () => {
+      let prefix = visPath.substring(0, 4);
+      if (prefix !== '/api') {
+        return false;
+      } else if (ctx.helper.includesPart(exclude, visPath)) {
+        return false;
+      } else {
+        return true;
+      }
+    }
+    if (!checkValid()) return;
+ 
+    let info = {
+      opName: getOpName(),
+      method: ctx.request.method,
+      params: {},
+      fullUrl: ctx.origin + ctx.url,
+      opIp: ctx.headers['x-real-ip'] || ctx.headers['x-forwarded-for'] || '未获取到ip地址',
+      opReferer: ctx.headers['referer'],
+      opUserAgent: ctx.headers['user-agent'],
+      opHeaders: ctx.headers
+    }
+    if (ctx.request.method === 'GET') {
+      info.params = ctx.query || {};
+    } else {
+      info.params = ctx.request.body || {};
+    }
+    //将访问者信息插入log表
+    service.log.create({
+      type: 3,
+      info: info
+    }).then((res) => {});
   }
 }
 

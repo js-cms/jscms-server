@@ -31,46 +31,27 @@ class CategoryController extends BaseController {
       return this.notFound();
     }
 
-    let findCategoryRes = await service.category.findOne({ alias: catAlias });
+    let category = await service.category.findOne({ alias: catAlias });
 
-    if (!findCategoryRes) {
+    if (!category) {
       return this.customRoute();
     }
 
-    let articlesRes = await service.article.find({ categoryId: findCategoryRes._id }, pageNumber, pageSize);
-    let totalRes = await service.article.count({ categoryId: findCategoryRes._id });
+    let articles = await service.article.find({ categoryId: category._id }, pageNumber, pageSize);
+    let total = await service.article.count({ categoryId: category._id });
 
-    let pages = [];
-    let totalNum = Math.ceil(totalRes / pageSize);
-    let showLen = 10;
-    let pos = 3 - 1;
-    Array.from({ length: showLen }).forEach((i, index) => {
-      let beforNum = (pageNumber - (pos - index)) + 1;
-      let currentNum = pageNumber + 1;
-      let afterNum = (pageNumber + (index - pos)) + 1;
-      if (beforNum > 0 && index < pos) {
-        pages.push({
-          num: beforNum,
-          isCurrent: false
-        })
-      } else if (index === pos) {
-        pages.push({
-          num: currentNum,
-          isCurrent: true
-        })
-      } else if (afterNum <= totalNum && index > pos) {
-        pages.push({
-          num: afterNum,
-          isCurrent: false
-        })
-      }
-    });
+    //分页算法
+    let pages = this.paging(
+      total,
+      pageNumber,
+      pageSize
+    );
 
     //重写页面元信息
     this.setMeta({
-      title: `${findCategoryRes.title}${(findCategoryRes.title ? ',' : '') + findCategoryRes.name}${separator}${subtitle}`,
-      keywords: findCategoryRes.keywords,
-      description: findCategoryRes.description
+      title: `${category.title || category.name}${separator}${subtitle}`,
+      keywords: category.keywords,
+      description: category.description
     });
 
     this.cache('RENDER_PARAM', {
@@ -79,16 +60,16 @@ class CategoryController extends BaseController {
       // 分类英文别名: String
       catAlias: catAlias || '',
       // 分类对象: Object
-      category: findCategoryRes || [],
+      category: category || [],
       // 该分类的文章列表：Array
-      articles: articlesRes || [],
+      articles: articles || [],
       // 分页信息：Object
       pagination: {
         prefix: catAlias,
         start: 1,
         pages: pages,
         current: pageNumber + 1,
-        end: Math.ceil(totalRes / pageSize)
+        end: Math.ceil(total / pageSize)
       }
     });
 

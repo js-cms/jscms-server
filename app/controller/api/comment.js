@@ -1,9 +1,10 @@
 'use strict';
 
 const marked = require('marked');
+const _ = require('lodash');
 
 const BaseController = require('./base');
-let comment = require('../../model/proto/comment');
+let commentModel = require('../../model/proto/comment');
 
 /**
  * 评论相关api
@@ -11,39 +12,71 @@ let comment = require('../../model/proto/comment');
 class CommentController extends BaseController {
 
   /**
-   * @description 新增评论
+   * @description 新增评论（网站前端接口）
+   */
+  async webcreate() {
+    const { service } = this;
+    this.decorator({
+      post: commentModel
+    });
+    let params = this.params;
+    
+    //查找所属文章
+    let article = await service.article.findOne({ _id: params.articleId});
+    if (!article) this.throwError('文章不存在');
+
+    //赋值numberId
+    params.articleNumberId = article.numberId;
+
+    //转化markdown代码
+    if (params.mdContent) params.htContent = marked(params.mdContent);
+
+    //创建评论
+    let createRes = await service.comment.create(params);
+
+    if (createRes._id) {
+      //给文章增加评论数
+      await service.article.update({ _id: article._id }, {
+        $inc: { commentTotal: Number(1) }
+      });
+      this.throwCorrect(createRes, '评论创建完成');
+    } else {
+      this.throwError('评论创建失败');
+    }
+  }
+
+  /**
+   * @description 创建评论（管理员接口）
    */
   async create() {
     const { service } = this;
     this.decorator({
-      post: comment
+      login: true,
+      post: commentModel,
+      toParams: { formField: true }
     });
 
     let params = this.params;
 
     //查找所属文章
-    let findArticleRes = await service.article.findOne({
-      _id: params.articleId
-    });
+    let article = await service.article.findOne({ numberId: params.articleNumberId });
+    if (!article) this.throwError('文章不存在');
 
-    if (!findArticleRes) {
-      this.throwError('文章不存在');
-    }
+    //赋值文章id
+    params.articleId = article._id;
 
     //转化markdown代码
-    if (params.mdContent) {
-      params.htContent = marked(params.mdContent);
-    }
+    if (params.mdContent) params.htContent = marked(params.mdContent);
 
     //创建评论
-    let createCommentRes = await service.comment.create(params);
+    let createRes = await service.comment.create(params);
 
-    if (createCommentRes._id) {
+    if (createRes._id) {
       //给文章增加评论数
-      await service.article.update({ _id: findArticleRes._id }, {
+      await service.article.update({ _id: article._id }, {
         $inc: { commentTotal: Number(1) }
       });
-      this.throwCorrect(createCommentRes, '评论创建完成');
+      this.throwCorrect(createRes, '评论创建完成');
     } else {
       this.throwError('评论创建失败');
     }
@@ -54,17 +87,27 @@ class CommentController extends BaseController {
    */
   async update() {
     const { service } = this;
+    let comment = _.cloneDeep(commentModel);
     comment.id = { type: 'ObjectId', f: true, r: true };
     this.decorator({
       login: true,
-      post: comment
+      post: comment,
+      toParams: { formField: true }
     });
 
-    if (this.params.mdContent) {
-      this.params.htContent = marked(this.params.mdContent);
-    }
+    let params = this.params;
 
-    const updateRes = await service.comment.update({ _id: this.params.id }, this.params);
+    //查找所属文章
+    let article = await service.article.findOne({ numberId: params.articleNumberId });
+    if (!article) this.throwError('文章不存在');
+
+    //赋值文章id
+    params.articleId = article._id;
+
+    //转化markdown代码
+    if (params.mdContent) params.htContent = marked(params.mdContent);
+
+    const updateRes = await service.comment.update({ _id: params.id }, params);
 
     if (updateRes) {
       this.throwCorrect(updateRes, '评论更新成功');
@@ -95,7 +138,7 @@ class CommentController extends BaseController {
   }
 
   /**
-   * @description 获取列表
+   * @description 获取列表（管理员接口）
    */
   async list() {
     const { ctx, service } = this;

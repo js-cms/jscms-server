@@ -23,58 +23,100 @@ class ArticleController extends BaseController {
     const { subtitle, separator } = webConfig.site;
     let numberId = ctx.params[0];
 
-    //获取文章
-    let findArticleRes = await service.article.findOneForWeb({ numberId });
-    if (!findArticleRes) {
+    // 获取文章
+    let article = await service.article.findOneForWeb({ numberId });
+    if (!article) {
       return this.notFound();
     }
 
-    //获取文章评论
-    let findCommentRes = await service.comment.find({ articleId: findArticleRes._id });
+    // 获取文章评论
+    let comments = await service.comment.find({ articleId: article._id });
 
-    //更新文章浏览量
-    await service.article.update({ _id: findArticleRes._id }, {
+    // 更新文章浏览量
+    await service.article.update({ _id: article._id }, {
       $inc: { 'visTotal': Number(1) }
     });
 
-    //定义内部搜索函数
-    const searchArticle = async function (keyword) {
-      let regKeyword = new RegExp(keyword, 'i'); //不区分大小写
-      let whereOr = [];
-      let where = {}
-      if (keyword) {
-        whereOr.push({
-          title: { $regex: regKeyword }
-        });
-        whereOr.push({
-          htContent: { $regex: regKeyword }
-        });
-      }
-      if (whereOr.length) {
-        where = {
-          '$or': whereOr
-        }
-      }
-      let articlesRes = await service.article.search(where);
-      return articlesRes;
+    // 重新组织元信息
+    let meta = {};
+    let keywords = article.keywords.join(',');
+    if (article.isIndepMeta === true) {
+      meta.title = article.indepMetaTitle || article.title;
+      meta.keywords = article.indepMetaKeywords || keywords;
+      meta.description = article.indepMetaDescription || article.description;
+    } else {
+      meta.title = `${article.title}${separator}${subtitle}`;
+      meta.keywords = keywords;
+      meta.description = article.description;
     }
 
-    //获取相关推荐文章
+    // 重写页面元信息
+    this.setMeta(meta);
+
+    // 获取关联文章
+    let relatedArticles = await this._getRelated(article);
+
+    this.cache('RENDER_PARAM', {
+      // 页面类型: String
+      pageType: 'article' || 'unknown',
+      // 文章数字id: Number
+      numberId: numberId || 0,
+      // 文章对象: Object
+      article: article || [],
+      // 该文章的评论: Array
+      comments: comments || [],
+      // 相关文章: Array
+      relate: relatedArticles || []
+    });
+
+    await this.render('/pages/article', {});
+  }
+
+  /**
+   * @description 文章关联搜索
+   * @param {String} 关键字
+   */
+  async _searchArticle(keyword) {
+    const { service } = this;
+    let regKeyword = new RegExp(keyword, 'i'); //不区分大小写
+    let whereOr = [];
+    let where = {}
+    if (keyword) {
+      whereOr.push({
+        title: { $regex: regKeyword }
+      });
+      whereOr.push({
+        content: { $regex: regKeyword }
+      });
+    }
+    if (whereOr.length) {
+      where = {
+        '$or': whereOr
+      }
+    }
+    let articlesRes = await service.article.search(where);
+    return articlesRes;
+  }
+
+  /**
+   * @description 获取相关推荐文章
+   */
+  async _getRelated(article) {
     let relatedArticles = [];
-    if (findArticleRes.keywords.length === 1) {
-      let articles = await searchArticle(findArticleRes.keywords[0]);
+    if (article.keywords.length === 1) {
+      let articles = await this._searchArticle(article.keywords[0]);
       relatedArticles = articles;
-    } else if (findArticleRes.keywords.length === 2) {
-      let articles = await searchArticle(findArticleRes.keywords[0]);
+    } else if (article.keywords.length === 2) {
+      let articles = await this._searchArticle(article.keywords[0]);
       relatedArticles = articles;
-      articles = await searchArticle(findArticleRes.keywords[1]);
+      articles = await this._searchArticle(article.keywords[1]);
       relatedArticles = relatedArticles.concat(articles);
-    } else if (findArticleRes.keywords.length === 3) {
-      let articles = await searchArticle(findArticleRes.keywords[0]);
+    } else if (article.keywords.length === 3) {
+      let articles = await this._searchArticle(article.keywords[0]);
       relatedArticles = articles;
-      articles = await searchArticle(findArticleRes.keywords[1]);
+      articles = await this._searchArticle(article.keywords[1]);
       relatedArticles = relatedArticles.concat(articles);
-      articles = await searchArticle(findArticleRes.keywords[2]);
+      articles = await this._searchArticle(article.keywords[2]);
       relatedArticles = relatedArticles.concat(articles);
     }
     if (relatedArticles.length > 6) {
@@ -85,37 +127,7 @@ class ArticleController extends BaseController {
         relatedArticles = relatedArticles.slice(0, 6);
       }
     }
-
-    //重新组织元信息
-    let meta = {};
-    let keywords = findArticleRes.keywords.join(',');
-    if (findArticleRes.isIndepMeta === true) {
-      meta.title = findArticleRes.indepMetaTitle || findArticleRes.title;
-      meta.keywords = findArticleRes.indepMetaKeywords || keywords;
-      meta.description = findArticleRes.indepMetaDescription || findArticleRes.description;
-    } else {
-      meta.title = findArticleRes.title; 
-      meta.keywords = keywords;
-      meta.description = findArticleRes.description;
-    }
-
-    //重写页面元信息
-    this.setMeta(meta);
-
-    this.cache('RENDER_PARAM', {
-      // 页面类型: String
-      pageType: 'article' || 'unknown',
-      // 文章数字id: Number
-      numberId: numberId || 0,
-      // 文章对象: Object
-      article: findArticleRes || [],
-      // 该文章的评论: Array
-      comments: findCommentRes || [],
-      // 相关文章: Array
-      relate: relatedArticles || []
-    });
-
-    await this.render('/pages/article', {});
+    return relatedArticles;
   }
 
 }

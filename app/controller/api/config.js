@@ -1,7 +1,9 @@
 'use strict';
 
+const _ = require('lodash');
+
 const BaseController = require('./base');
-let config = require('../../model/proto/config');
+let configModel = require('../../model/proto/config');
 
 class ConfigController extends BaseController {
 
@@ -28,6 +30,7 @@ class ConfigController extends BaseController {
    */
   async update() {
     const { service } = this;
+    let config = _.cloneDeep(configModel); 
     config.id = { type: 'ObjectId', f: true, r: true };
     this.decorator({
       login: true,
