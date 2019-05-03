@@ -6,7 +6,7 @@
 
 module.exports = {
   phone: { n: '手机号', type: 'Number', f: false, t: false, r: false }, //手机号
-  email: { n: '邮箱', type: 'Email', f: true, t: true, r: true }, //邮箱作为登陆用户名
+  email: { n: '邮箱', type: 'Email', f: true, t: true, r: true }, //邮箱作为登录用户名
   password: { n: '密码密文', type: 'String', f: true, t: false, r: true }, //密码
 
   nickname: { n: '昵称', type: 'String', f: true, t: true, r: false, d: '匿名' }, //昵称

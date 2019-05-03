@@ -54,6 +54,53 @@ class Db {
   }
 
   /**
+   * 模糊搜索
+   */
+  async search(options, model) {
+    let { and, keyword, pageNum, pageSize } = options;
+    let query = { '$and': [], '$or': [] };
+    if (and && and.length) {
+      query.$and = and;
+    }
+    if (keyword) {
+      let reg = new RegExp(keyword, 'i'); //不区分大小写
+      for (const key in model) {
+        if (model.hasOwnProperty(key)) {
+          const item = model[key];
+          let type = item.type || item.t;
+          if (['String'].includes(type)) {
+            query.$or.push({
+              [key]: { $regex: reg }
+            });
+          }
+        }
+      }
+    }
+
+    if ( query.$and.length === 0 ) delete query.$and;
+    if ( query.$or.length === 0 ) delete query.$or;
+
+    let temp = this.Model.find(query);
+
+    for (const key in model) {
+      if (model.hasOwnProperty(key)) {
+        const item = model[key];
+        let type = item.type || item.t;
+        if (type === 'ObjectId' && item.ref) {
+          temp.populate(key);
+        }
+      }
+    }
+    temp.sort({ 'createTime': -1 })
+      .skip(pageNum * pageSize)
+      .limit(pageSize);
+    
+    let list = await temp.exec();
+    let total = await this.Model.count(query).exec();
+    return { list, total };
+  }
+
+  /**
    * @description 填充默认值
    * @param {Object} object 目标对象
    * @param {Object} model modelman

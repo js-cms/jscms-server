@@ -18,12 +18,18 @@ class LogController extends BaseController {
 
 		let type = this.params.type;
 		let { pageSize, pageNumber } = ctx.helper.getPaging(ctx.query);
+		let query = { type: type };
+		
+		let method = ctx.query.method;
+		let opName = ctx.query.opName;
+		if (method) query['info.method'] = method;
+		if (opName) query['info.opName'] = opName;
 
 		//获取日志列表
-		const findLogRes = await service.log.find({ type: type }, pageNumber, pageSize);
+		const findLogRes = await service.log.find(query, pageNumber, pageSize);
 
 		//获取日志总数
-		const countLogRes = await service.log.count({ type: type });
+		const countLogRes = await service.log.count(query);
 
 		//输出结果
 		this.throwCorrect({

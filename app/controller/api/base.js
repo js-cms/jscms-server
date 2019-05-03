@@ -34,14 +34,29 @@ class BaseController extends Controller {
    * @param {Object} options 
    */
   async decorator(options) {
-    const { ctx } = this;
-
+    const { ctx, service, config } = this;
+    let appConfig = config;
     // 记录请求
     this.log();
     
     const toParams = options.toParams;
 
-    //验证权限
+    // 验证码判断
+    if (options.captcha === true) {
+      let config = await service.config.findOne({alias: 'site'});
+      let site = config.info;
+      if (site.boolLoginVercode) {
+        let uid = ctx.query.uid;
+        let vercode = ctx.query.vercode.toLowerCase();
+        let sourceVercode = this.appCache(uid) ? this.appCache(uid).vercode.toLowerCase() : '';
+        if (!vercode) {
+          this.throwError('请输入验证码');
+        } else if (vercode !== sourceVercode) {
+          this.throwError('验证码不正确');
+        }
+      }
+    }
+    // 验证权限
     if (typeof options.powers === 'object' && options.powers.length) {
       let resArray = [];
       options.powers.forEach((p) => {
@@ -53,10 +68,10 @@ class BaseController extends Controller {
         this.throwError('你没有权限', 403);
       }
     }
-    //验证登陆
+    // 验证登录
     if (!ctx.locals.currentUser.auth.isLogin) {
       if (options.login === true) {
-        this.throwError('你没有登陆', 403);
+        this.throwError('你没有登录', 403);
       }
     } else {
       this.userId = ctx.locals.currentUser.user._id;
@@ -152,14 +167,14 @@ class BaseController extends Controller {
     const { ctx, service } = this;
     let visPath = ctx.request.path;
     const table = {
-      '/api/login': '登陆',
+      '/api/login': '登录',
       '/api/logout': '登出',
       '/api/article/create': '创建文章',
       '/api/article/update': '修改文章',
       '/api/article/delete': '创建文章',
       '/api/analysis/ip': '查看ip统计',
       '/api/analysis/pv': '查看pv统计',
-      '/api/analysis/search': '查看搜索统计'
+      '/api/model': '获取模型'
     };
     const exclude = [
       '/api/article/like',
@@ -172,7 +187,7 @@ class BaseController extends Controller {
      */
     const getOpName = () => {
       let name = table[visPath];
-      if ( name ) {
+      if (name) {
         return name;
       } else {
         return '其他操作';
@@ -214,6 +229,14 @@ class BaseController extends Controller {
       type: 3,
       info: info
     }).then((res) => {});
+  }
+
+  /**
+   * @description 缓存操作
+   */
+  appCache(key, value) {
+    const { ctx } = this;
+    return ctx.helper.appCache(ctx.app, key, value);
   }
 }
 

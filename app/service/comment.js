@@ -52,6 +52,14 @@ class CommentService extends Service {
     return this.ctx.model.Comment.count(query).exec();
   }
 
+  /**
+   * @description 模糊搜索接口
+   * @param {Object} options
+   */
+  async searchForApi(options) {
+    const db = new Db(this.ctx.model.Comment);
+    return db.search(options, commentModel);
+  }
 }
 
 module.exports = CommentService;

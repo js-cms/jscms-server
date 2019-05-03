@@ -144,5 +144,35 @@ const utils = module.exports = {
       }
     });
     return has;
+  },
+
+  /**
+   * @description eggjs 内存操作
+   */
+  appCache(app, key, value) {
+    if (!app.cache) {
+      app.cache = '{}';
+    }
+    let cacheObject = JSON.parse(app.cache);
+    if (key && !value) {
+      return cacheObject[key];
+    } else if (key && value) {
+      cacheObject[key] = value;
+      app.cache = JSON.stringify(cacheObject);
+    }
+
+    // 一天后清理内存
+    let timer = setTimeout(() => {
+      let _key = key;
+      if (!app.cache) {
+        app.cache = '{}';
+      }
+      let cacheObject = JSON.parse(app.cache);
+      if (_key) {
+        delete cacheObject[key];
+      }
+      app.cache = JSON.stringify(cacheObject);
+      clearTimeout(timer);
+    }, 86400000);
   }
 };

@@ -35,7 +35,7 @@ class UserController extends BaseController {
   }
 
   /**
-   * @description 获取当前用户的信息（登陆用户接口）
+   * @description 获取当前用户的信息（登录用户接口）
    */
   async self() {
     const { ctx } = this;
@@ -141,7 +141,7 @@ class UserController extends BaseController {
   }
 
   /**
-   * @description 更新当前登陆用户的信息（管理员接口）
+   * @description 更新当前登录用户的信息（管理员接口）
    */
   async updateme() {
     const { service } = this;
@@ -240,11 +240,12 @@ class UserController extends BaseController {
   }
 
   /**
-   * @description 登陆（管理员接口）
+   * @description 登录（管理员接口）
    */
   async login() {
     const { ctx } = this;
-    this.decorator({
+    await this.decorator({
+      captcha: true,
       post: {
         email: { n: '邮箱', type: 'Email', f: true, r: true },
         password: { n: '密码', type: 'Password', f: true, r: true, extra: { errorMsg: '密码格式不正确' } }
@@ -263,7 +264,7 @@ class UserController extends BaseController {
     // 密码不匹配
     if (!equal) this.throwError('密码不正确');
 
-    // 判断是否具有后台登陆权限
+    // 判断是否具有后台登录权限
     if (!ctx.helper.hasPower(existUser, 'admin')) this.throwError('您没有后台系统的登录权限', 403);
 
     //创建新的token
@@ -292,9 +293,9 @@ class UserController extends BaseController {
       this.throwCorrect({
         token: accessToken,
         userInfo: existUser
-      }, '登陆成功');
+      }, '登录成功');
     } else {
-      this.throwError('登陆失败');
+      this.throwError('登录失败');
     }
   }
 

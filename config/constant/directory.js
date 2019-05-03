@@ -13,7 +13,7 @@ const JSCMS_MANAGEMENT = `${JSCMS_STATIC}/management`;
 const JSCMS_UPLOAD = `${JSCMS_STATIC}/upload`;
 const JSCMS_URL_STATIC = `/static`;
 const JSCMS_URL_UPLOAD = `${JSCMS_URL_STATIC}/upload`;
-const JSCMS_URL_MANAGEMENT = `/management`;
+const JSCMS_URL_MANAGEMENT = `/m`;
 const JSCMS_URL_THEME_STATIC = `/theme-static`;
 
 module.exports = {

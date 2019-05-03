@@ -152,44 +152,34 @@ class ArticleController extends BaseController {
     this.decorator({
       login: true,
       get: {
-        categoryId: { type: 'ObjectId', f: true, r: true },
-        keyword: { type: 'String', f: true, r: true }
+        categoryId: { type: 'ObjectId', f: true, r: false },
+        keyword: { type: 'String', f: true, r: false }
       }
     });
 
-    const categoryId = this.params.categoryId;
+    let categoryId = this.params.categoryId || '';
+    categoryId = categoryId.replace('null', '');
     const keyword = this.params.keyword;
+    const { pageSize, pageNumber } = ctx.helper.getPaging(ctx.query);
 
-    let { pageSize, pageNumber } = ctx.helper.getPaging(ctx.query);
-
-    let reg = new RegExp(keyword, 'i'); //不区分大小写
-
-    let whereAnd = [];
-    let where = {}
-    if (categoryId && categoryId != 0) {
-      whereAnd.push({
-        categoryId
-      });
-    }
-    if (keyword) {
-      whereAnd.push({
-        title: { $regex: reg }
-      });
-    }
-    if (whereAnd.length) {
-      where = {
-        '$and': whereAnd
-      }
+    let queryAnd = [];
+    if (categoryId) {
+      queryAnd = [{
+        categoryId: categoryId
+      }];
     }
 
     //获取文章列表
-    const findArticleRes = await service.article.search(where, pageNumber, pageSize);
-    //获取文章总数
-    const countArticleRes = await service.article.count(where);
+    const { list, total } = await service.article.searchForApi({
+      and: queryAnd,
+      keyword: keyword,
+      pageNumber: pageNumber,
+      pageSize: pageSize
+    });
 
     this.throwCorrect({
-      list: findArticleRes,
-      total: countArticleRes
+      list: list,
+      total: total
     }, '查询成功');
   }
 

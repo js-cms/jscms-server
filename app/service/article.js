@@ -152,6 +152,15 @@ class ArticleService extends Service {
       .skip(pageNum * pageSize)
       .limit(pageSize)
       .exec();
+  } 
+
+  /**
+   * @description 模糊搜索接口
+   * @param {Object} options
+   */
+  async searchForApi(options) {
+    const db = new Db(this.ctx.model.Article);
+    return db.search(options, articleModel);
   }
 
   /**

@@ -143,19 +143,25 @@ class CommentController extends BaseController {
   async list() {
     const { ctx, service } = this;
     this.decorator({
-      login: true
+      login: true,
+      get: {
+        keyword: { type: 'String', f: true, r: false }
+      }
+    });
+    const keyword = this.params.keyword;
+    const { pageSize, pageNumber } = ctx.helper.getPaging(ctx.query);
+
+    //获取文章列表
+    const { list, total } = await service.comment.searchForApi({
+      and: [],
+      keyword: keyword,
+      pageNumber: pageNumber,
+      pageSize: pageSize
     });
 
-    let { pageSize, pageNumber } = ctx.helper.getPaging(ctx.query);
-
-    //获取评论列表
-    const findCommentRes = await service.comment.find({}, pageNumber, pageSize);
-    //获取文章总数
-    const countCommentRes = await service.comment.count({});
-
     this.throwCorrect({
-      list: findCommentRes,
-      total: countCommentRes
+      list: list,
+      total: total
     });
   }
 
