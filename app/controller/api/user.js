@@ -247,7 +247,7 @@ class UserController extends BaseController {
     await this.decorator({
       captcha: true,
       post: {
-        email: { n: '邮箱', type: 'Email', f: true, r: true },
+        email: { n: '邮箱', type: 'Email', f: true, r: true, extra: {errorMsg: '邮箱格式不正确'} },
         password: { n: '密码', type: 'Password', f: true, r: true, extra: { errorMsg: '密码格式不正确' } }
       }
     });

@@ -34,8 +34,8 @@ class BaseController extends Controller {
    * @param {Object} options 
    */
   async decorator(options) {
-    const { ctx, service, config } = this;
-    let appConfig = config;
+    const { ctx, service } = this;
+
     // 记录请求
     this.log();
     

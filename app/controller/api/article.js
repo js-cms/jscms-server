@@ -62,10 +62,10 @@ class ArticleController extends BaseController {
    * @description 创建文章
    */
   async create() {
-    const { ctx, service } = this;
+    const { service } = this;
     this.decorator({
       login: true,
-      post: article,
+      post: articleModel,
       toParams: { formField: true }
     });
 
@@ -98,7 +98,7 @@ class ArticleController extends BaseController {
    * @description 更新文章
    */
   async update() {
-    const { ctx, service } = this;
+    const { service } = this;
     let article = _.cloneDeep(articleModel); 
     article.id = { type: 'ObjectId', f: true, r: true };
     this.decorator({
@@ -168,7 +168,7 @@ class ArticleController extends BaseController {
         categoryId: categoryId
       }];
     }
-
+    
     //获取文章列表
     const { list, total } = await service.article.searchForApi({
       and: queryAnd,

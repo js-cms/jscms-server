@@ -64,7 +64,11 @@
                 </h3>
                 <div class="textwidget">
                     <%-WEB_CONFIG.site.about%>
-                    <p class="tips">本站的部分内容来源于互联网，如不慎侵犯到您的权益，请联系我们，我们会在36小时内删除。</p>
+                    <% if ( WEB_CONFIG.site.articleStatement !== '') {%>
+                    <div class="tips">
+                        <%-WEB_CONFIG.site.articleStatement%>
+                    </div>
+                    <% } %>
                 </div>
             </div>
         </div>

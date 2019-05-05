@@ -57,7 +57,7 @@ class Db {
    * 模糊搜索
    */
   async search(options, model) {
-    let { and, keyword, pageNum, pageSize } = options;
+    let { and, keyword, pageNumber, pageSize } = options;
     let query = { '$and': [], '$or': [] };
     if (and && and.length) {
       query.$and = and;
@@ -92,7 +92,7 @@ class Db {
       }
     }
     temp.sort({ 'createTime': -1 })
-      .skip(pageNum * pageSize)
+      .skip(pageNumber * pageSize)
       .limit(pageSize);
     
     let list = await temp.exec();
