@@ -1,3 +1,7 @@
+/**
+ * 后台统计相关接口
+ */
+
 'use strict';
 
 const BaseController = require('../base');
@@ -10,7 +14,6 @@ class AnalysisController extends BaseController {
 	async ip() {
 		const { service } = this;
 		this.decorator({
-			login: true,
 			get: {
 				startTime: { n: '开始时间', type: 'Timestamp', d: 0, f: true, r: true },
 				endTime: { n: '结束时间', type: 'Timestamp', d: new Date().getTime(), f: true, r: true }
@@ -36,7 +39,6 @@ class AnalysisController extends BaseController {
 	async pv() {
 		const { service } = this;
 		this.decorator({
-			login: true,
 			get: {
 				startTime: { n: '开始时间', type: 'Timestamp', d: 0, f: true, r: true },
 				endTime: { n: '结束时间', type: 'Timestamp', d: new Date().getTime(), f: true, r: true }
@@ -62,7 +64,6 @@ class AnalysisController extends BaseController {
 	async search() {
 		const { service } = this;
 		this.decorator({
-			login: true,
 			get: {
 				startTime: { n: '开始时间', type: 'Timestamp', d: 0, f: true, r: true },
 				endTime: { n: '结束时间', type: 'Timestamp', d: new Date().getTime(), f: true, r: true }

@@ -115,23 +115,6 @@ const utils = module.exports = {
   },
 
   /**
-   * @description 判断是否拥有某个权限
-   * @param {Object} user 用户对象 
-   * @param {*} powers 权限值
-   */
-  hasPower(user, powers) {
-    let userPowers = user.power;
-    if (!userPowers) return false; 
-    if (userPowers[0] === "super") return true;
-    if (typeof powers === 'string') powers = [powers];
-    let result = [];
-    powers.forEach(p => {
-      if (userPowers.includes(p)) result.push(true);
-    });
-    return result.length === powers.length;
-  },
-
-  /**
    * @description 判断数组某个值是否部分匹配目标字符串
    * @param {Array} array 数组
    * @param {String} targetStr 目标值
@@ -144,29 +127,5 @@ const utils = module.exports = {
       }
     });
     return has;
-  },
-
-  /**
-   * @description eggjs 内存操作
-   */
-  appCache(app, key, value) {
-    if (!app.cache) app.cache = '{}';
-    let cacheObject = JSON.parse(app.cache);
-    if (key && !value) {
-      return cacheObject[key];
-    } else if (key && value) {
-      cacheObject[key] = value;
-      app.cache = JSON.stringify(cacheObject);
-    }
-
-    // 一天后清理内存
-    let timer = setTimeout(() => {
-      let _key = key;
-      if (!app.cache) app.cache = '{}';
-      let cacheObject = JSON.parse(app.cache);
-      if (key && value) delete cacheObject[key];
-      app.cache = JSON.stringify(cacheObject);
-      clearTimeout(timer);
-    }, 86400000);
   }
 };

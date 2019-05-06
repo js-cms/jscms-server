@@ -1,3 +1,7 @@
+/**
+ * 前/后台验证码相关接口
+ */
+
 'use strict';
 
 const BaseController = require('../base');
@@ -10,24 +14,22 @@ class CaptchaController extends BaseController {
    */
 	async create() {
     const { ctx, config } = this;
-    let uid = ctx.query.uid;
-    if (!uid) {
-      ctx.response.set('content-type', 'application/json');
-      ctx.body = {
-        code: 1,
-        msg: '请传入一个临时的uid以便记录唯一标识。'
-      }
-      return;
-    }
+    const app = ctx.app;
+    const uid = ctx.query.uid;
     ctx.response.set('content-type', 'image/svg+xml ');
+
+    if (!uid) app.throwJsonError('请传入一个临时的uid以便记录唯一标识。');
+
     const cap = svgCaptcha.create({
       size: 5,
       noise: 4,
       width: 200
     });
-    this.appCache(uid, {
+
+    app.cache(uid, {
       vercode: cap.text.toLowerCase()
     });
+    
     ctx.body = cap.data;
   }
   

@@ -1,6 +1,6 @@
 'use strict';
 
-const BaseController = require('../base');
+const BaseController = require('./base');
 
 class ArticleController extends BaseController {
 

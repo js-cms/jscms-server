@@ -1,3 +1,7 @@
+/**
+ * 后台资源相关接口
+ */
+
 'use strict';
 
 const path = require('path');
@@ -21,7 +25,6 @@ class ResourceController extends BaseController {
   async list() {
     const { ctx, service, config } = this;
     this.decorator({
-      login: true,
       get: {
         type: { type: 'Number', f: true, r: true },
         keyword: { type: 'String', f: true, r: false }
@@ -75,7 +78,6 @@ class ResourceController extends BaseController {
   async delete() {
     const { service, config } = this;
     this.decorator({
-      login: true,
       post: {
         id: { type: 'ObjectId', f: true, r: true },
         filename: { type: 'String', f: true, r: true }
@@ -112,10 +114,6 @@ class ResourceController extends BaseController {
    */
   async uploader() {
     const { ctx, service, config } = this;
-    this.decorator({
-      login: true
-    });
-
     const file = ctx.request.files[0];
     const suffix = ctx.helper.getFileSuffix(file.filename);
     const nowTimestamp = (new Date()).getTime();

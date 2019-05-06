@@ -1,3 +1,7 @@
+/**
+ * 后台用户相关接口
+ */
+
 'use strict';
 
 const uuid = require('uuid');
@@ -17,8 +21,6 @@ class UserController extends BaseController {
   async show() {
     const { ctx } = this;
     this.decorator({
-      powers: ['super'],
-      login: true,
       get: {
         id: { n: '用户id', type: 'ObjectId', f: true, r: true }
       }
@@ -39,9 +41,6 @@ class UserController extends BaseController {
    */
   async self() {
     const { ctx } = this;
-    this.decorator({
-      login: true
-    });
 
     //获取当前用户的数据
     const findUser = await ctx.service.user.findOne({ _id: this.userId });
@@ -59,8 +58,6 @@ class UserController extends BaseController {
   async create() {
     const { ctx } = this;
     this.decorator({
-      powers: ['super'],
-      login: true,
       post: userModel
     });
 
@@ -93,8 +90,6 @@ class UserController extends BaseController {
   async delete() {
     const { service } = this;
     this.decorator({
-      powers: ['super'],
-      login: true,
       post: {
         id: { n: '用户id', type: 'ObjectId', f: true, r: true }
       }
@@ -104,7 +99,7 @@ class UserController extends BaseController {
 
     if(!user) this.throwError('没有找到这个用户');
 
-    if (user.power && user.power.length && user.power[0] === 'super') {
+    if (user.powers && user.powers.length && user.powers[0] === 'super') {
       this.throwError('不能删除超级管理员用户');
     }
 
@@ -118,15 +113,13 @@ class UserController extends BaseController {
   }
 
   /**
-   * @description 更新一个用户的信息（超级管理员接口）
+   * @description 更新一个用户的信息
    */
   async update() {
     const { service } = this;
     let user = _.cloneDeep(userModel); 
     user.id = { type: 'ObjectId', f: true, r: true };
     this.decorator({
-      powers: ['super'],
-      login: true,
       post: user
     });
 
@@ -149,91 +142,44 @@ class UserController extends BaseController {
   }
 
   /**
-   * @description 更新当前登录用户的信息（管理员接口）
-   */
-  async updateme() {
-    const { service } = this;
-    delete user.password;
-    this.decorator({
-      login: true,
-      post: user
-    });
-
-    //如果用户准备修改nickname，判断是否重复
-    if (user.nickname) {
-      const findUser = await service.user.getUserByNickname(this.params.nickname)
-      if (findUser && String(findUser._id) !== String(this.userId)) {
-        this.throwError('昵称已被人使用');
-      }
-    }
-
-    //更新用户信息
-    let updateRes = await service.user.update({ _id: this.userId }, this.params);
-
-    if (updateRes) {
-      this.throwCorrect({}, '用户信息更新成功');
-    } else {
-      this.throwError('用户信息更新失败。');
-    }
-  }
-
-  /**
-   * @description 获取用户列表（管理员接口）
+   * @description 获取用户列表
    */
   async list() {
     const { ctx } = this;
-    this.decorator({
-      login: true
-    });
 
-    const usersRes = await ctx.service.user.find({});
+    // 查找列表
+    const users = await ctx.service.user.find({});
 
-    if (usersRes) {
-      this.throwCorrect(usersRes);
+    if (users) {
+      this.throwCorrect(users);
     } else {
       this.throwError('查询失败');
     }
   }
 
   /**
-   * @description 统计用户（管理员接口）
-   */
-  async count() {
-    const { ctx } = this;
-    this.decorator({
-      login: true
-    });
-
-    const countNum = await ctx.service.user.count({});
-
-    this.throwCorrect({
-      count: countNum || 0
-    });
-  }
-
-  /**
-   * @description 修改密码（普通接口）
+   * @description 修改密码
    */
   async password() {
     const { ctx, service } = this;
     this.decorator({
-      login: true,
       post: {
         oldpass: { n: '旧密码', type: 'Password', f: true, r: true, extra: { errorMsg: '密码格式不正确' } }, // 旧密码
         newpass: { n: '新密码', type: 'Password', f: true, r: true, extra: { errorMsg: '密码格式不正确' } } // 新密码
       }
     });
 
+    // 如果没有登陆
+    if (!this.userId) this.throwError('请先登陆后台', 403);
+
     // 获取当前用户信息
-    let findUser = await service.user.findOne({ _id: this.userId });
+    let user = await service.user.findOne({ _id: this.userId });
 
     // 比较密码
-    const equal = ctx.helper.bcompare(this.params.oldpass, findUser.password);
+    const equal = ctx.helper.bcompare(this.params.oldpass, user.password);
 
     // 密码不匹配
-    if (!equal) {
-      this.throwError('旧密码不正确');
-    }
+    if (!equal) this.throwError('旧密码不正确');
 
     // 修改密码
     let updateRes = await service.user.update({ _id: this.userId }, {
@@ -248,12 +194,12 @@ class UserController extends BaseController {
   }
 
   /**
-   * @description 登录（管理员接口）
+   * @description 登录
    */
   async login() {
     const { ctx } = this;
+    const app = ctx.app;
     await this.decorator({
-      captcha: true,
       post: {
         email: { n: '邮箱', type: 'Email', f: true, r: true, extra: {errorMsg: '邮箱格式不正确'} },
         password: { n: '密码', type: 'Password', f: true, r: true, extra: { errorMsg: '密码格式不正确' } }
@@ -271,9 +217,10 @@ class UserController extends BaseController {
 
     // 密码不匹配
     if (!equal) this.throwError('密码不正确');
-
+    
+    console.log(existUser);
     // 判断是否具有后台登录权限
-    if (!ctx.helper.hasPower(existUser, 'admin')) this.throwError('您没有后台系统的登录权限', 403);
+    if (!ctx.hasPowers('admin', existUser)) this.throwError('您没有后台系统的登录权限', 403);
 
     //创建新的token
     let accessToken = uuid.v4();
@@ -308,7 +255,7 @@ class UserController extends BaseController {
   }
 
   /**
-   * @description 登出（普通接口）
+   * @description 退出登陆
    */
   async logout() {
     const { service } = this;
@@ -319,12 +266,12 @@ class UserController extends BaseController {
       }
     });
 
-    let removeRes = await service.token.remove({
+    let removeResult = await service.token.remove({
       token: this.params.token,
       userId: this.params.userId
     });
 
-    if (removeRes) {
+    if (removeResult) {
       this.throwCorrect({}, '登出成功');
     } else {
       this.throwError('登出失败');

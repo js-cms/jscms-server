@@ -1,3 +1,7 @@
+/**
+ * 后台日志相关接口
+ */
+
 'use strict';
 
 const BaseController = require('../base');
@@ -10,7 +14,6 @@ class LogController extends BaseController {
 	async list() {
 		const { ctx, service } = this;
 		this.decorator({
-			login: true,
 			get: {
 				type: { n: '日志类型', type: 'Number', f: true, r: true }
 			}
@@ -44,7 +47,6 @@ class LogController extends BaseController {
 	async delete() {
 		const { service } = this;
 		this.decorator({
-			login: true,
       post: {
         id: { n: '用户id', type: 'ObjectId', f: true, r: true }
       }

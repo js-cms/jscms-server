@@ -1,3 +1,7 @@
+/**
+ * 应用程序配置相关接口
+ */
+
 'use strict';
 
 const _ = require('lodash');
@@ -13,7 +17,6 @@ class ConfigController extends BaseController {
   async show() {
     const { service } = this;
     this.decorator({
-      login: true,
       get: {
         alias: { n: '英文别名', type: 'String', f: false, r: true }, //英文别名
       }
@@ -33,7 +36,6 @@ class ConfigController extends BaseController {
     let config = _.cloneDeep(configModel); 
     config.id = { type: 'ObjectId', f: true, r: true };
     this.decorator({
-      login: true,
       post: config
     });
 

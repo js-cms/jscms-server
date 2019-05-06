@@ -23,8 +23,8 @@ module.exports = appInfo => {
 
   // add your config here
   config.middleware = [
-    'authUser',
-    'errorHandler'
+    'hookErrorHandler',
+    'userGetInfo'
   ];
 
   //关闭csrf

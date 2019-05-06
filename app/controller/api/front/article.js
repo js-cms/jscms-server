@@ -1,3 +1,7 @@
+/**
+ * 前台文章相关的api接口
+ */
+
 'use strict';
 
 const BaseController = require('../base');
@@ -15,7 +19,7 @@ class ArticleController extends BaseController {
       }
     });
 
-    const findArticle = await service.article.findOne({ _id: this.params.id });
+    const article = await service.article.findOne({ _id: this.params.id });
 
     //给文章增加点赞数
     await service.article.updateOne({ _id: this.params.id }, {
@@ -23,7 +27,7 @@ class ArticleController extends BaseController {
     });
 
     this.throwCorrect({
-      count: findArticle.likeTotal + 1
+      count: article.likeTotal + 1
     }, '点赞成功');
   }
 }

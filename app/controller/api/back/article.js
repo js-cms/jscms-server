@@ -1,3 +1,7 @@
+/**
+ * 后台文章相关接口
+ */
+
 'use strict';
 
 const path = require('path');
@@ -43,7 +47,6 @@ class ArticleController extends BaseController {
   async create() {
     const { service } = this;
     this.decorator({
-      login: true,
       post: articleModel,
       toParams: { formField: true }
     });
@@ -81,7 +84,6 @@ class ArticleController extends BaseController {
     let article = _.cloneDeep(articleModel); 
     article.id = { type: 'ObjectId', f: true, r: true };
     this.decorator({
-      login: true,
       post: article,
       toParams: { formField: true }
     });
@@ -108,7 +110,6 @@ class ArticleController extends BaseController {
   async delete() {
     const { service } = this;
     this.decorator({
-      login: true,
       post: {
         id: { type: 'ObjectId', f: true, r: true }
       }
@@ -129,7 +130,6 @@ class ArticleController extends BaseController {
   async list() {
     const { ctx, service } = this;
     this.decorator({
-      login: true,
       get: {
         categoryId: { type: 'ObjectId', f: true, r: false },
         keyword: { type: 'String', f: true, r: false }
@@ -168,7 +168,6 @@ class ArticleController extends BaseController {
   async show() {
     const { service } = this;
     this.decorator({
-      login: true,
       get: {
         id: { type: 'ObjectId', f: true, r: true }
       }

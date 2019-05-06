@@ -4,27 +4,6 @@ const Controller = require('egg').Controller;
 const Model = require('modelman').Model;
 
 /**
- * @description api错误类型，继承Error。
- */
-class ApiError extends Error {
-
-  /**
-   * @description api错误类型，继承Error。
-   * @param {String} message 消息文本
-   * @param {Number} code 错误代码
-   */
-  constructor(
-    message = '未知错误',
-    code = 1
-  ) {
-    super(message);
-    this.name = 'apierror';
-    this.message = message;
-    this.code = code;
-  }
-}
-
-/**
  * @description api基类控制器
  */
 class BaseController extends Controller {
@@ -35,49 +14,13 @@ class BaseController extends Controller {
    */
   async decorator(options) {
     const { ctx, service } = this;
-
-    // 记录请求
-    this.log();
-    
+    const app = ctx.app;
+    const currentUser = ctx.locals.currentUser;
     const toParams = options.toParams;
 
-    // 验证码判断
-    if (options.captcha === true) {
-      let config = await service.config.findOne({alias: 'site'});
-      let site = config.info;
-      if (site.boolLoginVercode) {
-        let uid = ctx.query.uid;
-        let vercode = ctx.query.vercode.toLowerCase();
-        let sourceVercode = this.appCache(uid) ? this.appCache(uid).vercode.toLowerCase() : '';
-        if (!vercode) {
-          this.throwError('请输入验证码');
-        } else if (vercode !== sourceVercode) {
-          this.throwError('验证码不正确');
-        }
-      }
-    }
-    // 验证权限
-    if (typeof options.powers === 'object' && options.powers.length) {
-      let resArray = [];
-      options.powers.forEach((p) => {
-        if (ctx.locals.currentUser.hasPower(p)) {
-          resArray.push(true);
-        }
-      });
-      if ( resArray.length !== options.powers.length ) {
-        this.throwError('你没有权限', 403);
-      }
-    }
-    // 验证登录
-    if (!ctx.locals.currentUser.auth.isLogin) {
-      if (options.login === true) {
-        this.throwError('你没有登录', 403);
-      }
-    } else {
-      this.userId = ctx.locals.currentUser.user._id;
-    }
-
+    this.log(); // 记录请求
     this.params = {};
+    this.userId = currentUser.user._id;
 
     /**
      * @description 参数解析器
@@ -120,9 +63,36 @@ class BaseController extends Controller {
       }
     }
 
-    if (options.get) parseParams('get', options.get);
-    if (options.post) parseParams('post', options.post);
-    if (options.params) parseParams('params', options.params);
+    // 需要校验验证码
+    if (options.captcha === true) {
+      let config = await service.config.findOne({alias: 'site'});
+      let site = config.info;
+      if (site.boolLoginVercode) {
+        let uid = ctx.query.uid;
+        let vercode = ctx.query.vercode.toLowerCase();
+        let sourceVercode = app.cache(uid) ? app.cache(uid).vercode.toLowerCase() : '';
+        if (!vercode) {
+          this.throwError('请输入验证码');
+        } else if (vercode !== sourceVercode) {
+          this.throwError('验证码不正确');
+        }
+      }
+    }
+
+    // 需要校验登录
+    if (options.login) {
+      if (!currentUser.auth.isLogin) this.throwError('你没有登录', 403);
+    }
+
+    // 需要校验验证身份
+    if (typeof options.powers === 'object' && options.powers.length) {
+      return ctx.hasPowers(options.powers);
+    }
+
+    // 需要校验参数
+    ['get', 'post', 'params'].forEach(i => {
+      if (options[i]) parseParams(i, options[i]);
+    });
   }
 
   /**
@@ -134,10 +104,9 @@ class BaseController extends Controller {
     msg = '未知错误',
     code = 1
   ) {
-    throw new ApiError(
-      msg,
-      code
-    );
+    const ctx = this.ctx;
+    const app = ctx.app;
+    app.throwJsonError(msg, code);
   }
 
   /**
@@ -229,14 +198,6 @@ class BaseController extends Controller {
       type: 3,
       info: info
     }).then((res) => {});
-  }
-
-  /**
-   * @description 缓存操作
-   */
-  appCache(key, value) {
-    const { ctx } = this;
-    return ctx.helper.appCache(ctx.app, key, value);
   }
 }
 

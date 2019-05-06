@@ -1,3 +1,7 @@
+/**
+ * 前台用户相关的api接口
+ */
+
 'use strict';
 
 const uuid = require('uuid');
@@ -6,9 +10,6 @@ const _ = require('lodash');
 const BaseController = require('../base');
 let userModel = require('../../../model/proto/user');
 
-/**
- * 用户相关的api接口
- */
 class UserController extends BaseController {
 
   /**
@@ -36,8 +37,8 @@ class UserController extends BaseController {
     // 密码不匹配
     if (!equal) this.throwError('密码不正确');
 
-    // 判断是否具有后台登录权限
-    if (!ctx.helper.hasPower(existUser, 'admin')) this.throwError('您没有后台系统的登录权限', 403);
+    // 判断是否具有前台登录权限
+    if (!ctx.hasPowers('member', existUser)) this.throwError('您没有前台的登录权限', 403);
 
     //创建新的token
     let accessToken = uuid.v4();

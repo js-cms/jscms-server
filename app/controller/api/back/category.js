@@ -1,3 +1,7 @@
+/**
+ * 后台分类相关接口
+ */
+
 'use strict';
 
 const marked = require('marked');
@@ -13,7 +17,6 @@ class CategoryController extends BaseController {
   async create() {
     const { service } = this;
     this.decorator({
-      login: true,
       post: category,
       toParams: { formField: true }
     });
@@ -48,7 +51,6 @@ class CategoryController extends BaseController {
     const { service } = this;
     category.id = { n: '分类id', type: 'ObjectId', f: true, r: true };
     this.decorator({
-      login: true,
       post: category,
       toParams: { formField: true }
     });
@@ -68,7 +70,6 @@ class CategoryController extends BaseController {
   async delete() {
     const { service } = this;
     this.decorator({
-      login: true,
       post: {
         id: { type: 'ObjectId', f: true, r: true }
       }
@@ -108,7 +109,6 @@ class CategoryController extends BaseController {
   async show() {
     const { service } = this;
     this.decorator({
-      login: true,
       get: {
         id: { type: 'ObjectId', f: true, r: true }
       }

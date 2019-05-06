@@ -1,3 +1,7 @@
+/**
+ * 后台评论相关接口
+ */
+
 'use strict';
 
 const marked = require('marked');
@@ -6,9 +10,6 @@ const _ = require('lodash');
 const BaseController = require('../base');
 let commentModel = require('../../../model/proto/comment');
 
-/**
- * 评论相关api
- */
 class CommentController extends BaseController {
 
   /**
@@ -51,7 +52,6 @@ class CommentController extends BaseController {
   async create() {
     const { service } = this;
     this.decorator({
-      login: true,
       post: commentModel,
       toParams: { formField: true }
     });
@@ -90,7 +90,6 @@ class CommentController extends BaseController {
     let comment = _.cloneDeep(commentModel);
     comment.id = { type: 'ObjectId', f: true, r: true };
     this.decorator({
-      login: true,
       post: comment,
       toParams: { formField: true }
     });
@@ -122,7 +121,6 @@ class CommentController extends BaseController {
   async delete() {
     const { service } = this;
     this.decorator({
-      login: true,
       post: {
         id: { type: 'ObjectId', f: true, r: true }
       }
@@ -143,7 +141,6 @@ class CommentController extends BaseController {
   async list() {
     const { ctx, service } = this;
     this.decorator({
-      login: true,
       get: {
         keyword: { type: 'String', f: true, r: false }
       }
@@ -171,7 +168,6 @@ class CommentController extends BaseController {
   async show() {
     const { service } = this;
     this.decorator({
-      login: true,
       get: {
         id: { type: 'ObjectId', f: true, r: true }
       }

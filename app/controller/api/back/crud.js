@@ -1,3 +1,7 @@
+/**
+ * 后台增删改查通用接口
+ */
+
 'use strict';
 
 const Controller = require('egg').Controller;
@@ -7,9 +11,6 @@ const notFound = {
   msg: 'not found!'
 }
 
-/**
- * 增删改查通用api
- */
 class CrudController extends Controller {
 
   /**

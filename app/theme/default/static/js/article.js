@@ -40,7 +40,7 @@
                         if ( this.form.authorEmail ) {
                             data.authorEmail = this.form.authorEmail;
                         }
-                        $.post("/api/comment/webcreate", data, function(res) {
+                        $.post("/api/front/comment/create", data, function(res) {
                             if ( res.code === 0 ) {
                                 var url = window.location.origin + window.location.pathname + "?id="+ res.data._id +"#comment-" + res.data._id;
                                 window.location.href = url;
@@ -55,7 +55,7 @@
 
         //点赞系统
         $("#btnLike").on("click", function() {
-            $.post("/api/article/like", {
+            $.post("/api/front/article/like", {
                 id: window.articleId
             }, function(res) {
                 if ( res.code === 0 ) {

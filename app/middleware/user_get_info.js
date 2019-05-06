@@ -1,23 +1,25 @@
+/**
+ * 中间件：获取用户信息
+ */
+
 'use strict';
 
-module.exports = app => {
-  // 验证用户
+module.exports = options => {
   return async function (ctx, next) {
+    const app = ctx.app;
     const prefix = ctx.request.path.substring(0, 4);
     const currentTime = (new Date()).getTime();
     const token = ctx.headers['authorization'] || ctx.request.body.token || ctx.query.token;
-
     let res = null;
     let currentUser = {
       user: {},
-      auth: {},
-      hasPower: function (powerStr) {
-        return ctx.helper.hasPower(this.user, powerStr);
+      auth: {
+        isLogin: false,
+        isExpired: true
       }
     };
-    
-    //只判断api后缀请求，且不判断login地址
-    if (prefix === "/api" && prefix !== "/api/login") {
+    //只判断api后缀请求
+    if (prefix === "/api") {
       if (token) {
         //得到token是否存在
         res = await ctx.service.token.getTokenByToken({
@@ -25,8 +27,8 @@ module.exports = app => {
         });
         if (res) {
           //得到用户信息
-          let user = await ctx.service.user.findOne({_id: res.userId});
-          if (user && currentUser) {
+          let user = await ctx.service.user.findOne({ _id: res.userId });
+          if (user) {
             currentUser.user = user._doc;
             //得到token是否过期
             if (currentTime > res.passwExpiry) { //如果已经过期

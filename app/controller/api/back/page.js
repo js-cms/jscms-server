@@ -1,3 +1,7 @@
+/**
+ * 后台自定义页面相关接口
+ */
+
 'use strict';
 
 const _ = require('lodash');
@@ -13,27 +17,26 @@ class PageController extends BaseController {
   async create() {
     const { service } = this;
     this.decorator({
-      login: true,
       post: pageModel
     });
 
     let params = this.params;
 
     //查找同别名页面
-    let findPageRes = await service.page.findOne({
+    let page = await service.page.findOne({
       alias: params.alias
     });
 
     //找到重复的别名
-    if (findPageRes) {
+    if (page) {
       this.throwError('别名重复');
     }
 
     //创建页面
-    let createPageRes = await service.page.create(params);
+    let result = await service.page.create(params);
 
-    if (createPageRes._id) {
-      this.throwCorrect(createPageRes, '页面创建完成');
+    if (result._id) {
+      this.throwCorrect(result, '页面创建完成');
     } else {
       this.throwError('页面创建失败');
     }
@@ -47,14 +50,13 @@ class PageController extends BaseController {
     let page = _.cloneDeep(pageModel); 
     page.id = { type: 'ObjectId', f: true, r: true };
     this.decorator({
-      login: true,
       post: page
     });
 
-    const updateRes = await service.page.update({ _id: this.params.id }, this.params);
+    const result = await service.page.update({ _id: this.params.id }, this.params);
 
-    if (updateRes) {
-      this.throwCorrect(updateRes, '页面更新成功');
+    if (result) {
+      this.throwCorrect(result, '页面更新成功');
     } else {
       this.throwError('页面更新失败');
     }
@@ -66,15 +68,14 @@ class PageController extends BaseController {
   async delete() {
     const { service } = this;
     this.decorator({
-      login: true,
       post: {
         id: { type: 'ObjectId', f: true, r: true }
       }
     });
 
-    const deleteRes = await service.page.remove({ _id: this.params.id });
+    const result = await service.page.remove({ _id: this.params.id });
 
-    if (deleteRes) {
+    if (result) {
       this.throwCorrect({}, '页面删除完成');
     } else {
       this.throwError('页面删除失败');
@@ -86,20 +87,18 @@ class PageController extends BaseController {
    */
   async list() {
     const { ctx, service } = this;
-    this.decorator({
-      login: true
-    });
-
-    let { pageSize, pageNumber } = ctx.helper.getPaging(ctx.query);
+    const { pageSize, pageNumber } = ctx.helper.getPaging(ctx.query);
 
     //获取页面列表
-    const findPageRes = await service.page.find({}, pageNumber, pageSize);
+    const page = await service.page.find({}, pageNumber, pageSize);
+
     //获取文章总数
-    const countPageRes = await service.page.count({});
+    const total = await service.page.count({});
+
     //输出结果
     this.throwCorrect({
-      list: findPageRes,
-      total: countPageRes
+      list: page,
+      total: total
     }, '查询成功');
   }
 
@@ -109,18 +108,17 @@ class PageController extends BaseController {
   async show() {
     const { service } = this;
     this.decorator({
-      login: true,
       get: {
         id: { type: 'ObjectId', f: true, r: true }
       }
     });
 
     //获取文章
-    const findPageRes = await service.page.findOne({ _id: this.params.id });
+    const page = await service.page.findOne({ _id: this.params.id });
 
-    if (findPageRes) {
+    if (page) {
       //输出结果
-      this.throwCorrect(findPageRes, '查询成功');
+      this.throwCorrect(page, '查询成功');
     } else {
       this.throwError('文章查询失败');
     }

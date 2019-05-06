@@ -1,3 +1,7 @@
+/**
+ * 后台模型相关接口
+ */
+
 'use strict';
 
 const BaseController = require('../base');
@@ -10,7 +14,6 @@ class ModelController extends BaseController {
    */
   async index() {
 		this.decorator({
-			login: true,
 			get: {
 				name: { type: 'Stirng', r: true }
 			}

@@ -21,7 +21,7 @@ module.exports = {
   avatar: { n: '头像地址', type: 'Url', f: true, t: false, r: false }, //头像
   about: { n: '关于', type: 'String', f: true, t: false, r: false, extra: {comType: 'textarea'}}, //关于用户
 
-  power: { n: '权限', type: 'Array', f: false, t: false, r: false, d: [] }, //权限
+  powers: { n: '权限', type: 'Array', f: false, t: false, r: false, d: [] }, //权限
   score: { n: '积分', type: 'Number', f: false, t: true, r: false, d: 0 }, //积分
   active: { n: '激活状态', type: 'Boolean', f: false, t: true, r: false, default: true }, //是否已经激活
   createTime: { n: '创建时间', type: 'Timestamp', t: true, f: false }, //创建时间

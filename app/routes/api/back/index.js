@@ -2,7 +2,6 @@ module.exports = function (app) {
   [
     'analysis',
     'article',
-    'captcha',
     'category',
     'comment',
     'config',
