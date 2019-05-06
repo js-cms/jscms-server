@@ -1,6 +1,6 @@
 'use strict';
 
-const BaseController = require('./base');
+const BaseController = require('../base');
 
 class LogController extends BaseController {
 
@@ -45,9 +45,9 @@ class LogController extends BaseController {
 		const { service } = this;
 		this.decorator({
 			login: true,
-			get: {
-				id: { type: 'ObjectId', f: true, r: true }
-			}
+      post: {
+        id: { n: '用户id', type: 'ObjectId', f: true, r: true }
+      }
 		});
 
 		const deleteRes = await service.log.remove({ _id: this.params.id });

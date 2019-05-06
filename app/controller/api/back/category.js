@@ -2,8 +2,8 @@
 
 const marked = require('marked');
 
-const BaseController = require('./base');
-let category = require('../../model/proto/category');
+const BaseController = require('../base');
+let category = require('../../../model/proto/category');
 
 class CategoryController extends BaseController {
 
@@ -69,7 +69,7 @@ class CategoryController extends BaseController {
     const { service } = this;
     this.decorator({
       login: true,
-      get: {
+      post: {
         id: { type: 'ObjectId', f: true, r: true }
       }
     });

@@ -200,7 +200,7 @@ class CrudController extends Controller {
    * 获取子查询字段
    */
   getPopulate(Model) {
-    const proto = require('../../model/proto/' + Model.toLowerCase() + '.js');
+    const proto = require('../../../model/proto/' + Model.toLowerCase() + '.js');
     let chain = [];
     for (const key in proto) {
       if (proto.hasOwnProperty(key)) {

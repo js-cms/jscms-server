@@ -3,8 +3,8 @@
 const uuid = require('uuid');
 const _ = require('lodash');
 
-const BaseController = require('./base');
-let userModel = require('../../model/proto/user');
+const BaseController = require('../base');
+let userModel = require('../../../model/proto/user');
 
 /**
  * 用户相关的api接口
@@ -95,12 +95,20 @@ class UserController extends BaseController {
     this.decorator({
       powers: ['super'],
       login: true,
-      get: {
+      post: {
         id: { n: '用户id', type: 'ObjectId', f: true, r: true }
       }
     });
 
-    const deleteRes = await service.log.remove({ _id: this.params.id });
+    const user = await service.user.findOne({ _id: this.params.id });
+
+    if(!user) this.throwError('没有找到这个用户');
+
+    if (user.power && user.power.length && user.power[0] === 'super') {
+      this.throwError('不能删除超级管理员用户');
+    }
+
+    const deleteRes = await service.user.remove({ _id: this.params.id });
 
     if (deleteRes) {
       this.throwCorrect({}, '删除用户成功');

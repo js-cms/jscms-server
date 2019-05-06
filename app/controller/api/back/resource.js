@@ -3,7 +3,7 @@
 const path = require('path');
 const fs = require('fs-extra');
 
-const BaseController = require('./base');
+const BaseController = require('../base');
 
 class ResourceController extends BaseController {
 

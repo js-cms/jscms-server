@@ -12,6 +12,7 @@ class ArticleService extends Service {
    * 覆盖原有发布者
    */
   indepUser(data) {
+    if (!data) return;
     const cover = function (article) {
       if (article.isIndepUser === true) {
         article.userId = _.cloneDeep(article.userId);

@@ -2,8 +2,8 @@
 
 const _ = require('lodash');
 
-const BaseController = require('./base');
-let pageModel = require('../../model/proto/page');
+const BaseController = require('../base');
+let pageModel = require('../../../model/proto/page');
 
 class PageController extends BaseController {
 
@@ -67,7 +67,7 @@ class PageController extends BaseController {
     const { service } = this;
     this.decorator({
       login: true,
-      get: {
+      post: {
         id: { type: 'ObjectId', f: true, r: true }
       }
     });

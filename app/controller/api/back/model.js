@@ -1,7 +1,7 @@
 'use strict';
 
-const BaseController = require('./base');
-const models = require('../../model/proto/index');
+const BaseController = require('../base');
+const models = require('../../../model/proto/index');
 
 class ModelController extends BaseController {
 

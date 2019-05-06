@@ -3,8 +3,8 @@
 const marked = require('marked');
 const _ = require('lodash');
 
-const BaseController = require('./base');
-let commentModel = require('../../model/proto/comment');
+const BaseController = require('../base');
+let commentModel = require('../../../model/proto/comment');
 
 /**
  * 评论相关api
@@ -123,7 +123,7 @@ class CommentController extends BaseController {
     const { service } = this;
     this.decorator({
       login: true,
-      get: {
+      post: {
         id: { type: 'ObjectId', f: true, r: true }
       }
     });

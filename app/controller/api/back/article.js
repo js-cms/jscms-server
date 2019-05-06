@@ -1,18 +1,20 @@
 'use strict';
 
+const path = require('path');
 const marked = require('marked');
 const _ = require('lodash');
 
-const BaseController = require('./base');
-let articleModel = require('../../model/proto/article');
+const BaseController = require('../base');
+let articleModel = require('../../../model/proto/article');
 
 /**
  * 文章内容转化
  * @param {Object} params 文章对象
  */
 const toContent = function name(params) {
+  let contentType = Number(params.contentType);
   //内容转换
-  switch (params.contentType) {
+  switch (contentType) {
     case 0: //markdown
       if (params.mdContent) {
         params.content = marked(params.mdContent);
@@ -34,29 +36,6 @@ const toContent = function name(params) {
 }
 
 class ArticleController extends BaseController {
-
-  /**
-   * @description 点赞某个文章
-   */
-  async like() {
-    const { service } = this;
-    this.decorator({
-      post: {
-        id: { type: 'ObjectId', f: true, r: true }
-      }
-    });
-
-    const findArticle = await service.article.findOne({ _id: this.params.id });
-
-    //给文章增加点赞数
-    await service.article.updateOne({ _id: this.params.id }, {
-      $inc: { likeTotal: Number(1) }
-    });
-
-    this.throwCorrect({
-      count: findArticle.likeTotal + 1
-    }, '点赞成功');
-  }
 
   /**
    * @description 创建文章
@@ -106,7 +85,7 @@ class ArticleController extends BaseController {
       post: article,
       toParams: { formField: true }
     });
-
+    
     //内容转换
     toContent(this.params);
 
@@ -130,7 +109,7 @@ class ArticleController extends BaseController {
     const { service } = this;
     this.decorator({
       login: true,
-      get: {
+      post: {
         id: { type: 'ObjectId', f: true, r: true }
       }
     });

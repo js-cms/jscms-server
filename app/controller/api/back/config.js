@@ -2,8 +2,8 @@
 
 const _ = require('lodash');
 
-const BaseController = require('./base');
-let configModel = require('../../model/proto/config');
+const BaseController = require('../base');
+let configModel = require('../../../model/proto/config');
 
 class ConfigController extends BaseController {
 

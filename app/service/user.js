@@ -27,10 +27,18 @@ class UserService extends Service {
   /*
   * 更新用户
   */
-  async update(query, target) {
+  async remove(query) {
     const db = new Db(this.ctx.model.User);
-    return db.update(query, target);
+    return db.remove(query);
   }
+
+  /*
+  * 更新用户
+  */
+ async update(query, target) {
+  const db = new Db(this.ctx.model.User);
+  return db.update(query, target);
+}
 
   /*
    * 查找一名用户
