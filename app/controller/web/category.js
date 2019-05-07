@@ -19,8 +19,6 @@ class CategoryController extends BaseController {
    */
   async handler() {
     const { ctx, service } = this;
-    let webConfig = this.cache('WEB_CONFIG');
-    const { subtitle, separator } = webConfig.site;
     let catAlias = ctx.params[0];
     let pageSize = 10;
     let pageNumber = ctx.params[1] ? ctx.params[1] - 1 : 0;
@@ -40,14 +38,16 @@ class CategoryController extends BaseController {
     let articles = await service.article.find({ categoryId: category._id }, pageNumber, pageSize);
     let total = await service.article.count({ categoryId: category._id });
 
-    //分页算法
+    // 分页算法
     let pages = this.paging(
       total,
       pageNumber,
       pageSize
     );
 
-    //重写页面元信息
+    // 覆盖元信息
+    let webConfig = this.cache('WEB_CONFIG');
+    const { subtitle, separator } = webConfig.site;
     this.setMeta({
       title: `${category.title || category.name}${separator}${subtitle}`,
       keywords: category.keywords,

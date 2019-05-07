@@ -19,8 +19,6 @@ class AuthorController extends BaseController {
    */
   async handler() {
     const { ctx, service } = this;
-    let webConfig = this.cache('WEB_CONFIG');
-    const { subtitle, separator } = webConfig.site;
     let { nickname, pageNumber } = this.toStructure(ctx.params.nickname);
     let pageSize = 10;
 
@@ -36,14 +34,16 @@ class AuthorController extends BaseController {
     let articles = await service.article.find({ userId: findUserRes._id }, pageNumber, pageSize);
     let total = await service.article.count({ userId: findUserRes._id });
 
-    //分页算法
+    // 分页算法
     let pages = this.paging(
       total,
       pageNumber,
       pageSize
     );
 
-    //重写页面元信息
+    // 覆盖元信息
+    let webConfig = this.cache('WEB_CONFIG');
+    const { subtitle, separator } = webConfig.site;
     this.setMeta({
       title: `${findUserRes.nickname}发表的文章${separator}${subtitle}`,
       keywords: `${findUserRes.nickname}发表的文章${separator}${subtitle}`,
@@ -67,7 +67,7 @@ class AuthorController extends BaseController {
       }
     });
 
-    //输出作者文章页
+    // 输出作者文章页
     await this.render('/pages/author', {});
   }
 

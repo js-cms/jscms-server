@@ -19,8 +19,6 @@ class ArticleController extends BaseController {
    */
   async handler() {
     const { ctx, service } = this;
-    let webConfig = this.cache('WEB_CONFIG');
-    const { subtitle, separator } = webConfig.site;
     let numberId = ctx.params[0];
 
     // 获取文章
@@ -37,7 +35,9 @@ class ArticleController extends BaseController {
       $inc: { 'visTotal': Number(1) }
     });
 
-    // 重新组织元信息
+    // 元信息合并
+    let webConfig = this.cache('WEB_CONFIG');
+    const { subtitle, separator } = webConfig.site;
     let meta = {};
     let keywords = article.keywords.join(',');
     if (article.isIndepMeta === true) {
@@ -50,7 +50,7 @@ class ArticleController extends BaseController {
       meta.description = article.description;
     }
 
-    // 重写页面元信息
+    // 覆盖元信息
     this.setMeta(meta);
 
     // 获取关联文章

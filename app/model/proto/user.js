@@ -5,7 +5,7 @@
  */
 
 module.exports = {
-  phone: { n: '手机号', type: 'Number', f: false, t: false, r: false }, //手机号
+  phone: { n: '手机号', type: 'Number', f: true, t: false, r: false }, //手机号
   email: { n: '邮箱', type: 'Email', f: true, t: true, r: true }, //邮箱作为登录用户名
   password: { n: '密码密文', type: 'String', f: true, t: false, r: true }, //密码
 
@@ -21,9 +21,9 @@ module.exports = {
   avatar: { n: '头像地址', type: 'Url', f: true, t: false, r: false }, //头像
   about: { n: '关于', type: 'String', f: true, t: false, r: false, extra: {comType: 'textarea'}}, //关于用户
 
-  powers: { n: '权限', type: 'Array', f: false, t: false, r: false, d: [] }, //权限
-  score: { n: '积分', type: 'Number', f: false, t: true, r: false, d: 0 }, //积分
-  active: { n: '激活状态', type: 'Boolean', f: false, t: true, r: false, default: true }, //是否已经激活
+  powers: { n: '权限', type: 'Array', f: true, t: false, r: false, d: [] }, //权限
+  score: { n: '积分', type: 'Number', f: true, t: true, r: false, d: 0 }, //积分
+  active: { n: '激活状态', type: 'Boolean', f: true, t: true, r: false, default: true }, //是否已经激活
   createTime: { n: '创建时间', type: 'Timestamp', t: true, f: false }, //创建时间
   updateTime: { n: '更新时间', type: 'Timestamp', t: true, f: false } //更新时间
 }

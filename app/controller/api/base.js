@@ -2,6 +2,7 @@
 
 const Controller = require('egg').Controller;
 const Model = require('modelman').Model;
+const is = require('ispro');
 
 /**
  * @description api基类控制器
@@ -44,7 +45,7 @@ class BaseController extends Controller {
       }
       model._iterator(field => {
         let key = field.name;
-        field.value = values[key] || field.defaultValue;
+        field.value = is.valid(values[key]) ? values[key] : field.defaultValue;
       });
       let res = model.validator.all();
       let errorMsg = '参数不正确';

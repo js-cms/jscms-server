@@ -105,6 +105,41 @@ class ArticleController extends BaseController {
   }
 
   /**
+   * @description 快速更新文章
+   */
+  async fastUpdate() {
+    const { service } = this;
+    let article = {
+      id: { type: 'ObjectId', f: true, r: true }, // 文章id
+      topType: { n: '置顶方式', type: 'Number', f: true, t: true, r: true, d: 0, extra: {comType: 'select', options: '0:无置顶,1:主要置顶,2:次要置顶'}}, // 置顶方式 0、无置顶 1、主要置顶 2、次要置顶
+      categoryId: { n: '所属分类', type: 'ObjectId', f: true, t: true, r: true, ref: 'Category', extra: {displayField: 'name', comType: 'select', options: 'categories'}}, // 所属分类对象
+      title: { n: '文章标题', type: 'String', f: true, t: true, r: true, p: '文章的标题。' }, // 文章标题
+      createTime: { n: '创建时间', type: 'Timestamp', f: true, t: true, r: true }, // 创建时间
+      updateTime: { n: '更新时间', type: 'Timestamp', f: true, t: true, r: true } // 更新时间
+    }
+
+    this.decorator({
+      post: article,
+      toParams: { formField: true }
+    });
+    
+    //内容转换
+    toContent(this.params);
+
+    //更新文章
+    const updateRes = await service.article.update({ _id: this.params.id }, this.params);
+
+    //更新标签列表
+    await service.config.updateTagsForArticle(this.params);
+
+    if (updateRes) {
+      this.throwCorrect(updateRes, '更新成功');
+    } else {
+      this.throwError('更新失败');
+    }
+  }
+
+  /**
    * @description 删除文章
    */
   async delete() {

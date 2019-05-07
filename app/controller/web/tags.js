@@ -19,8 +19,6 @@ class TagsController extends BaseController {
    */
   async handler() {
     const { ctx, service } = this;
-    let webConfig = this.cache('WEB_CONFIG');
-    const { subtitle, separator } = webConfig.site;
     let { tagName, pageNumber } = this.toStructure(ctx.params.tagName);
     let pageSize = 10;
     
@@ -34,7 +32,9 @@ class TagsController extends BaseController {
     let articles = await service.article.find(query, pageNumber, pageSize);
     let total = await service.article.count(query);
 
-    //重写页面元信息
+    // 覆盖元信息
+    let webConfig = this.cache('WEB_CONFIG');
+    const { subtitle, separator } = webConfig.site;
     this.setMeta({
       title: `${tagName}相关的文章${separator}${subtitle}`,
       keywords: tagName,

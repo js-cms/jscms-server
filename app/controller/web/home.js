@@ -46,6 +46,13 @@ class HomeController extends BaseController {
       pageSize
     );
 
+    // 覆盖元信息
+    let webConfig = this.cache('WEB_CONFIG');
+    const { title, separator, subtitle } = webConfig.site;
+    this.setMeta({
+      title: `${title}${separator}${subtitle}`
+    });
+
     this.cache('RENDER_PARAM', {
       // 页面类型: String
       pageType: 'home' || 'unknown',

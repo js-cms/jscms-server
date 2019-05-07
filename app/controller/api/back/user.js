@@ -117,8 +117,8 @@ class UserController extends BaseController {
    */
   async update() {
     const { service } = this;
-    let user = _.cloneDeep(userModel); 
-    user.id = { type: 'ObjectId', f: true, r: true };
+    let user = _.cloneDeep(userModel);
+    user.id = { n: '用户id', type: 'ObjectId', f: true, r: true };
     this.decorator({
       post: user
     });

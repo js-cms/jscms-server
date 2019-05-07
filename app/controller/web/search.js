@@ -19,14 +19,13 @@ class SearchController extends BaseController {
    */
   async handler() {
     const { ctx, service } = this;
-    let webConfig = this.cache('WEB_CONFIG');
-    const { subtitle, separator } = webConfig.site;
     let pageNumber = this.ctx.query.pageNumber - 1;
     pageNumber = isNaN(pageNumber) || pageNumber < 0 ? 0 : pageNumber;
     
     if ( pageNumber < 0 ) {
       return this.notFound();
     }
+    
     let pageSize = 10;
     let keyword = this.ctx.query.s;
 
@@ -39,7 +38,9 @@ class SearchController extends BaseController {
       pageSize
     );
 
-    //重写页面元信息
+    // 覆盖元信息
+    let webConfig = this.cache('WEB_CONFIG');
+    const { subtitle, separator } = webConfig.site;
     this.setMeta({
       title: `“${keyword}”的搜索结果${separator}${subtitle}`,
       keywords: keyword,

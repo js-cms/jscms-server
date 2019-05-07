@@ -246,6 +246,15 @@ class BaseController extends Controller {
       }
     });
 
+    // 重新覆盖元信息
+    let webConfig = this.cache('WEB_CONFIG');
+    const { title, subtitle, separator } = webConfig.site;
+    this.setMeta({
+      title: `页面未找到${separator}${subtitle}`,
+      keywords: `${title}404,${title}页面未找到`,
+      description: `${title}页面未找到`
+    });
+
     this.cache('RENDER_PARAM', {
       // 页面类型: String
       pageType: '404' || 'unknown',

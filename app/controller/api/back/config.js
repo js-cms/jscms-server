@@ -36,7 +36,8 @@ class ConfigController extends BaseController {
     let config = _.cloneDeep(configModel); 
     config.id = { type: 'ObjectId', f: true, r: true };
     this.decorator({
-      post: config
+      post: config,
+      toParams: { formField: true }
     });
 
     const updateRes = await service.config.update({_id: this.params.id }, this.params);

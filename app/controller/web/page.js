@@ -19,8 +19,6 @@ class PageController extends BaseController {
    */
   async handler() {
     const { ctx, service } = this;
-    let webConfig = this.cache('WEB_CONFIG');
-    const { subtitle, separator } = webConfig.site;
     const pageAlias = ctx.params[0] || '';
 
     //获取页面信息
@@ -29,7 +27,9 @@ class PageController extends BaseController {
       return this.notFound();
     }
 
-    //重写页面元信息
+    // 覆盖元信息
+    let webConfig = this.cache('WEB_CONFIG');
+    const { subtitle, separator } = webConfig.site;
     this.setMeta({
       title: `${findPageRes.title}${separator}${subtitle}`,
       keywords: findPageRes.keywords,
