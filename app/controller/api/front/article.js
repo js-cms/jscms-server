@@ -21,7 +21,7 @@ class ArticleController extends BaseController {
 
     const article = await service.article.findOne({ _id: this.params.id });
 
-    //给文章增加点赞数
+    // 给文章增加点赞数
     await service.article.updateOne({ _id: this.params.id }, {
       $inc: { likeTotal: Number(1) }
     });

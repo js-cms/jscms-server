@@ -218,7 +218,6 @@ class UserController extends BaseController {
     // 密码不匹配
     if (!equal) this.throwError('密码不正确');
     
-    console.log(existUser);
     // 判断是否具有后台登录权限
     if (!ctx.hasPowers('admin', existUser)) this.throwError('您没有后台系统的登录权限', 403);
 

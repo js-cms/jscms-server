@@ -13,7 +13,7 @@ class CaptchaController extends BaseController {
    * @description 获取一个图形验证码
    */
 	async create() {
-    const { ctx, config } = this;
+    const { ctx } = this;
     const app = ctx.app;
     const uid = ctx.query.uid;
     ctx.response.set('content-type', 'image/svg+xml ');
@@ -38,8 +38,12 @@ class CaptchaController extends BaseController {
    */
   async verify() {
     const { ctx } = this;
-    let str = ctx.query.str;
-    ctx.body = str === ctx.session.captchaStr;
+    const app = ctx.app;
+    const uid = ctx.query.uid;
+    const str = ctx.query.str;
+    const cache = app.cache(uid);
+    const vercode = cache.vercode
+    ctx.body = str === vercode;
   }
 
   /**
