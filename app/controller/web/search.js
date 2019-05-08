@@ -64,7 +64,7 @@ class SearchController extends BaseController {
       }
     });
 
-    //最后将搜索者信息和搜索信息插入搜索结果表
+    // 将搜索者信息和搜索信息插入搜索结果表
     await service.log.create({
       type: 2,
       info: {
@@ -75,6 +75,17 @@ class SearchController extends BaseController {
         searcherUserAgent: ctx.headers['user-agent']
       }
     });
+
+    // 将搜索关键词记录到搜索词统计
+    let searchKeywordsCountConfig = await service.config.findOne({alias: 'searchKeywordsCount'});
+    delete searchKeywordsCountConfig._id;
+    let info = searchKeywordsCountConfig.info;
+    if (info.keywords[keyword]) {
+      info.keywords[keyword]++;
+    } else {
+      info.keywords[keyword] = 1;
+    }
+    await service.config.update({alias: 'searchKeywordsCount'}, searchKeywordsCountConfig);
 
     //显示搜索结果
     await this.render('/pages/search', {});

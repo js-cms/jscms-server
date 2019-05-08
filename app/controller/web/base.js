@@ -117,8 +117,11 @@ class BaseController extends Controller {
     let categories = await service.category.listForWeb();
     let domains = await getWebConfig(config.constant.webConfigNames.DOMAIN_NAME);
     let site = await getWebConfig(config.constant.webConfigNames.SITE_NAME);
+    let notices = await getWebConfig(config.constant.webConfigNames.NOT_NAME);
     let menus = await getWebConfig(config.constant.webConfigNames.MENU_NAME);
     let tags = await getWebConfig(config.constant.webConfigNames.TAG_NAME);
+    let links = await getWebConfig(config.constant.webConfigNames.LINK_NAME);
+    let searchKeywordsCount = await getWebConfig(config.constant.webConfigNames.SKC_NAME);
 
     menus ? menus.forEach(m => {
       m.isActive = isMenuActive(m.activeUrl, ctx.origin, ctx.request.path);
@@ -128,8 +131,11 @@ class BaseController extends Controller {
       categories: categories || [],
       domains: domains || {},
       site: site || {},
+      notices: notices || {},
       menus: menus || [],
       tags: tags || [],
+      links: links || [],
+      searchKeywordsCount: searchKeywordsCount || {},
       origin: ctx.origin,
       path: ctx.request.path,
       query: ctx.query
