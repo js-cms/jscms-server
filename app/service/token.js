@@ -6,18 +6,18 @@ const tokenModel = require('../model/proto/token');
 
 class TokenService extends Service {
 
-  /*
-  * 创建token
-  */
+  /**
+   * 创建token
+   */
   async create(data) {
     const db = new Db(this.ctx.model.Token);
     let newData = db.parseModelman(data, tokenModel);
     return db.create(newData);
   }
 
-  /*
-  * 更新token
-  */
+  /**
+   * 更新token
+   */
   async update(query, target) {
     const db = new Db(this.ctx.model.Token);
     return db.update(query, target);

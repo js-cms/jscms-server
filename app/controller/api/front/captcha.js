@@ -10,7 +10,7 @@ const svgCaptcha = require('svg-captcha');
 class CaptchaController extends BaseController {
 
   /**
-   * @description 获取一个图形验证码
+   * 获取一个图形验证码
    */
   async create() {
     const {
@@ -36,7 +36,7 @@ class CaptchaController extends BaseController {
   }
 
   /**
-   * @description 校验验证码（只做测试，一般不用在生产环境）
+   * 校验验证码（只做测试，一般不用在生产环境）
    */
   async verify() {
     const {
@@ -51,7 +51,7 @@ class CaptchaController extends BaseController {
   }
 
   /**
-   * @description 判断是否开启验证码
+   * 判断是否开启验证码
    */
   async is() {
     const {

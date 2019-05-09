@@ -1,3 +1,7 @@
+/**
+ * 用户Token表
+ */
+
 'use strict';
 
 const Model = require('modelman').Model;
@@ -13,13 +17,14 @@ module.exports = app => {
   const Schema = mongoose.Schema;
   const Types = mongoose.Types;
 
-  /**
-   * 用户Token表
-   */
   let schema = model.to.mongoose(Types);
   const TokenSchema = new Schema(schema);
 
-  TokenSchema.index({ token: 1 }, { unique: true });
+  TokenSchema.index({
+    token: 1
+  }, {
+    unique: true
+  });
 
   TokenSchema.pre('save', function (next) {
     const now = (new Date()).getTime();

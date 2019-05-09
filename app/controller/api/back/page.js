@@ -12,7 +12,7 @@ let pageModel = require('../../../model/proto/page');
 class PageController extends BaseController {
 
   /**
-   * @description 新增页面
+   * 新增页面
    */
   async create() {
     const {
@@ -45,7 +45,7 @@ class PageController extends BaseController {
   }
 
   /**
-   * @description 更新页面
+   * 更新页面
    */
   async update() {
     const {
@@ -53,6 +53,7 @@ class PageController extends BaseController {
     } = this;
     let page = _.cloneDeep(pageModel);
     page.id = {
+      n: '页面id',
       type: 'ObjectId',
       f: true,
       r: true
@@ -73,7 +74,7 @@ class PageController extends BaseController {
   }
 
   /**
-   * @description 删除页面
+   * 删除页面
    */
   async delete() {
     const {
@@ -82,6 +83,7 @@ class PageController extends BaseController {
     this.decorator({
       post: {
         id: {
+          n: '页面id',
           type: 'ObjectId',
           f: true,
           r: true
@@ -101,7 +103,7 @@ class PageController extends BaseController {
   }
 
   /**
-   * @description 获取页面列表
+   * 获取页面列表
    */
   async list() {
     const {
@@ -127,7 +129,7 @@ class PageController extends BaseController {
   }
 
   /**
-   * @description 获取单个页面
+   * 获取单个页面
    */
   async show() {
     const {
@@ -136,6 +138,7 @@ class PageController extends BaseController {
     this.decorator({
       get: {
         id: {
+          n: '页面id',
           type: 'ObjectId',
           f: true,
           r: true

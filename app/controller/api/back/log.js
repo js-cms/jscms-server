@@ -9,7 +9,7 @@ const BaseController = require('../base');
 class LogController extends BaseController {
 
   /**
-   * @description 获取配置列表
+   * 获取配置列表
    */
   async list() {
     const {
@@ -55,7 +55,7 @@ class LogController extends BaseController {
   }
 
   /**
-   * @description 删除某条日志
+   * 删除某条日志
    */
   async delete() {
     const {
@@ -64,7 +64,7 @@ class LogController extends BaseController {
     this.decorator({
       post: {
         id: {
-          n: '用户id',
+          n: '日志id',
           type: 'ObjectId',
           f: true,
           r: true

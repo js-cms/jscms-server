@@ -10,7 +10,7 @@ let category = require('../../../model/proto/category');
 class CategoryController extends BaseController {
 
   /**
-   * @description 创建分类
+   * 创建分类
    */
   async create() {
     const {
@@ -47,7 +47,7 @@ class CategoryController extends BaseController {
   }
 
   /**
-   * @description 更新分类
+   * 更新分类
    */
   async update() {
     const {
@@ -78,7 +78,7 @@ class CategoryController extends BaseController {
   }
 
   /**
-   * @description 删除分类
+   * 删除分类
    */
   async delete() {
     const {
@@ -87,6 +87,7 @@ class CategoryController extends BaseController {
     this.decorator({
       post: {
         id: {
+          n: '分类id',
           type: 'ObjectId',
           f: true,
           r: true
@@ -106,7 +107,7 @@ class CategoryController extends BaseController {
   }
 
   /**
-   * @description 获取分类列表
+   * 获取分类列表
    */
   async list() {
     const {
@@ -127,7 +128,7 @@ class CategoryController extends BaseController {
   }
 
   /**
-   * @description 获取单个分类
+   * 获取单个分类
    */
   async show() {
     const {
@@ -136,6 +137,7 @@ class CategoryController extends BaseController {
     this.decorator({
       get: {
         id: {
+          n: '分类id',
           type: 'ObjectId',
           f: true,
           r: true

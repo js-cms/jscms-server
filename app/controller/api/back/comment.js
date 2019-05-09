@@ -13,7 +13,7 @@ let commentModel = require('../../../model/proto/comment');
 class CommentController extends BaseController {
 
   /**
-   * @description 新增评论（网站前端接口）
+   * 新增评论（网站前端接口）
    */
   async webcreate() {
     const {
@@ -55,7 +55,7 @@ class CommentController extends BaseController {
   }
 
   /**
-   * @description 创建评论（管理员接口）
+   * 创建评论（管理员接口）
    */
   async create() {
     const {
@@ -101,7 +101,7 @@ class CommentController extends BaseController {
   }
 
   /**
-   * @description 更新评论
+   * 更新评论
    */
   async update() {
     const {
@@ -109,6 +109,7 @@ class CommentController extends BaseController {
     } = this;
     let comment = _.cloneDeep(commentModel);
     comment.id = {
+      n: '评论id',
       type: 'ObjectId',
       f: true,
       r: true
@@ -146,7 +147,7 @@ class CommentController extends BaseController {
   }
 
   /**
-   * @description 删除评论
+   * 删除评论
    */
   async delete() {
     const {
@@ -155,6 +156,7 @@ class CommentController extends BaseController {
     this.decorator({
       post: {
         id: {
+          n: '评论id',
           type: 'ObjectId',
           f: true,
           r: true
@@ -174,7 +176,7 @@ class CommentController extends BaseController {
   }
 
   /**
-   * @description 获取列表（管理员接口）
+   * 获取列表（管理员接口）
    */
   async list() {
     const {
@@ -214,7 +216,7 @@ class CommentController extends BaseController {
   }
 
   /**
-   * @description 获取单个评论信息
+   * 获取单个评论信息
    */
   async show() {
     const {
@@ -223,6 +225,7 @@ class CommentController extends BaseController {
     this.decorator({
       get: {
         id: {
+          n: '评论id',
           type: 'ObjectId',
           f: true,
           r: true

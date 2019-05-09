@@ -16,7 +16,7 @@ let userModel = require('../../../model/proto/user');
 class UserController extends BaseController {
 
   /**
-   * @description 获取单个用户的信息（超级管理员接口）
+   * 获取单个用户的信息（超级管理员接口）
    */
   async show() {
     const {
@@ -46,7 +46,7 @@ class UserController extends BaseController {
   }
 
   /**
-   * @description 获取当前用户的信息（登录用户接口）
+   * 获取当前用户的信息（登录用户接口）
    */
   async self() {
     const {
@@ -66,7 +66,7 @@ class UserController extends BaseController {
   }
 
   /**
-   * @description 创建一个用户（超级管理员接口）
+   * 创建一个用户（超级管理员接口）
    */
   async create() {
     const {
@@ -102,7 +102,7 @@ class UserController extends BaseController {
   }
 
   /**
-   * @description 删除某个用户（超级管理员接口）
+   * 删除某个用户（超级管理员接口）
    */
   async delete() {
     const {
@@ -141,7 +141,7 @@ class UserController extends BaseController {
   }
 
   /**
-   * @description 更新一个用户的信息
+   * 更新一个用户的信息
    */
   async update() {
     const {
@@ -179,7 +179,7 @@ class UserController extends BaseController {
   }
 
   /**
-   * @description 获取用户列表
+   * 获取用户列表
    */
   async list() {
     const {
@@ -197,7 +197,7 @@ class UserController extends BaseController {
   }
 
   /**
-   * @description 修改密码
+   * 修改密码
    */
   async password() {
     const {
@@ -256,7 +256,7 @@ class UserController extends BaseController {
   }
 
   /**
-   * @description 登录
+   * 登录
    */
   async login() {
     const {
@@ -335,7 +335,7 @@ class UserController extends BaseController {
   }
 
   /**
-   * @description 退出登陆
+   * 退出登陆
    */
   async logout() {
     const {

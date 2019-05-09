@@ -6,18 +6,18 @@ const pageModel = require('../model/proto/page');
 
 class PageService extends Service {
 
-  /*
-  * 创建自定义页面
-  */
+  /**
+   * 创建自定义页面
+   */
   async create(data) {
     const db = new Db(this.ctx.model.Page);
     let newData = db.parseModelman(data, pageModel);
     return db.create(newData);
   }
 
-  /*
-  * 更新自定义页面
-  */
+  /**
+   * 更新自定义页面
+   */
   async update(query, target) {
     const db = new Db(this.ctx.model.Page);
     return db.update(query, target);
@@ -36,7 +36,9 @@ class PageService extends Service {
    */
   async find(query, pageNum = 0, pageSize = 10) {
     return this.ctx.model.Page.find(query)
-      .sort({ 'createTime': -1 })
+      .sort({
+        'createTime': -1
+      })
       .skip(pageNum * pageSize)
       .limit(pageSize)
       .exec();

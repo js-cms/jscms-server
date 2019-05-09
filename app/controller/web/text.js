@@ -5,7 +5,7 @@ const Controller = require('egg').Controller;
 class TextController extends Controller {
 
   /**
-   * @description sitemap.txt
+   * sitemap.txt
    */
   async sitemap() {
     const {
@@ -25,7 +25,7 @@ class TextController extends Controller {
   }
 
   /**
-   * @description robots.txt
+   * robots.txt
    */
   async robots() {
     const {

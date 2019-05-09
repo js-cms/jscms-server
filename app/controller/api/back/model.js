@@ -10,7 +10,7 @@ const models = require('../../../model/proto/index');
 class ModelController extends BaseController {
 
   /**
-   * @description 获取数据模型
+   * 获取数据模型
    */
   async index() {
     this.decorator({

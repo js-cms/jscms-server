@@ -12,7 +12,7 @@ const BaseController = require('../base');
 class ResourceController extends BaseController {
 
   /**
-   * @description 创建资源
+   * 创建资源
    */
   async create() {
     const {
@@ -22,7 +22,7 @@ class ResourceController extends BaseController {
   }
 
   /**
-   * @description 获取资源列表
+   * 获取资源列表
    */
   async list() {
     const {
@@ -98,7 +98,7 @@ class ResourceController extends BaseController {
   }
 
   /**
-   * @description 删除资源
+   * 删除资源
    */
   async delete() {
     const {
@@ -108,6 +108,7 @@ class ResourceController extends BaseController {
     this.decorator({
       post: {
         id: {
+          n: '资源id',
           type: 'ObjectId',
           f: true,
           r: true
@@ -148,7 +149,7 @@ class ResourceController extends BaseController {
   }
 
   /**
-   * @description 资源上传控制器 
+   * 资源上传控制器 
    */
   async uploader() {
     const {

@@ -13,7 +13,7 @@ let userModel = require('../../../model/proto/user');
 class UserController extends BaseController {
 
   /**
-   * @description 用户登录
+   * 用户登录
    */
   async login() {
     const {
@@ -93,7 +93,7 @@ class UserController extends BaseController {
   }
 
   /**
-   * @description 用户注册
+   * 用户注册
    */
   async register() {
     const {
@@ -149,7 +149,7 @@ class UserController extends BaseController {
   }
 
   /**
-   * @description 用户注销
+   * 用户注销
    */
   async logout() {
     const {
@@ -187,7 +187,7 @@ class UserController extends BaseController {
   }
 
   /** 
-   * @description 用户读取信息
+   * 用户读取信息
    */
   async getInfo() {
     const {
@@ -211,7 +211,7 @@ class UserController extends BaseController {
   }
 
   /**
-   * @description 用户修改信息
+   * 用户修改信息
    */
   async updateInfo() {
     const {
@@ -245,7 +245,7 @@ class UserController extends BaseController {
   }
 
   /**
-   * @description 用户修改密码
+   * 用户修改密码
    */
   async updatePassword() {
     const {

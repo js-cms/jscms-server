@@ -36,7 +36,9 @@ class ResourceService extends Service {
    */
   async find(query, pageNum = 0, pageSize = 8) {
     return this.ctx.model.Resource.find(query)
-      .sort({ 'createTime': -1 })
+      .sort({
+        'createTime': -1
+      })
       .skip(pageNum * pageSize)
       .limit(pageSize)
       .exec();

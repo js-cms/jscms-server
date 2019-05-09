@@ -1,3 +1,7 @@
+/**
+ * 数据库操作的统一封装，可以对操作日志记录等功能的拓展。
+ */
+
 'use strict';
 
 const is = require('ispro');
@@ -5,20 +9,17 @@ const is = require('ispro');
 /**
  * 获取当前时间
  */
-const now = function() {
+const now = function () {
   return new Date().getTime();
 }
 
-/**
- * 数据库操作的统一封装，可以对操作日志记录等功能的拓展。
- */
 class Db {
 
   constructor(Model) {
     this.Model = Model;
   }
 
-  /*
+  /**
    * 新建
    */
   async create(data) {
@@ -57,8 +58,16 @@ class Db {
    * 模糊搜索
    */
   async search(options, model) {
-    let { and, keyword, pageNumber, pageSize } = options;
-    let query = { '$and': [], '$or': [] };
+    let {
+      and,
+      keyword,
+      pageNumber,
+      pageSize
+    } = options;
+    let query = {
+      '$and': [],
+      '$or': []
+    };
     if (and && and.length) {
       query.$and = and;
     }
@@ -70,15 +79,17 @@ class Db {
           let type = item.type || item.t;
           if (['String'].includes(type)) {
             query.$or.push({
-              [key]: { $regex: reg }
+              [key]: {
+                $regex: reg
+              }
             });
           }
         }
       }
     }
 
-    if ( query.$and.length === 0 ) delete query.$and;
-    if ( query.$or.length === 0 ) delete query.$or;
+    if (query.$and.length === 0) delete query.$and;
+    if (query.$or.length === 0) delete query.$or;
 
     let temp = this.Model.find(query);
 
@@ -91,17 +102,22 @@ class Db {
         }
       }
     }
-    temp.sort({ 'createTime': -1 })
+    temp.sort({
+        'createTime': -1
+      })
       .skip(pageNumber * pageSize)
       .limit(pageSize);
-    
+
     let list = await temp.exec();
     let total = await this.Model.count(query).exec();
-    return { list, total };
+    return {
+      list,
+      total
+    };
   }
 
   /**
-   * @description 填充默认值
+   * 填充默认值
    * @param {Object} object 目标对象
    * @param {Object} model modelman
    */

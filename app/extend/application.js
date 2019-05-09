@@ -3,11 +3,11 @@
  */
 
 /**
- * @description api错误类型，继承Error。
+ * api错误类型，继承Error。
  */
 class ApiError extends Error {
   /**
-   * @description api错误类型，继承Error。
+   * api错误类型，继承Error。
    * @param {String} message 消息文本
    * @param {Number} code 错误代码
    */
@@ -66,7 +66,7 @@ module.exports = {
   },
 
   /**
-   * @description 抛出JSON错误
+   * 抛出JSON错误
    * @param {String} msg
    * @param {Number} code
    */

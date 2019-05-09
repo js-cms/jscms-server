@@ -1,136 +1,59 @@
 'use strict';
 
-const Service = require('egg').Service;
+const _ = require('lodash');
 
-/**
- * 从数组中删除包含该邮箱的对象
- */
-const deleteEmail = function (array, email) {
-  let index = "";
-  let newArr = [];
-  array.forEach(function (obj, idx) {
-    if (obj.email !== email) {
-      newArr.push(obj);
-    }
-  });
-  return newArr;
-}
+const Service = require('egg').Service;
+const Db = require('./Db');
+const cacheModel = require('../model/proto/cache');
 
 class CacheService extends Service {
-  /**
-   * 设置验证码
-   * @param {string} email 
-   * @param {string} verCode 
+
+  /*
+   * 创建缓存
    */
-  async setVerCode(email, verCode) {
-    const { redis } = this.app;
-    const result = await redis.get("verCodes");
-    let verCodes = result ? JSON.parse(result) : [];
-    //覆盖
-    verCodes = deleteEmail(verCodes, email);
-    const now = new Date();
-    //30分钟过期时间
-    let nextMinute = new Date(now.getTime() + 1000 * 60 * 30);
-    verCodes.push({
-      email: email,
-      verCode: verCode,
-      expiryTime: nextMinute.getTime()
-    });
-    await redis.set("verCodes", JSON.stringify(verCodes));
+  async create(data) {
+    const db = new Db(this.ctx.model.Cache);
+    let newData = db.parseModelman(data, cacheModel);
+    return db.create(newData);
+  }
+
+  /*
+   * 更新缓存
+   */
+  async update(query, target) {
+    const db = new Db(this.ctx.model.Cache);
+    return db.update(query, target);
   }
 
   /**
-   * 读取验证码
-   * @param {string} email 
+   * 删除缓存
    */
-  async getVerCodeByEmail(email) {
-    const { redis } = this.app;
-    const result = await redis.get("verCodes");
-    let verCodes = result ? JSON.parse(result) : [];
-    let findObj = {};
-    verCodes.forEach(element => {
-      if (element.email === email) {
-        findObj = element;
-      }
-    });
-    const now = (new Date()).getTime();
-    //过期自动删除验证码
-    if (now > findObj.expiryTime) {
-      verCodes = deleteEmail(verCodes, email);
-      await redis.set("verCodes", JSON.stringify(verCodes));
-      return {};
-    }
-    return findObj;
+  async remove(query) {
+    const db = new Db(this.ctx.model.Cache);
+    return db.remove(query);
   }
 
   /**
-   * 从缓存移除验证码
-   * @param {string} email 
+   * 查询缓存
    */
-  async removeVerCodeByEmail(email) {
-    const { redis } = this.app;
-    const result = await redis.get("verCodes");
-    let verCodes = result ? JSON.parse(result) : [];
-    //覆盖
-    verCodes = deleteEmail(verCodes, email);
-    await redis.set("verCodes", JSON.stringify(verCodes));
+  async find(query) {
+    const db = new Db(this.ctx.model.Cache);
+    return db.find(query);
   }
 
   /**
-   * 设置ip黑名单
-   * @param {Object}} options 
+   * 查找一个缓存
    */
-  async setBlackList(options) {
-    const { redis } = this.app;
-    const result = await redis.get("blackList");
-    const now = (new Date()).getTime();
-    let blackList = result ? JSON.parse(result) : {};
-    if (!blackList[options.ip]) blackList[options.ip] = {};
-    blackList[options.ip][options.path] = now + options.time;
-    await redis.set("blackList", JSON.stringify(blackList));
+  async findOne(query) {
+    return this.ctx.model.Cache.findOne(query)
+      .exec();
   }
 
   /**
-   * 读取ip黑名单
-   * @param {String} ip 
+   * 统计
    */
-  async getBlackList() {
-    const { redis } = this.app;
-    const now = (new Date()).getTime();
-    let result = await redis.get("blackList");
-    result = result === "[object Object]" ? {} : result;
-    let blackList = result ? JSON.parse(result) : {};
-    //过滤掉过期规则
-    for (let ip in blackList) {
-      for (let path in blackList[ip]) {
-        if (now >= Number(blackList[ip][path]) &&
-          Number(blackList[ip][path]) !== 0
-        ) {
-          delete blackList[ip][path];
-        }
-      }
-    }
-    await redis.set("blackList", JSON.stringify(blackList));
-    return blackList;
-  }
-
-  /**
-   * 从黑名单中删除一条规则
-   */
-  async removeRuleByIpAndPath(options) {
-    const { redis } = this.app;
-    const result = await redis.get("blackList");
-    let blackList = result ? JSON.parse(result) : {};
-    delete blackList[options.ip][options.path];
-    await redis.set("blackList", JSON.stringify(blackList));
-  }
-
-  /**
-   * 清空黑名单
-   */
-  async removeAllRules() {
-    const { redis } = this.app;
-    await redis.set("blackList", "{}");
+  async count(query) {
+    return this.ctx.model.Cache.count(query).exec();
   }
 }
 

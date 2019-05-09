@@ -6,9 +6,9 @@ const userModel = require('../model/proto/user');
 
 class UserService extends Service {
 
-  /*
-  * 创建用户
-  */
+  /**
+   * 创建用户
+   */
   async create(data) {
     data.password = this.ctx.helper.bhash(data.password);
     const db = new Db(this.ctx.model.User);
@@ -24,23 +24,23 @@ class UserService extends Service {
     return db.find(query);
   }
 
-  /*
-  * 更新用户
-  */
+  /**
+   * 更新用户
+   */
   async remove(query) {
     const db = new Db(this.ctx.model.User);
     return db.remove(query);
   }
 
-  /*
-  * 更新用户
-  */
- async update(query, target) {
-  const db = new Db(this.ctx.model.User);
-  return db.update(query, target);
-}
+  /**
+   * 更新用户
+   */
+  async update(query, target) {
+    const db = new Db(this.ctx.model.User);
+    return db.update(query, target);
+  }
 
-  /*
+  /**
    * 查找一名用户
    */
   async findOne(query) {
@@ -66,7 +66,9 @@ class UserService extends Service {
    * @return {Promise} 承载用户的 Promise 对象
    */
   async getUserByMail(email) {
-    return this.ctx.model.User.findOne({ email }).exec();
+    return this.ctx.model.User.findOne({
+      email
+    }).exec();
   }
 
   /**
@@ -85,8 +87,12 @@ class UserService extends Service {
    * @param {String} userId
    */
   async updateToken(userId, token) {
-    const query = { _id: userId };
-    const update = { accessToken: token };
+    const query = {
+      _id: userId
+    };
+    const update = {
+      accessToken: token
+    };
     return this.ctx.model.User.findByIdAndUpdate(query, update).exec();
   }
 

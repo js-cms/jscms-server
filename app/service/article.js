@@ -22,17 +22,19 @@ class ArticleService extends Service {
       }
     }
     if (data.constructor === Array) {
-      data.forEach(i => {cover(i)});
+      data.forEach(i => {
+        cover(i)
+      });
     } else {
       cover(data);
     }
   }
 
-  /*
+  /**
    * 创建文章
    */
   async create(data, isBreak) {
-    if ( isBreak === true ) {
+    if (isBreak === true) {
       const db = new Db(this.ctx.model.Article);
       let newData = db.parseModelman(data.params, articleModel);
       let createRes = db.create(newData);
@@ -46,7 +48,7 @@ class ArticleService extends Service {
     }
   }
 
-  /*
+  /**
    * 更新文章
    */
   async update(query, target) {
@@ -54,7 +56,7 @@ class ArticleService extends Service {
     return db.update(query, target);
   }
 
-  /*
+  /**
    * 更新单个文章
    */
   async updateOne(query, target) {
@@ -76,7 +78,9 @@ class ArticleService extends Service {
     let articles = await this.ctx.model.Article.find(query)
       .populate('userId')
       .populate('categoryId')
-      .sort({ 'createTime': -1 })
+      .sort({
+        'createTime': -1
+      })
       .skip(pageNum * pageSize)
       .limit(pageSize)
       .exec();
@@ -103,7 +107,9 @@ class ArticleService extends Service {
    */
   async findByHot(query, pageNum = 0, pageSize = 10) {
     return this.ctx.model.Article.find(query)
-      .sort({ 'visTotal': -1 })
+      .sort({
+        'visTotal': -1
+      })
       .skip(pageNum * pageSize)
       .limit(pageSize)
       .exec();
@@ -114,7 +120,9 @@ class ArticleService extends Service {
    */
   async findByComment(query, pageNum = 0, pageSize = 10) {
     return this.ctx.model.Article.find(query)
-      .sort({ 'commentTotal': -1 })
+      .sort({
+        'commentTotal': -1
+      })
       .skip(pageNum * pageSize)
       .limit(pageSize)
       .exec();
@@ -149,14 +157,16 @@ class ArticleService extends Service {
     return this.ctx.model.Article.find(query)
       .populate('userId')
       .populate('categoryId')
-      .sort({ 'createTime': -1 })
+      .sort({
+        'createTime': -1
+      })
       .skip(pageNum * pageSize)
       .limit(pageSize)
       .exec();
-  } 
+  }
 
   /**
-   * @description 模糊搜索接口
+   * 模糊搜索接口
    * @param {Object} options
    */
   async searchForApi(options) {
@@ -173,10 +183,14 @@ class ArticleService extends Service {
     let where = {}
     if (keyword) {
       whereOr.push({
-        title: { $regex: regKeyword }
+        title: {
+          $regex: regKeyword
+        }
       });
       whereOr.push({
-        content: { $regex: regKeyword }
+        content: {
+          $regex: regKeyword
+        }
       });
     }
     if (whereOr.length) {
@@ -187,9 +201,12 @@ class ArticleService extends Service {
     let articles = await this.search(where, pageNumber, pageSize);
     let total = await this.count(where);
     this.indepUser(articles);
-    return { articles, total };
+    return {
+      articles,
+      total
+    };
   }
-  
+
   /**
    * 
    * 查找所有文章

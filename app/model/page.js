@@ -1,3 +1,7 @@
+/**
+ * 自定义页面表
+ */
+
 'use strict';
 
 const Model = require('modelman').Model;
@@ -13,9 +17,6 @@ module.exports = app => {
   const Schema = mongoose.Schema
   const Types = mongoose.Types;
 
-  /*
-  * 自定义页面表
-  */
   let schema = model.to.mongoose(Types);
   const PageSchema = new Schema(schema);
 

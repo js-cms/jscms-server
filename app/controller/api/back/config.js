@@ -12,7 +12,7 @@ let configModel = require('../../../model/proto/config');
 class ConfigController extends BaseController {
 
   /**
-   * @description 获取单个配置信息
+   * 获取单个配置信息
    */
   async show() {
     const {
@@ -25,7 +25,7 @@ class ConfigController extends BaseController {
           type: 'String',
           f: false,
           r: true
-        }, 
+        },
       }
     });
 
@@ -39,7 +39,7 @@ class ConfigController extends BaseController {
   }
 
   /**
-   * @description 更新配置信息
+   * 更新配置信息
    */
   async update() {
     const {
@@ -47,6 +47,7 @@ class ConfigController extends BaseController {
     } = this;
     let config = _.cloneDeep(configModel);
     config.id = {
+      n: '配置id',
       type: 'ObjectId',
       f: true,
       r: true

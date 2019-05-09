@@ -1,3 +1,7 @@
+/**
+ * 日志记录表
+ */
+
 'use strict';
 
 const Model = require('modelman').Model;
@@ -13,9 +17,6 @@ module.exports = app => {
   const Schema = mongoose.Schema;
   const Types = Schema.Types;
 
-  /*
-  * 日志记录表
-  */
   let schema = model.to.mongoose(Types);
   const LogSchema = new Schema(schema);
 

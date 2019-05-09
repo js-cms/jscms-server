@@ -6,7 +6,7 @@ const bcrypt = require('bcryptjs');
 const utils = module.exports = {
 
   /**
-   * @description 模版中时间戳转化日期格式
+   * 模版中时间戳转化日期格式
    * @param {Number} time 时间戳
    * @param {Number} type 类型
    */
@@ -19,7 +19,7 @@ const utils = module.exports = {
   },
 
   /**
-   * @description 加密密码
+   * 加密密码
    * @param {String} str 明文
    */
   bhash(str) {
@@ -27,7 +27,7 @@ const utils = module.exports = {
   },
 
   /**
-   * @description 比较密码和密文
+   * 比较密码和密文
    * @param {String} str 明文
    * @param {String} hash 密文
    */
@@ -37,7 +37,7 @@ const utils = module.exports = {
   },
 
   /**
-   * @description 随机数字
+   * 随机数字
    * @param {Number} min 最小值
    * @param {Number} max 最大值
    */
@@ -46,7 +46,7 @@ const utils = module.exports = {
   },
 
   /**
-   * @description http转化为https
+   * http转化为https
    * @param {String} url 网址
    */
   toHttps(url) {
@@ -54,7 +54,7 @@ const utils = module.exports = {
   },
 
   /**
-   * @description 数组混合并去重
+   * 数组混合并去重
    * @param {*} argv 数组参数
    */
   mixinArray(...argv) {
@@ -66,7 +66,7 @@ const utils = module.exports = {
   },
 
   /**
-   * @description 截取字符串 中英文混合
+   * 截取字符串 中英文混合
    * @param {String} str	待处理字符串
    * @param {Number} len	截取字节长度 中文2字节 英文1字节
    */
@@ -88,7 +88,7 @@ const utils = module.exports = {
   },
 
   /**
-   * @description 获取分页参数
+   * 获取分页参数
    * @param {Object} query 
    */
   getPaging(query) {
@@ -105,7 +105,7 @@ const utils = module.exports = {
   },
 
   /**
-   * @description 获取文件后缀
+   * 获取文件后缀
    * @param {String} filename 
    */
   getFileSuffix(filename) {
@@ -115,7 +115,7 @@ const utils = module.exports = {
   },
 
   /**
-   * @description 判断数组某个值是否部分匹配目标字符串
+   * 判断数组某个值是否部分匹配目标字符串
    * @param {Array} array 数组
    * @param {String} targetStr 目标值
    */

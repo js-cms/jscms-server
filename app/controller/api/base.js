@@ -5,12 +5,12 @@ const Model = require('modelman').Model;
 const is = require('ispro');
 
 /**
- * @description api基类控制器
+ * api基类控制器
  */
 class BaseController extends Controller {
 
   /**
-   * @description 预处理/拦截/解析 公共函数
+   * 预处理/拦截/解析 公共函数
    * @param {Object} options 
    */
   async decorator(options) {
@@ -27,7 +27,7 @@ class BaseController extends Controller {
     this.userId = currentUser.user._id;
 
     /**
-     * @description 参数解析器
+     * 参数解析器
      * @param {String} method 
      * @param {Object} params 
      */
@@ -102,7 +102,7 @@ class BaseController extends Controller {
   }
 
   /**
-   * @description 抛出错误
+   * 抛出错误
    * @param {String} msg
    * @param {Number} code
    */
@@ -116,7 +116,7 @@ class BaseController extends Controller {
   }
 
   /**
-   * @description 返回数据
+   * 返回数据
    * @param {*} data
    * @param {String} msg
    * @param {Number} code
@@ -136,7 +136,7 @@ class BaseController extends Controller {
   }
 
   /**
-   * @description 记录请求
+   * 记录请求
    */
   log() {
     const {

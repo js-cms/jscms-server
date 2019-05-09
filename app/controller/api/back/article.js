@@ -41,7 +41,7 @@ const toContent = function name(params) {
 class ArticleController extends BaseController {
 
   /**
-   * @description 创建文章
+   * 创建文章
    */
   async create() {
     const {
@@ -80,7 +80,7 @@ class ArticleController extends BaseController {
   }
 
   /**
-   * @description 更新文章
+   * 更新文章
    */
   async update() {
     const {
@@ -88,6 +88,7 @@ class ArticleController extends BaseController {
     } = this;
     let article = _.cloneDeep(articleModel);
     article.id = {
+      n: '文章id',
       type: 'ObjectId',
       f: true,
       r: true
@@ -118,7 +119,7 @@ class ArticleController extends BaseController {
   }
 
   /**
-   * @description 快速更新文章
+   * 快速更新文章
    */
   async fastUpdate() {
     const {
@@ -126,6 +127,7 @@ class ArticleController extends BaseController {
     } = this;
     let article = {
       id: {
+        n: '文章id',
         type: 'ObjectId',
         f: true,
         r: true
@@ -143,7 +145,7 @@ class ArticleController extends BaseController {
         }
       }, // 置顶方式 0、无置顶 1、主要置顶 2、次要置顶
       categoryId: {
-        n: '所属分类',
+        n: '分类id',
         type: 'ObjectId',
         f: true,
         t: true,
@@ -205,7 +207,7 @@ class ArticleController extends BaseController {
   }
 
   /**
-   * @description 删除文章
+   * 删除文章
    */
   async delete() {
     const {
@@ -214,6 +216,7 @@ class ArticleController extends BaseController {
     this.decorator({
       post: {
         id: {
+          n: '文章id',
           type: 'ObjectId',
           f: true,
           r: true
@@ -233,7 +236,7 @@ class ArticleController extends BaseController {
   }
 
   /**
-   * @description 获取文章列表
+   * 获取文章列表
    */
   async list() {
     const {
@@ -243,6 +246,7 @@ class ArticleController extends BaseController {
     this.decorator({
       get: {
         categoryId: {
+          n: '分类id',
           type: 'ObjectId',
           f: true,
           r: false
@@ -288,7 +292,7 @@ class ArticleController extends BaseController {
   }
 
   /**
-   * @description 获取单篇文章
+   * 获取单篇文章
    */
   async show() {
     const {
@@ -297,6 +301,7 @@ class ArticleController extends BaseController {
     this.decorator({
       get: {
         id: {
+          n: '文章id',
           type: 'ObjectId',
           f: true,
           r: true

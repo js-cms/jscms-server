@@ -1,3 +1,7 @@
+/**
+ * 站点配置表
+ */
+
 'use strict';
 
 const Model = require('modelman').Model;
@@ -13,15 +17,11 @@ module.exports = app => {
   const Schema = mongoose.Schema;
   const Types = Schema.Types;
 
-  /*
-  * 站点配置表
-  */
   let schema = model.to.mongoose(Types);
   const ConfigSchema = new Schema(schema);
 
   ConfigSchema.pre('save', function (next) {
     const now = (new Date()).getTime();
-
     this.createTime = now;
     this.updateTime = now;
     next();

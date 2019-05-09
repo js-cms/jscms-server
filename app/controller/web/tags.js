@@ -82,7 +82,7 @@ class TagsController extends BaseController {
   }
 
   /**
-   * @description 解析参数结构
+   * 解析参数结构
    * @param {Object} params 
    */
   toStructure(params) {

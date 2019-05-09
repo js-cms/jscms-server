@@ -4,12 +4,12 @@ const path = require('path');
 const Controller = require('egg').Controller;
 
 /**
- * @description web渲染基类控制器
+ * web渲染基类控制器
  */
 class BaseController extends Controller {
 
   /**
-   * @description 初始化公共数据
+   * 初始化公共数据
    */
   async init() {
     // 记录访问信息
@@ -21,7 +21,7 @@ class BaseController extends Controller {
   }
 
   /**
-   * @description 缓存数据
+   * 缓存数据
    * @param  {...any} argv 
    */
   cache(...argv) {
@@ -34,7 +34,7 @@ class BaseController extends Controller {
   }
 
   /**
-   * @description 记录访问信息
+   * 记录访问信息
    */
   async log() {
     const {
@@ -65,7 +65,7 @@ class BaseController extends Controller {
   }
 
   /**
-   * @description 加载渲染数据
+   * 加载渲染数据
    */
   async loadRenderData() {
     const {
@@ -87,7 +87,7 @@ class BaseController extends Controller {
   }
 
   /**
-   * @description 加载web配置
+   * 加载web配置
    */
   async loadWebConfig() {
     const {
@@ -154,7 +154,7 @@ class BaseController extends Controller {
   }
 
   /**
-   * @description 修改页面元信息
+   * 修改页面元信息
    * @param {Object} opts object
    */
   async setMeta(opts = {
@@ -176,7 +176,7 @@ class BaseController extends Controller {
   }
 
   /**
-   * @description 封装渲染方法
+   * 封装渲染方法
    * @param {String} viewPath 模版路径
    * @param {Object} data 自定义数据
    */
@@ -202,7 +202,7 @@ class BaseController extends Controller {
   }
 
   /**
-   * @description 分页算法
+   * 分页算法
    * @param {Number} total 数据总数
    * @param {Number} pageNumber 当前页码
    * @param {Number} pageSize 每页显示数量
@@ -243,7 +243,7 @@ class BaseController extends Controller {
   }
 
   /**
-   * @description 自定义页面路由
+   * 自定义页面路由
    */
   async customRoute() {
     const {
@@ -265,7 +265,7 @@ class BaseController extends Controller {
   }
 
   /**
-   * @description 404未找到
+   * 404未找到
    */
   async notFound() {
     const {

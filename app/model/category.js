@@ -1,3 +1,7 @@
+/**
+ * 分类表
+ */
+
 'use strict';
 
 const Model = require('modelman').Model;
@@ -13,9 +17,7 @@ module.exports = app => {
   const Schema = mongoose.Schema;
   const Types = mongoose.Types;
 
-  /*
-  * 分类表
-  */
+
   let schema = model.to.mongoose(Types);
   const CategorySchema = new Schema(schema);
 

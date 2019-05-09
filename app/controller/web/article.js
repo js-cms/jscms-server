@@ -87,7 +87,7 @@ class ArticleController extends BaseController {
   }
 
   /**
-   * @description 文章关联搜索
+   * 文章关联搜索
    * @param {String} 关键字
    */
   async _searchArticle(keyword) {
@@ -119,7 +119,7 @@ class ArticleController extends BaseController {
   }
 
   /**
-   * @description 获取相关推荐文章
+   * 获取相关推荐文章
    */
   async _getRelated(article) {
     let relatedArticles = [];

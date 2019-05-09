@@ -13,7 +13,7 @@ let commentModel = require('../../../model/proto/comment');
 class CommentController extends BaseController {
 
   /**
-   * @description 新增评论
+   * 新增评论
    */
   async create() {
     const {

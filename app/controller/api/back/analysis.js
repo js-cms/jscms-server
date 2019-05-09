@@ -9,7 +9,7 @@ const BaseController = require('../base');
 class AnalysisController extends BaseController {
 
   /**
-   * @description 统计独立ip
+   * 统计独立ip
    */
   async ip() {
     const {
@@ -48,7 +48,7 @@ class AnalysisController extends BaseController {
   }
 
   /**
-   * @description 统计pv浏览量
+   * 统计pv浏览量
    */
   async pv() {
     const {
@@ -87,7 +87,7 @@ class AnalysisController extends BaseController {
   }
 
   /**
-   * @description 统计搜索量
+   * 统计搜索量
    */
   async search() {
     const {

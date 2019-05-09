@@ -6,16 +6,16 @@ const categoryModel = require('../model/proto/category');
 
 class CategoryService extends Service {
 
-  /*
-  * 创建分类
-  */
+  /**
+   * 创建分类
+   */
   async create(data) {
     const db = new Db(this.ctx.model.Category);
     let newData = db.parseModelman(data, categoryModel);
     return db.create(newData);
   }
 
-  /*
+  /**
    * 更新分类
    */
   async update(query, target) {
@@ -50,7 +50,7 @@ class CategoryService extends Service {
    * 统计
    */
   async count() {
-    return this.ctx.model.Category.count({}).exec(); 
+    return this.ctx.model.Category.count({}).exec();
   }
 
   /**
@@ -58,7 +58,7 @@ class CategoryService extends Service {
    */
   async listForWeb() {
     let list = await this.find({});
-    list = list.sort((item1, item2)=>{
+    list = list.sort((item1, item2) => {
       return item1.order - item2.order;
     });
     return list;
@@ -81,8 +81,12 @@ class CategoryService extends Service {
    * 让某个分类增加文章数量（活动控制器使用）
    */
   async addNumForArticle(params) {
-    return this.update({ _id: params.categoryId }, {
-      $inc: { articleTotal: Number(1) }
+    return this.update({
+      _id: params.categoryId
+    }, {
+      $inc: {
+        articleTotal: Number(1)
+      }
     });
   }
 

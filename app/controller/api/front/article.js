@@ -9,7 +9,7 @@ const BaseController = require('../base');
 class ArticleController extends BaseController {
 
   /**
-   * @description 点赞某个文章
+   * 点赞某个文章
    */
   async like() {
     const {
@@ -18,6 +18,7 @@ class ArticleController extends BaseController {
     this.decorator({
       post: {
         id: {
+          n: '文章id',
           type: 'ObjectId',
           f: true,
           r: true
