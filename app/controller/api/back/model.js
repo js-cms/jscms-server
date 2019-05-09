@@ -13,16 +13,18 @@ class ModelController extends BaseController {
    * @description 获取数据模型
    */
   async index() {
-		this.decorator({
-			get: {
-				name: { type: 'Stirng', r: true }
-			}
+    this.decorator({
+      get: {
+        name: {
+          type: 'Stirng',
+          r: true
+        }
+      }
     });
-    
-    let model = models[this.params.name];
-    if (!model) {
-      this.throwError('没有找到这个模型');
-    }
+
+    const model = models[this.params.name];
+
+    if (!model) this.throwError('没有找到这个模型');
 
     //输出模型
     this.throwCorrect({

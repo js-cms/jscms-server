@@ -12,18 +12,30 @@ class ArticleController extends BaseController {
    * @description 点赞某个文章
    */
   async like() {
-    const { service } = this;
+    const {
+      service
+    } = this;
     this.decorator({
       post: {
-        id: { type: 'ObjectId', f: true, r: true }
+        id: {
+          type: 'ObjectId',
+          f: true,
+          r: true
+        }
       }
     });
 
-    const article = await service.article.findOne({ _id: this.params.id });
+    const article = await service.article.findOne({
+      _id: this.params.id
+    });
 
     // 给文章增加点赞数
-    await service.article.updateOne({ _id: this.params.id }, {
-      $inc: { likeTotal: Number(1) }
+    await service.article.updateOne({
+      _id: this.params.id
+    }, {
+      $inc: {
+        likeTotal: Number(1)
+      }
     });
 
     this.throwCorrect({

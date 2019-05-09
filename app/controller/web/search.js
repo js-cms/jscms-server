@@ -18,18 +18,24 @@ class SearchController extends BaseController {
    * 处理器
    */
   async handler() {
-    const { ctx, service } = this;
+    const {
+      ctx,
+      service
+    } = this;
     let pageNumber = this.ctx.query.pageNumber - 1;
     pageNumber = isNaN(pageNumber) || pageNumber < 0 ? 0 : pageNumber;
-    
-    if ( pageNumber < 0 ) {
+
+    if (pageNumber < 0) {
       return this.notFound();
     }
-    
+
     let pageSize = 10;
     let keyword = this.ctx.query.s;
 
-    let { articles, total } = await service.article.searchForWeb(keyword, pageNumber, pageSize);
+    let {
+      articles,
+      total
+    } = await service.article.searchForWeb(keyword, pageNumber, pageSize);
 
     //分页算法
     let pages = this.paging(
@@ -40,7 +46,10 @@ class SearchController extends BaseController {
 
     // 覆盖元信息
     let webConfig = this.cache('WEB_CONFIG');
-    const { subtitle, separator } = webConfig.site;
+    const {
+      subtitle,
+      separator
+    } = webConfig.site;
     this.setMeta({
       title: `“${keyword}”的搜索结果${separator}${subtitle}`,
       keywords: keyword,
@@ -77,7 +86,9 @@ class SearchController extends BaseController {
     });
 
     // 将搜索关键词记录到搜索词统计
-    let searchKeywordsCountConfig = await service.config.findOne({alias: 'searchKeywordsCount'});
+    let searchKeywordsCountConfig = await service.config.findOne({
+      alias: 'searchKeywordsCount'
+    });
     delete searchKeywordsCountConfig._id;
     let info = searchKeywordsCountConfig.info;
     if (info.keywords[keyword]) {
@@ -85,7 +96,9 @@ class SearchController extends BaseController {
     } else {
       info.keywords[keyword] = 1;
     }
-    await service.config.update({alias: 'searchKeywordsCount'}, searchKeywordsCountConfig);
+    await service.config.update({
+      alias: 'searchKeywordsCount'
+    }, searchKeywordsCountConfig);
 
     //显示搜索结果
     await this.render('/pages/search', {});

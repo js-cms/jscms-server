@@ -18,25 +18,34 @@ class CategoryController extends BaseController {
    * 处理器
    */
   async handler() {
-    const { ctx, service } = this;
+    const {
+      ctx,
+      service
+    } = this;
     let catAlias = ctx.params[0];
     let pageSize = 10;
     let pageNumber = ctx.params[1] ? ctx.params[1] - 1 : 0;
     pageSize = isNaN(pageSize) ? 10 : pageSize;
     pageNumber = isNaN(pageNumber) ? 0 : pageNumber;
 
-    if ( pageNumber < 0 ) {
+    if (pageNumber < 0) {
       return this.notFound();
     }
 
-    let category = await service.category.findOne({ alias: catAlias });
+    let category = await service.category.findOne({
+      alias: catAlias
+    });
 
     if (!category) {
       return this.customRoute();
     }
 
-    let articles = await service.article.find({ categoryId: category._id }, pageNumber, pageSize);
-    let total = await service.article.count({ categoryId: category._id });
+    let articles = await service.article.find({
+      categoryId: category._id
+    }, pageNumber, pageSize);
+    let total = await service.article.count({
+      categoryId: category._id
+    });
 
     // 分页算法
     let pages = this.paging(
@@ -47,7 +56,10 @@ class CategoryController extends BaseController {
 
     // 覆盖元信息
     let webConfig = this.cache('WEB_CONFIG');
-    const { subtitle, separator } = webConfig.site;
+    const {
+      subtitle,
+      separator
+    } = webConfig.site;
     this.setMeta({
       title: `${category.title || category.name}${separator}${subtitle}`,
       keywords: category.keywords,

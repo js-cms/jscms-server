@@ -14,7 +14,10 @@ class BaseController extends Controller {
    * @param {Object} options 
    */
   async decorator(options) {
-    const { ctx, service } = this;
+    const {
+      ctx,
+      service
+    } = this;
     const app = ctx.app;
     const currentUser = ctx.locals.currentUser;
     const toParams = options.toParams;
@@ -66,7 +69,9 @@ class BaseController extends Controller {
 
     // 需要校验验证码
     if (options.captcha === true) {
-      let config = await service.config.findOne({alias: 'site'});
+      let config = await service.config.findOne({
+        alias: 'site'
+      });
       let site = config.info;
       if (site.boolLoginVercode) {
         let uid = ctx.query.uid;
@@ -134,7 +139,10 @@ class BaseController extends Controller {
    * @description 记录请求
    */
   log() {
-    const { ctx, service } = this;
+    const {
+      ctx,
+      service
+    } = this;
     let visPath = ctx.request.path;
     const table = {
       '/api/login': '登录',
@@ -163,7 +171,7 @@ class BaseController extends Controller {
         return '其他操作';
       }
     }
-    
+
     /**
      * 检查是否允许记录
      */
@@ -178,7 +186,7 @@ class BaseController extends Controller {
       }
     }
     if (!checkValid()) return;
- 
+
     let info = {
       opName: getOpName(),
       method: ctx.request.method,

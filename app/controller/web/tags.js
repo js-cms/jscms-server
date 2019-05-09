@@ -18,23 +18,36 @@ class TagsController extends BaseController {
    * 处理器
    */
   async handler() {
-    const { ctx, service } = this;
-    let { tagName, pageNumber } = this.toStructure(ctx.params.tagName);
+    const {
+      ctx,
+      service
+    } = this;
+    let {
+      tagName,
+      pageNumber
+    } = this.toStructure(ctx.params.tagName);
     let pageSize = 10;
-    
-    if ( pageNumber < 0 ) {
+
+    if (pageNumber < 0) {
       return this.notFound();
     }
-    
+
     let query = {
-      keywords:{ $elemMatch:{ $eq: tagName } }
+      keywords: {
+        $elemMatch: {
+          $eq: tagName
+        }
+      }
     };
     let articles = await service.article.find(query, pageNumber, pageSize);
     let total = await service.article.count(query);
 
     // 覆盖元信息
     let webConfig = this.cache('WEB_CONFIG');
-    const { subtitle, separator } = webConfig.site;
+    const {
+      subtitle,
+      separator
+    } = webConfig.site;
     this.setMeta({
       title: `${tagName}相关的文章${separator}${subtitle}`,
       keywords: tagName,

@@ -18,13 +18,17 @@ class HomeController extends BaseController {
    * 处理器
    */
   async handler() {
-    const { ctx, service, config } = this;
+    const {
+      ctx,
+      service,
+      config
+    } = this;
     let pageSize = 10;
     let pageNumber = ctx.params[0] ? ctx.params[0] - 1 : 0;
     pageSize = isNaN(pageSize) ? 10 : pageSize;
     pageNumber = isNaN(pageNumber) ? 0 : pageNumber;
 
-    if ( pageNumber < 0 ) {
+    if (pageNumber < 0) {
       return this.notFound();
     }
 
@@ -48,7 +52,11 @@ class HomeController extends BaseController {
 
     // 覆盖元信息
     let webConfig = this.cache('WEB_CONFIG');
-    const { title, separator, subtitle } = webConfig.site;
+    const {
+      title,
+      separator,
+      subtitle
+    } = webConfig.site;
     this.setMeta({
       title: `${title}${separator}${subtitle}`
     });
@@ -75,7 +83,7 @@ class HomeController extends BaseController {
         end: Math.ceil(total / pageSize)
       }
     });
-    
+
     await this.render('pages/index', {});
   }
 

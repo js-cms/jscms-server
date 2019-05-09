@@ -59,7 +59,7 @@ const utils = module.exports = {
    */
   mixinArray(...argv) {
     let arr = []
-    argv.forEach((array)=>{
+    argv.forEach((array) => {
       arr = arr.concat(array);
     });
     return [...new Set(arr)];
@@ -71,7 +71,7 @@ const utils = module.exports = {
    * @param {Number} len	截取字节长度 中文2字节 英文1字节
    */
   subString(str, len) {
-    let regexp = /[^\x00-\xff]/g;// 正在表达式匹配中文
+    let regexp = /[^\x00-\xff]/g; // 正在表达式匹配中文
     // 当字符串字节长度小于指定的字节长度时
     if (str.replace(regexp, "aa").length <= len) {
       return str;

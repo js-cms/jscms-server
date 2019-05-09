@@ -18,26 +18,40 @@ class ArticleController extends BaseController {
    * 处理器
    */
   async handler() {
-    const { ctx, service } = this;
+    const {
+      ctx,
+      service
+    } = this;
     let numberId = ctx.params[0];
 
     // 获取文章
-    let article = await service.article.findOneForWeb({ numberId });
+    let article = await service.article.findOneForWeb({
+      numberId
+    });
     if (!article) {
       return this.notFound();
     }
 
     // 获取文章评论
-    let comments = await service.comment.find({ articleId: article._id });
+    let comments = await service.comment.find({
+      articleId: article._id
+    });
 
     // 更新文章浏览量
-    await service.article.update({ _id: article._id }, {
-      $inc: { 'visTotal': Number(1) }
+    await service.article.update({
+      _id: article._id
+    }, {
+      $inc: {
+        'visTotal': Number(1)
+      }
     });
 
     // 元信息合并
     let webConfig = this.cache('WEB_CONFIG');
-    const { subtitle, separator } = webConfig.site;
+    const {
+      subtitle,
+      separator
+    } = webConfig.site;
     let meta = {};
     let keywords = article.keywords.join(',');
     if (article.isIndepMeta === true) {
@@ -77,16 +91,22 @@ class ArticleController extends BaseController {
    * @param {String} 关键字
    */
   async _searchArticle(keyword) {
-    const { service } = this;
+    const {
+      service
+    } = this;
     let regKeyword = new RegExp(keyword, 'i'); //不区分大小写
     let whereOr = [];
     let where = {}
     if (keyword) {
       whereOr.push({
-        title: { $regex: regKeyword }
+        title: {
+          $regex: regKeyword
+        }
       });
       whereOr.push({
-        content: { $regex: regKeyword }
+        content: {
+          $regex: regKeyword
+        }
       });
     }
     if (whereOr.length) {

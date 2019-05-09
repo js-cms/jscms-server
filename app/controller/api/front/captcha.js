@@ -9,11 +9,13 @@ const svgCaptcha = require('svg-captcha');
 
 class CaptchaController extends BaseController {
 
-	/**
+  /**
    * @description 获取一个图形验证码
    */
-	async create() {
-    const { ctx } = this;
+  async create() {
+    const {
+      ctx
+    } = this;
     const app = ctx.app;
     const uid = ctx.query.uid;
     ctx.response.set('content-type', 'image/svg+xml ');
@@ -29,15 +31,17 @@ class CaptchaController extends BaseController {
     app.cache(uid, {
       vercode: cap.text.toLowerCase()
     });
-    
+
     ctx.body = cap.data;
   }
-  
+
   /**
    * @description 校验验证码（只做测试，一般不用在生产环境）
    */
   async verify() {
-    const { ctx } = this;
+    const {
+      ctx
+    } = this;
     const app = ctx.app;
     const uid = ctx.query.uid;
     const str = ctx.query.str;
@@ -50,8 +54,13 @@ class CaptchaController extends BaseController {
    * @description 判断是否开启验证码
    */
   async is() {
-    const { ctx, service } = this;
-    let config = await service.config.findOne({alias: 'site'});
+    const {
+      ctx,
+      service
+    } = this;
+    let config = await service.config.findOne({
+      alias: 'site'
+    });
     let site = config.info;
     ctx.body = {
       code: 0,

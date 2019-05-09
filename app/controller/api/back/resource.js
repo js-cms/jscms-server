@@ -15,7 +15,9 @@ class ResourceController extends BaseController {
    * @description 创建资源
    */
   async create() {
-    const { ctx } = this;
+    const {
+      ctx
+    } = this;
     ctx.body = 'todo';
   }
 
@@ -23,27 +25,50 @@ class ResourceController extends BaseController {
    * @description 获取资源列表
    */
   async list() {
-    const { ctx, service, config } = this;
+    const {
+      ctx,
+      service,
+      config
+    } = this;
     this.decorator({
       get: {
-        type: { type: 'Number', f: true, r: true },
-        keyword: { type: 'String', f: true, r: false }
+        type: {
+          type: 'Number',
+          f: true,
+          r: true
+        },
+        keyword: {
+          type: 'String',
+          f: true,
+          r: false
+        }
       }
     });
 
     const type = this.params.type;
     const keyword = this.params.keyword;
 
-    let { pageSize, pageNumber } = ctx.helper.getPaging(ctx.query);
+    let {
+      pageSize,
+      pageNumber
+    } = ctx.helper.getPaging(ctx.query);
 
-    let query = { '$and': [] };
-    if (type) query.$and.push({type: type});
-    if (keyword) query.$and.push({ filename: { $regex: new RegExp(keyword, 'i') }});
+    let query = {
+      '$and': []
+    };
+    if (type) query.$and.push({
+      type: type
+    });
+    if (keyword) query.$and.push({
+      filename: {
+        $regex: new RegExp(keyword, 'i')
+      }
+    });
 
     //获取列表
     let findRes = await service.resource.find(query, pageNumber, pageSize);
     let list = [];
- 
+
     for (const item of findRes) {
       let url = '';
       if (item.store === 1) {
@@ -76,11 +101,22 @@ class ResourceController extends BaseController {
    * @description 删除资源
    */
   async delete() {
-    const { service, config } = this;
+    const {
+      service,
+      config
+    } = this;
     this.decorator({
       post: {
-        id: { type: 'ObjectId', f: true, r: true },
-        filename: { type: 'String', f: true, r: true }
+        id: {
+          type: 'ObjectId',
+          f: true,
+          r: true
+        },
+        filename: {
+          type: 'String',
+          f: true,
+          r: true
+        }
       }
     });
 
@@ -88,7 +124,7 @@ class ResourceController extends BaseController {
     const filename = this.params.filename.replace(/\//g, '').replace(/\\/g, '');
 
     let msg = '';
-    
+
     //本地地址
     let target = path.join(config.baseDir, `${config.constant.directory.JSCMS_UPLOAD}/${filename}`);
 
@@ -98,12 +134,14 @@ class ResourceController extends BaseController {
     } else {
       fs.removeSync(target);
     }
-    
+
     //删除数据库记录
-    const deleteRes = await service.resource.remove({_id: id});
+    const deleteRes = await service.resource.remove({
+      _id: id
+    });
 
     if (deleteRes) {
-      this.throwCorrect({}, '资源信息删除完成' + msg); 
+      this.throwCorrect({}, '资源信息删除完成' + msg);
     } else {
       this.throwError('资源删除失败');
     }
@@ -113,7 +151,11 @@ class ResourceController extends BaseController {
    * @description 资源上传控制器 
    */
   async uploader() {
-    const { ctx, service, config } = this;
+    const {
+      ctx,
+      service,
+      config
+    } = this;
     const file = ctx.request.files[0];
     const suffix = ctx.helper.getFileSuffix(file.filename);
     const nowTimestamp = (new Date()).getTime();
@@ -149,7 +191,7 @@ class ResourceController extends BaseController {
         if (err) return console.error(err);
       });
     }
-  
+
     //组装资源网址
     const webUrl = `${ctx.origin}${config.constant.directory.JSCMS_URL_UPLOAD}/${newFileName}`;
 

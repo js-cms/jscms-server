@@ -8,7 +8,11 @@ class TextController extends Controller {
    * @description sitemap.txt
    */
   async sitemap() {
-    const { ctx, service } = this;
+    const {
+      ctx,
+      service
+    } = this;
+    
     const _articles = await service.article.findAll();
     let articles = '';
     _articles.forEach((item, index) => {
@@ -24,8 +28,14 @@ class TextController extends Controller {
    * @description robots.txt
    */
   async robots() {
-    const { ctx, service, config } = this;
-    const findRes = await service.config.findOne({ 'alias': 'robots' });
+    const {
+      ctx,
+      service
+    } = this;
+
+    const findRes = await service.config.findOne({
+      'alias': 'robots'
+    });
     ctx.response.set('cache-control', 'no-cache');
     ctx.response.set('content-type', 'text/plain; charset=utf-8');
     ctx.body = findRes.info;

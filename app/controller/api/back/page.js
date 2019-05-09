@@ -15,7 +15,9 @@ class PageController extends BaseController {
    * @description 新增页面
    */
   async create() {
-    const { service } = this;
+    const {
+      service
+    } = this;
     this.decorator({
       post: pageModel
     });
@@ -46,14 +48,22 @@ class PageController extends BaseController {
    * @description 更新页面
    */
   async update() {
-    const { service } = this;
-    let page = _.cloneDeep(pageModel); 
-    page.id = { type: 'ObjectId', f: true, r: true };
+    const {
+      service
+    } = this;
+    let page = _.cloneDeep(pageModel);
+    page.id = {
+      type: 'ObjectId',
+      f: true,
+      r: true
+    };
     this.decorator({
       post: page
     });
 
-    const result = await service.page.update({ _id: this.params.id }, this.params);
+    const result = await service.page.update({
+      _id: this.params.id
+    }, this.params);
 
     if (result) {
       this.throwCorrect(result, '页面更新成功');
@@ -66,14 +76,22 @@ class PageController extends BaseController {
    * @description 删除页面
    */
   async delete() {
-    const { service } = this;
+    const {
+      service
+    } = this;
     this.decorator({
       post: {
-        id: { type: 'ObjectId', f: true, r: true }
+        id: {
+          type: 'ObjectId',
+          f: true,
+          r: true
+        }
       }
     });
 
-    const result = await service.page.remove({ _id: this.params.id });
+    const result = await service.page.remove({
+      _id: this.params.id
+    });
 
     if (result) {
       this.throwCorrect({}, '页面删除完成');
@@ -86,8 +104,14 @@ class PageController extends BaseController {
    * @description 获取页面列表
    */
   async list() {
-    const { ctx, service } = this;
-    const { pageSize, pageNumber } = ctx.helper.getPaging(ctx.query);
+    const {
+      ctx,
+      service
+    } = this;
+    const {
+      pageSize,
+      pageNumber
+    } = ctx.helper.getPaging(ctx.query);
 
     //获取页面列表
     const page = await service.page.find({}, pageNumber, pageSize);
@@ -106,15 +130,23 @@ class PageController extends BaseController {
    * @description 获取单个页面
    */
   async show() {
-    const { service } = this;
+    const {
+      service
+    } = this;
     this.decorator({
       get: {
-        id: { type: 'ObjectId', f: true, r: true }
+        id: {
+          type: 'ObjectId',
+          f: true,
+          r: true
+        }
       }
     });
 
     //获取文章
-    const page = await service.page.findOne({ _id: this.params.id });
+    const page = await service.page.findOne({
+      _id: this.params.id
+    });
 
     if (page) {
       //输出结果

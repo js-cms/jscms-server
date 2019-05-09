@@ -17,10 +17,17 @@ class CrudController extends Controller {
    * 查询符合条件的单条数据
    */
   async one() {
-    const { ctx, service } = this;
+    const {
+      ctx,
+      service
+    } = this;
     let params = this.getParams();
     if (params.code === 404) return params;
-    let { model, query, data } = params;
+    let {
+      model,
+      query,
+      data
+    } = params;
     const result = await this._db('findOne', model, query);
     ctx.body = {
       model: model,
@@ -34,10 +41,16 @@ class CrudController extends Controller {
    * 查询符合条件的多条数据
    */
   async list() {
-    const { ctx, service } = this;
+    const {
+      ctx
+    } = this;
     let params = this.getParams();
     if (params.code === 404) return params;
-    let { model, query, data } = params;
+    let {
+      model,
+      query,
+      data
+    } = params;
     const result = await this._db('find', model, query);
     const count = await this._db('count', model, query) || 0;
     ctx.body = {
@@ -53,10 +66,16 @@ class CrudController extends Controller {
    * 创建一条或多条数据
    */
   async create() {
-    const { ctx, service } = this;
+    const {
+      ctx
+    } = this;
     let params = this.getParams();
     if (params.code === 404) return params;
-    let { model, query, data } = params;
+    let {
+      model,
+      query,
+      data
+    } = params;
     if (!data) {
       ctx.body = notFound;
     }
@@ -76,10 +95,16 @@ class CrudController extends Controller {
    * 更新符合条件的一条或多条数据
    */
   async update() {
-    const { ctx, service } = this;
+    const {
+      ctx
+    } = this;
     let params = this.getParams();
     if (params.code === 404) return params;
-    let { model, query, data } = params;
+    let {
+      model,
+      query,
+      data
+    } = params;
     if (!data) {
       ctx.body = notFound;
     }
@@ -99,10 +124,16 @@ class CrudController extends Controller {
    * 删除符合条件的一条或多条数据
    */
   async delete() {
-    const { ctx, service } = this;
+    const {
+      ctx
+    } = this;
     let params = this.getParams();
     if (params.code === 404) return params;
-    let { model, query, data } = params;
+    let {
+      model,
+      query,
+      data
+    } = params;
     const result = await this._db('remove', model, {
       query
     });
@@ -115,7 +146,9 @@ class CrudController extends Controller {
   }
 
   getParams() {
-    const { ctx } = this;
+    const {
+      ctx
+    } = this;
     let model = ctx.params.model;
     let query = ctx.query.query || ctx.request.body.query || undefined;
     let data = ctx.query.data || ctx.request.body.data || undefined;
@@ -144,38 +177,42 @@ class CrudController extends Controller {
     if (!m) {
       return notFound;
     }
-    if ( method === 'findOne' ) {
+    if (method === 'findOne') {
       let chain = this.getPopulate(Model);
       let doc = m.findOne(opts.query);
       chain.forEach((p) => {
         doc = doc.populate(p);
       });
       return doc.exec();
-    } else if ( method === 'find' ) {
+    } else if (method === 'find') {
       let query = opts.query || {};
       let pageSize = Number(this.ctx.query.pageSize);
       let pageNum = Number(this.ctx.query.pageNum);
       let chain = this.getPopulate(Model);
-      if ( !isNaN(pageSize) && !isNaN(pageNum) ) {
+      if (!isNaN(pageSize) && !isNaN(pageNum)) {
         pageSize = !!isNaN(pageSize) ? 10 : pageSize;
         pageNum = !!isNaN(pageNum) ? 0 : pageNum;
         pageSize = pageSize < 0 ? 1 : pageSize;
         pageNum = pageNum < 1 ? 1 : pageNum;
         pageNum = pageNum - 1;
-        let doc = m.find(opts.query);
+        let doc = m.find(query);
         chain.forEach((p) => {
           doc = doc.populate(p);
         });
-        return doc.sort({ 'createTime': -1 })
-        .skip(pageNum * pageSize)
-        .limit(pageSize)
-        .exec();
+        return doc.sort({
+            'createTime': -1
+          })
+          .skip(pageNum * pageSize)
+          .limit(pageSize)
+          .exec();
       } else {
         let doc = m.find(opts.query);
         chain.forEach((p) => {
           doc = doc.populate(p);
         });
-        return doc.sort({ 'createTime': -1 }).exec();
+        return doc.sort({
+          'createTime': -1
+        }).exec();
       }
     } else if (method === 'count') {
       return m[method](opts.query).exec();

@@ -37,7 +37,10 @@ class BaseController extends Controller {
    * @description 记录访问信息
    */
   async log() {
-    const { ctx, service } = this;
+    const {
+      ctx,
+      service
+    } = this;
     if (ctx.request.path !== '/s') {
       let info = {
         method: ctx.request.method,
@@ -65,7 +68,9 @@ class BaseController extends Controller {
    * @description 加载渲染数据
    */
   async loadRenderData() {
-    const { service } = this;
+    const {
+      service
+    } = this;
     // 缓存渲染模版数据
     this.cache('RENDER_DATA', {
       // 最近三篇文章
@@ -85,7 +90,11 @@ class BaseController extends Controller {
    * @description 加载web配置
    */
   async loadWebConfig() {
-    const { ctx, service, config } = this;
+    const {
+      ctx,
+      service,
+      config
+    } = this;
 
     // 判断是否激活菜单高亮
     const isMenuActive = function (activeUrl, origin, path) {
@@ -110,7 +119,9 @@ class BaseController extends Controller {
 
     // 获取配置项
     async function getWebConfig(name) {
-      let res = await service.config.findOne({alias: name});
+      let res = await service.config.findOne({
+        alias: name
+      });
       return res && res.info ? res.info : false;
     }
 
@@ -125,7 +136,7 @@ class BaseController extends Controller {
 
     menus ? menus.forEach(m => {
       m.isActive = isMenuActive(m.activeUrl, ctx.origin, ctx.request.path);
-    }) : void (0);
+    }) : void(0);
 
     this.cache('WEB_CONFIG', {
       categories: categories || [],
@@ -152,9 +163,15 @@ class BaseController extends Controller {
     description: ''
   }) {
     let webConfig = this.cache('WEB_CONFIG');
-    if (opts.title) { webConfig.site.title = opts.title; };
-    if (opts.keywords) { webConfig.site.keywords = opts.keywords; };
-    if (opts.description) { webConfig.site.description = opts.description; };
+    if (opts.title) {
+      webConfig.site.title = opts.title;
+    };
+    if (opts.keywords) {
+      webConfig.site.keywords = opts.keywords;
+    };
+    if (opts.description) {
+      webConfig.site.description = opts.description;
+    };
     this.cache('WEB_CONFIG', webConfig);
   }
 
@@ -164,7 +181,10 @@ class BaseController extends Controller {
    * @param {Object} data 自定义数据
    */
   async render(viewPath, data) {
-    const { ctx, config } = this;
+    const {
+      ctx,
+      config
+    } = this;
     let commonData = {
       // 渲染参数
       RENDER_PARAM: this.cache('RENDER_PARAM') || {},
@@ -196,7 +216,9 @@ class BaseController extends Controller {
   ) {
     let pages = [];
     let totalNum = Math.ceil(total / pageSize);
-    Array.from({ length: pageSize }).forEach((i, index) => {
+    Array.from({
+      length: pageSize
+    }).forEach((i, index) => {
       let beforeNum = (pageNumber - (pos - index)) + 1;
       let currentNum = pageNumber + 1;
       let afterNum = (pageNumber + (index - pos)) + 1;
@@ -214,7 +236,7 @@ class BaseController extends Controller {
         pages.push({
           num: afterNum,
           isCurrent: false
-        }); 
+        });
       }
     });
     return pages;
@@ -224,10 +246,15 @@ class BaseController extends Controller {
    * @description 自定义页面路由
    */
   async customRoute() {
-    const { ctx, service } = this;
+    const {
+      ctx,
+      service
+    } = this;
     let route = ctx.params.route || ctx.path;
     route = route[0] === '/' ? route : '/' + route;
-    let findPageRes = await service.page.findOne({ route: route });
+    let findPageRes = await service.page.findOne({
+      route: route
+    });
     if (!findPageRes) {
       return this.notFound();
     }
@@ -241,9 +268,13 @@ class BaseController extends Controller {
    * @description 404未找到
    */
   async notFound() {
-    const { service } = this;
+    const {
+      service
+    } = this;
     await this.init();
-    const findTagsRes = await service.config.findOne({ 'alias': 'tags' });
+    const findTagsRes = await service.config.findOne({
+      'alias': 'tags'
+    });
 
     let tags = [];
     findTagsRes.info.forEach((tag) => {
@@ -254,7 +285,11 @@ class BaseController extends Controller {
 
     // 重新覆盖元信息
     let webConfig = this.cache('WEB_CONFIG');
-    const { title, subtitle, separator } = webConfig.site;
+    const {
+      title,
+      subtitle,
+      separator
+    } = webConfig.site;
     this.setMeta({
       title: `页面未找到${separator}${subtitle}`,
       keywords: `${title}404,${title}页面未找到`,

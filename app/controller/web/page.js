@@ -18,18 +18,27 @@ class PageController extends BaseController {
    * 处理器
    */
   async handler() {
-    const { ctx, service } = this;
+    const {
+      ctx,
+      service
+    } = this;
     const pageAlias = ctx.params[0] || '';
 
     //获取页面信息
-    let findPageRes = await service.page.findOne({ alias: pageAlias });
+    let findPageRes = await service.page.findOne({
+      alias: pageAlias
+    });
     if (!findPageRes) {
       return this.notFound();
     }
 
     // 覆盖元信息
     let webConfig = this.cache('WEB_CONFIG');
-    const { subtitle, separator } = webConfig.site;
+    const {
+      subtitle,
+      separator
+    } = webConfig.site;
+    
     this.setMeta({
       title: `${findPageRes.title}${separator}${subtitle}`,
       keywords: findPageRes.keywords,

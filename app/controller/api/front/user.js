@@ -16,12 +16,30 @@ class UserController extends BaseController {
    * @description 用户登录
    */
   async login() {
-    const { ctx } = this;
+    const {
+      ctx
+    } = this;
     await this.decorator({
       captcha: true,
       post: {
-        email: { n: '邮箱', type: 'Email', f: true, r: true, extra: {errorMsg: '邮箱格式不正确'} },
-        password: { n: '密码', type: 'Password', f: true, r: true, extra: { errorMsg: '密码格式不正确' } }
+        email: {
+          n: '邮箱',
+          type: 'Email',
+          f: true,
+          r: true,
+          extra: {
+            errorMsg: '邮箱格式不正确'
+          }
+        },
+        password: {
+          n: '密码',
+          type: 'Password',
+          f: true,
+          r: true,
+          extra: {
+            errorMsg: '密码格式不正确'
+          }
+        }
       }
     });
 
@@ -50,7 +68,9 @@ class UserController extends BaseController {
     if (res) { //更新
       const now = (new Date()).getTime();
       const tomorrow = now + 1000 * 60 * 60 * 24;
-      res = await ctx.service.token.updateToken({ userId: existUser._id }, {
+      res = await ctx.service.token.updateToken({
+        userId: existUser._id
+      }, {
         token: accessToken,
         updateTime: now,
         passwExpiry: tomorrow
@@ -76,21 +96,41 @@ class UserController extends BaseController {
    * @description 用户注册
    */
   async register() {
-    const { ctx } = this;
+    const {
+      ctx
+    } = this;
     await this.decorator({
       captcha: true,
       post: {
-        email: { n: '邮箱', type: 'Email', f: true, r: true, extra: {errorMsg: '邮箱格式不正确'} },
-        password: { n: '密码', type: 'Password', f: true, r: true, extra: { errorMsg: '密码格式不正确' } }
+        email: {
+          n: '邮箱',
+          type: 'Email',
+          f: true,
+          r: true,
+          extra: {
+            errorMsg: '邮箱格式不正确'
+          }
+        },
+        password: {
+          n: '密码',
+          type: 'Password',
+          f: true,
+          r: true,
+          extra: {
+            errorMsg: '密码格式不正确'
+          }
+        }
       }
     });
 
     //判断用户是否已经被创建
     const findUsers = await ctx.service.user.getUsersByQuery({
-      $or: [{ email: this.params.email }]
+      $or: [{
+        email: this.params.email
+      }]
     });
     if (findUsers.length > 0) this.throwError('用户名或邮箱已被使用。');
-    
+
     //获取用户总数
     const count = await ctx.service.user.count({});
     if (!this.params.nickname) {
@@ -112,13 +152,25 @@ class UserController extends BaseController {
    * @description 用户注销
    */
   async logout() {
-    const { service } = this;
+    const {
+      service
+    } = this;
     this.decorator({
       login: true,
       powers: ['member'],
       get: {
-        token: { n: 'token', type: 'String', f: true, r: true },
-        userId: { n: '用户id', type: 'ObjectId', f: true, r: true }
+        token: {
+          n: 'token',
+          type: 'String',
+          f: true,
+          r: true
+        },
+        userId: {
+          n: '用户id',
+          type: 'ObjectId',
+          f: true,
+          r: true
+        }
       }
     });
 
@@ -138,14 +190,18 @@ class UserController extends BaseController {
    * @description 用户读取信息
    */
   async getInfo() {
-    const { ctx } = this;
+    const {
+      ctx
+    } = this;
     this.decorator({
       login: true,
       powers: ['member']
     });
 
     //获取当前用户的数据
-    const findUser = await ctx.service.user.findOne({ _id: this.userId });
+    const findUser = await ctx.service.user.findOne({
+      _id: this.userId
+    });
 
     if (findUser) {
       this.throwCorrect(findUser);
@@ -153,12 +209,14 @@ class UserController extends BaseController {
       this.throwError('没有找到该用户的信息');
     }
   }
-  
+
   /**
    * @description 用户修改信息
    */
   async updateInfo() {
-    const { service } = this;
+    const {
+      service
+    } = this;
     delete user.password;
     this.decorator({
       login: true,
@@ -175,7 +233,9 @@ class UserController extends BaseController {
     }
 
     //更新用户信息
-    let updateRes = await service.user.update({ _id: this.userId }, this.params);
+    let updateRes = await service.user.update({
+      _id: this.userId
+    }, this.params);
 
     if (updateRes) {
       this.throwCorrect({}, '用户信息更新成功');
@@ -188,17 +248,38 @@ class UserController extends BaseController {
    * @description 用户修改密码
    */
   async updatePassword() {
-    const { ctx, service } = this;
+    const {
+      ctx,
+      service
+    } = this;
     this.decorator({
       login: true,
       post: {
-        oldpass: { n: '旧密码', type: 'Password', f: true, r: true, extra: { errorMsg: '密码格式不正确' } }, // 旧密码
-        newpass: { n: '新密码', type: 'Password', f: true, r: true, extra: { errorMsg: '密码格式不正确' } } // 新密码
+        oldpass: {
+          n: '旧密码',
+          type: 'Password',
+          f: true,
+          r: true,
+          extra: {
+            errorMsg: '密码格式不正确'
+          }
+        }, // 旧密码
+        newpass: {
+          n: '新密码',
+          type: 'Password',
+          f: true,
+          r: true,
+          extra: {
+            errorMsg: '密码格式不正确'
+          }
+        } // 新密码
       }
     });
 
     // 获取当前用户信息
-    let findUser = await service.user.findOne({ _id: this.userId });
+    let findUser = await service.user.findOne({
+      _id: this.userId
+    });
 
     // 比较密码
     const equal = ctx.helper.bcompare(this.params.oldpass, findUser.password);
@@ -209,7 +290,9 @@ class UserController extends BaseController {
     }
 
     // 修改密码
-    let updateRes = await service.user.update({ _id: this.userId }, {
+    let updateRes = await service.user.update({
+      _id: this.userId
+    }, {
       password: ctx.helper.bhash(this.params.newpass)
     });
 
