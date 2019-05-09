@@ -97,7 +97,7 @@
             <div class="nav-links">
               <% if ( RENDER_PARAM.pagination.current > RENDER_PARAM.pagination.start ) { %>
               <a class="next page-numbers"
-                href="/<%-RENDER_PARAM.pagination.prefix%>&pageNum=<%-RENDER_PARAM.pagination.start%>">首页</a>
+                href="/<%-RENDER_PARAM.pagination.prefix%>&pageNumber=<%-RENDER_PARAM.pagination.start%>">首页</a>
               <% } else { %>
               <a class="next page-numbers invalid" href="javascript:void(0);">首页</a>
               <% } %>
@@ -106,13 +106,13 @@
               <span aria-current="page" class="page-numbers current">
                 <%-page.num%></span>
               <% } else { %>
-              <a class="page-numbers" href="/<%-RENDER_PARAM.pagination.prefix%>&pageNum=<%-page.num%>">
+              <a class="page-numbers" href="/<%-RENDER_PARAM.pagination.prefix%>&pageNumber=<%-page.num%>">
                 <%-page.num%></a>
               <% } %>
               <% }) %>
               <% if ( RENDER_PARAM.pagination.current < RENDER_PARAM.pagination.end ) { %>
               <a class="next page-numbers"
-                href="/<%-RENDER_PARAM.pagination.prefix%>&pageNum=<%-RENDER_PARAM.pagination.end%>">尾页</a>
+                href="/<%-RENDER_PARAM.pagination.prefix%>&pageNumber=<%-RENDER_PARAM.pagination.end%>">尾页</a>
               <% } else { %>
               <a class="next page-numbers invalid" href="javascript:void(0);">尾页</a>
               <% } %>

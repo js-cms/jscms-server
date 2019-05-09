@@ -34,8 +34,8 @@ class AnalysisController extends BaseController {
       }
     });
 
-    // 获取日志总数
-    const logs = await service.log.findAll({
+    // 查找符合条件的多个日志
+    const logs = await service.api.back.log.all({ 
       type: 1,
       createTime: {
         $gte: this.params.startTime,
@@ -74,7 +74,7 @@ class AnalysisController extends BaseController {
     });
 
     // 获取日志总数
-    const logs = await service.log.findAll({
+    const logs = await service.api.back.log.all({
       type: 1,
       createTime: {
         $gte: this.params.startTime,
@@ -113,7 +113,7 @@ class AnalysisController extends BaseController {
     });
 
     // 获取日志总数
-    const logs = await service.log.findAll({
+    const logs = await service.api.back.log.all({
       type: 2,
       createTime: {
         $gte: this.params.startTime,

@@ -4,10 +4,11 @@
 
 'use strict';
 
+const BaseController = require('../base');
 const _ = require('lodash');
 
-const BaseController = require('../base');
-let configModel = require('../../../model/proto/config');
+const modelPath = `${process.cwd()}/app/model/proto`;
+let configModel = require(`${modelPath}/config`);
 
 class ConfigController extends BaseController {
 
@@ -30,7 +31,7 @@ class ConfigController extends BaseController {
     });
 
     //查询
-    const findRes = await service.config.findOne({
+    const findRes = await service.api.back.config.findOne({
       'alias': this.params.alias
     });
 
@@ -59,7 +60,7 @@ class ConfigController extends BaseController {
       }
     });
 
-    const updateRes = await service.config.update({
+    const updateRes = await service.api.back.config.update({
       _id: this.params.id
     }, this.params);
 

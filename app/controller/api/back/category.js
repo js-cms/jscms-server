@@ -5,7 +5,10 @@
 'use strict';
 
 const BaseController = require('../base');
-let category = require('../../../model/proto/category');
+const _ = require('lodash');
+
+const modelPath = `${process.cwd()}/app/model/proto`;
+let categoryModel = require(`${modelPath}/category`);
 
 class CategoryController extends BaseController {
 
@@ -17,7 +20,7 @@ class CategoryController extends BaseController {
       service
     } = this;
     this.decorator({
-      post: category,
+      post: categoryModel,
       toParams: {
         formField: true
       }
@@ -26,7 +29,7 @@ class CategoryController extends BaseController {
     let params = this.params;
 
     //查找分类
-    let findRes = await service.category.findOne({
+    let findRes = await service.api.back.category.findOne({
       name: params.name,
       alias: params.alias
     });
@@ -37,7 +40,7 @@ class CategoryController extends BaseController {
     }
 
     //分类创建结果
-    const createCatRes = await service.category.create(params);
+    const createCatRes = await service.api.back.category.create(params);
 
     if (createCatRes._id) {
       this.throwCorrect(createCatRes, '分类创建完成');
@@ -53,6 +56,7 @@ class CategoryController extends BaseController {
     const {
       service
     } = this;
+    let category = _.cloneDeep(categoryModel);
     category.id = {
       n: '分类id',
       type: 'ObjectId',
@@ -66,7 +70,64 @@ class CategoryController extends BaseController {
       }
     });
 
-    const updateRes = await service.category.update({
+    const updateRes = await service.api.back.category.update({
+      _id: this.params.id
+    }, this.params);
+
+    if (updateRes) {
+      this.throwCorrect(updateRes, '分类更新成功');
+    } else {
+      this.throwError('分类更新失败');
+    }
+  }
+
+  /**
+   * 快速更新分类
+   */
+  async fastUpdate() {
+    const {
+      service
+    } = this;
+    let category = {
+      id: {
+        n: '分类id',
+        type: 'ObjectId',
+        f: true,
+        r: true
+      }, // 文章id
+      order: {
+        n: '排序权重',
+        type: 'Number',
+        f: true,
+        t: true,
+        r: false,
+        d: 0
+      }, //排序权重
+      name: {
+        n: '中文分类名称',
+        type: 'String',
+        f: true,
+        t: true,
+        r: true
+      }, //中文分类名称
+      alias: {
+        n: '英文分类别名',
+        type: 'String',
+        f: true,
+        t: true,
+        r: true
+      } //英文分类别名
+    }
+
+    this.decorator({
+      post: category,
+      toParams: {
+        formField: true
+      }
+    });
+
+    // 更新分类
+    const updateRes = await service.api.back.category.update({
       _id: this.params.id
     }, this.params);
 
@@ -95,7 +156,7 @@ class CategoryController extends BaseController {
       }
     });
 
-    const deleteRes = await service.category.remove({
+    const deleteRes = await service.api.back.category.remove({
       _id: this.params.id
     });
 
@@ -111,20 +172,38 @@ class CategoryController extends BaseController {
    */
   async list() {
     const {
+      ctx,
       service
     } = this;
-    this.decorator({
-      login: true
-    });
+    const {
+      pageSize,
+      pageNumber
+    } = ctx.helper.getPaging(ctx.query);
 
-    //获取分类列表
-    const findCategoryRes = await service.category.find({});
+    const list = await service.api.back.category.find({}, pageNumber, pageSize);
+    const total = await service.api.back.category.count({});
 
-    if (findCategoryRes) {
-      this.throwCorrect(findCategoryRes);
-    } else {
-      this.throwError('分类创建失败');
-    }
+    // 输出列表
+    this.throwCorrect({
+      list: list,
+      total: total
+    }, '查询成功');
+  }
+
+  /**
+   * 获取全部分类数据
+   */
+  async all() {
+    const {
+      service
+    } = this;
+
+    const list = await service.api.back.category.all();
+
+    // 输出列表
+    this.throwCorrect({
+      list: list
+    }, '查询成功');
   }
 
   /**
@@ -145,13 +224,13 @@ class CategoryController extends BaseController {
       }
     });
 
-    //获取文章
-    const findRes = await service.category.findOne({
+    // 查询分类
+    const category = await service.api.back.category.findOne({
       _id: this.params.id
     });
 
-    if (findRes) {
-      this.throwCorrect(findRes);
+    if (category) {
+      this.throwCorrect(category);
     } else {
       this.throwError('文章查询失败');
     }

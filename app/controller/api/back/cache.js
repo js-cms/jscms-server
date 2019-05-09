@@ -27,7 +27,7 @@ class CacheController extends BaseController {
     });
 
     //查询
-    const cache = await service.cache.findOne({ _id: this.params.id });
+    const cache = await service.api.back.cache.findOne({ _id: this.params.id });
 
     //输出结果
     this.throwCorrect(cache);

@@ -1,8 +1,10 @@
 'use strict';
 
 const Service = require('egg').Service;
-const Db = require('./Db');
-const categoryModel = require('../model/proto/category');
+
+const appPath = `${process.cwd()}/app`;
+const Db = require(`${appPath}/service/Db.js`);
+const categoryModel = require(`${appPath}/model/proto/category`);
 
 class CategoryService extends Service {
 
@@ -61,7 +63,7 @@ class CategoryService extends Service {
   /**
    * 获取全部分类并按照权重重新进行排序（web端专用）
    */
-  async findAllForWeb() {
+  async all() {
     let list = await this.find({});
     list = list.sort((item1, item2) => {
       return item1.order - item2.order;

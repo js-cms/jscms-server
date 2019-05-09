@@ -42,15 +42,15 @@ class LogController extends BaseController {
     if (opName) query['info.opName'] = opName;
 
     //获取日志列表
-    const findLogRes = await service.log.find(query, pageNumber, pageSize);
+    const logs = await service.api.back.log.find(query, pageNumber, pageSize);
 
     //获取日志总数
-    const countLogRes = await service.log.count(query);
+    const total = await service.api.back.log.count(query);
 
     //输出结果
     this.throwCorrect({
-      list: findLogRes,
-      total: countLogRes
+      list: logs,
+      total: total
     }, '查询成功');
   }
 
@@ -72,7 +72,7 @@ class LogController extends BaseController {
       }
     });
 
-    const deleteRes = await service.log.remove({
+    const deleteRes = await service.api.back.log.remove({
       _id: this.params.id
     });
 

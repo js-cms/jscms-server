@@ -127,5 +127,12 @@ const utils = module.exports = {
       }
     });
     return has;
+  },
+
+  /**
+   * 过滤特殊字符串
+   */
+  filterSpecStr(str) {
+    return str.split('').filter(i => i.match(/[\w\u4e00-\u9fa5]+/gi)).join('');
   }
 };

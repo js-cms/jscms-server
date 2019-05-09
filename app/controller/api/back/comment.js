@@ -4,58 +4,17 @@
 
 'use strict';
 
+const BaseController = require('../base');
 const marked = require('marked');
 const _ = require('lodash');
 
-const BaseController = require('../base');
-let commentModel = require('../../../model/proto/comment');
+const modelPath = `${process.cwd()}/app/model/proto`;
+let commentModel = require(`${modelPath}/comment`);
 
 class CommentController extends BaseController {
 
   /**
-   * 新增评论（网站前端接口）
-   */
-  async webcreate() {
-    const {
-      service
-    } = this;
-    this.decorator({
-      post: commentModel
-    });
-    let params = this.params;
-
-    //查找所属文章
-    let article = await service.article.findOne({
-      _id: params.articleId
-    });
-    if (!article) this.throwError('文章不存在');
-
-    //赋值numberId
-    params.articleNumberId = article.numberId;
-
-    //转化markdown代码
-    if (params.mdContent) params.htContent = marked(params.mdContent);
-
-    //创建评论
-    let createRes = await service.comment.create(params);
-
-    if (createRes._id) {
-      //给文章增加评论数
-      await service.article.update({
-        _id: article._id
-      }, {
-        $inc: {
-          commentTotal: Number(1)
-        }
-      });
-      this.throwCorrect(createRes, '评论创建完成');
-    } else {
-      this.throwError('评论创建失败');
-    }
-  }
-
-  /**
-   * 创建评论（管理员接口）
+   * 创建评论
    */
   async create() {
     const {
@@ -83,7 +42,7 @@ class CommentController extends BaseController {
     if (params.mdContent) params.htContent = marked(params.mdContent);
 
     //创建评论
-    let createRes = await service.comment.create(params);
+    let createRes = await service.api.back.comment.create(params);
 
     if (createRes._id) {
       //给文章增加评论数
@@ -135,7 +94,7 @@ class CommentController extends BaseController {
     //转化markdown代码
     if (params.mdContent) params.htContent = marked(params.mdContent);
 
-    const updateRes = await service.comment.update({
+    const updateRes = await service.api.back.comment.update({
       _id: params.id
     }, params);
 
@@ -164,7 +123,7 @@ class CommentController extends BaseController {
       }
     });
 
-    const deleteRes = await service.comment.remove({
+    const deleteRes = await service.api.back.comment.remove({
       _id: this.params.id
     });
 
@@ -176,7 +135,7 @@ class CommentController extends BaseController {
   }
 
   /**
-   * 获取列表（管理员接口）
+   * 获取列表
    */
   async list() {
     const {
@@ -202,7 +161,7 @@ class CommentController extends BaseController {
     const {
       list,
       total
-    } = await service.comment.searchForApi({
+    } = await service.api.back.comment.searchForApi({
       and: [],
       keyword: keyword,
       pageNumber: pageNumber,
@@ -234,12 +193,12 @@ class CommentController extends BaseController {
     });
 
     //查询评论
-    const findRes = await service.category.findOne({
+    const comment = await service.category.findOne({
       _id: this.params.id
     });
 
-    if (findRes) {
-      this.throwCorrect(findRes);
+    if (comment) {
+      this.throwCorrect(comment);
     } else {
       this.throwError('文章查询失败');
     }

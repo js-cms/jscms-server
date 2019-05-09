@@ -31,7 +31,7 @@ class AuthorController extends BaseController {
       return this.notFound();
     }
 
-    let articles = await service.article.find({ userId: findUserRes._id }, pageNumber, pageSize);
+    let articles = await service.article.findForWeb({ userId: findUserRes._id }, pageNumber, pageSize);
     let total = await service.article.count({ userId: findUserRes._id });
 
     // 分页算法

@@ -1,10 +1,11 @@
 'use strict';
 
+const Service = require('egg').Service;
 const _ = require('lodash');
 
-const Service = require('egg').Service;
-const Db = require('./Db');
-const articleModel = require('../model/proto/article');
+const appPath = `${process.cwd()}/app`;
+const Db = require(`${appPath}/service/Db.js`);
+const articleModel = require(`${appPath}/model/proto/article`);
 
 class ArticleService extends Service {
 

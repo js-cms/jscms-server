@@ -187,14 +187,14 @@ class CrudController extends Controller {
     } else if (method === 'find') {
       let query = opts.query || {};
       let pageSize = Number(this.ctx.query.pageSize);
-      let pageNum = Number(this.ctx.query.pageNum);
+      let pageNumber = Number(this.ctx.query.pageNumber);
       let chain = this.getPopulate(Model);
-      if (!isNaN(pageSize) && !isNaN(pageNum)) {
+      if (!isNaN(pageSize) && !isNaN(pageNumber)) {
         pageSize = !!isNaN(pageSize) ? 10 : pageSize;
-        pageNum = !!isNaN(pageNum) ? 0 : pageNum;
+        pageNumber = !!isNaN(pageNumber) ? 0 : pageNumber;
         pageSize = pageSize < 0 ? 1 : pageSize;
-        pageNum = pageNum < 1 ? 1 : pageNum;
-        pageNum = pageNum - 1;
+        pageNumber = pageNumber< 1 ? 1 : pageNumber;
+        pageNumber = pageNumber- 1;
         let doc = m.find(query);
         chain.forEach((p) => {
           doc = doc.populate(p);
@@ -202,7 +202,7 @@ class CrudController extends Controller {
         return doc.sort({
             'createTime': -1
           })
-          .skip(pageNum * pageSize)
+          .skip(pageNumber* pageSize)
           .limit(pageSize)
           .exec();
       } else {
@@ -238,7 +238,8 @@ class CrudController extends Controller {
    * 获取子查询字段
    */
   getPopulate(Model) {
-    const proto = require('../../../model/proto/' + Model.toLowerCase() + '.js');
+    const modelPath = `${process.cwd()}/app/model/proto`;
+    const proto = require(`${modelPath}/${Model.toLowerCase()}.js`);
     let chain = [];
     for (const key in proto) {
       if (proto.hasOwnProperty(key)) {

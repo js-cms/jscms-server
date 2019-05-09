@@ -4,10 +4,9 @@
 
 'use strict';
 
+const BaseController = require('../base');
 const path = require('path');
 const fs = require('fs-extra');
-
-const BaseController = require('../base');
 
 class ResourceController extends BaseController {
 
@@ -66,7 +65,7 @@ class ResourceController extends BaseController {
     });
 
     //获取列表
-    let findRes = await service.resource.find(query, pageNumber, pageSize);
+    let findRes = await service.api.back.resource.find(query, pageNumber, pageSize);
     let list = [];
 
     for (const item of findRes) {
@@ -88,7 +87,7 @@ class ResourceController extends BaseController {
     }
 
     //获取资源总数
-    let total = await service.resource.count(query);
+    let total = await service.api.back.resource.count(query);
 
     //输出结果
     this.throwCorrect({
@@ -137,7 +136,7 @@ class ResourceController extends BaseController {
     }
 
     //删除数据库记录
-    const deleteRes = await service.resource.remove({
+    const deleteRes = await service.api.back.resource.remove({
       _id: id
     });
 
@@ -197,7 +196,7 @@ class ResourceController extends BaseController {
     const webUrl = `${ctx.origin}${config.constant.directory.JSCMS_URL_UPLOAD}/${newFileName}`;
 
     //写入资源表
-    let createRessoureRes = await service.resource.create({
+    let createRessoureRes = await service.api.back.resource.create({
       type: 1,
       store: 1,
       filename: newFileName,

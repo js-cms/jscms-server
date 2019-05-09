@@ -4,11 +4,12 @@
 
 'use strict';
 
+const BaseController = require('../base');
 const marked = require('marked');
 const _ = require('lodash');
 
-const BaseController = require('../base');
-let articleModel = require('../../../model/proto/article');
+const modelPath = `${process.cwd()}/app/model/proto`;
+let articleModel = require(`${modelPath}/article`);
 
 /**
  * 文章内容转化
@@ -67,7 +68,7 @@ class ArticleController extends BaseController {
     await service.category.parseNameForArticle(params);
 
     //创建文章
-    await service.article.create(this, true);
+    await service.api.back.article.create(this, true);
 
     //给分类增加文章数量
     await service.category.addNumForArticle(params);
@@ -104,7 +105,7 @@ class ArticleController extends BaseController {
     toContent(this.params);
 
     //更新文章
-    const updateRes = await service.article.update({
+    const updateRes = await service.api.back.article.update({
       _id: this.params.id
     }, this.params);
 
@@ -192,7 +193,7 @@ class ArticleController extends BaseController {
     toContent(this.params);
 
     //更新文章
-    const updateRes = await service.article.update({
+    const updateRes = await service.api.back.article.update({
       _id: this.params.id
     }, this.params);
 
@@ -224,7 +225,7 @@ class ArticleController extends BaseController {
       }
     });
 
-    const deleteRes = await service.article.remove({
+    const deleteRes = await service.api.back.article.remove({
       _id: this.params.id
     });
 
@@ -278,7 +279,7 @@ class ArticleController extends BaseController {
     const {
       list,
       total
-    } = await service.article.searchForApi({
+    } = await service.api.back.article.searchForApi({
       and: queryAnd,
       keyword: keyword,
       pageNumber: pageNumber,
@@ -310,7 +311,7 @@ class ArticleController extends BaseController {
     });
 
     //查询文章
-    const findArticle = await service.article.findOne({
+    const findArticle = await service.api.back.article.findOne({
       _id: this.params.id
     });
 

@@ -34,12 +34,12 @@ class LogService extends Service {
   /**
    * 查询日志（带分页功能）
    */
-  async find(query, pageNum = 0, pageSize = 10) {
+  async find(query, pageNumber = 0, pageSize = 10) {
     return this.ctx.model.Log.find(query)
       .sort({
         'createTime': -1
       })
-      .skip(pageNum * pageSize)
+      .skip(pageNumber * pageSize)
       .limit(pageSize)
       .exec();
   }

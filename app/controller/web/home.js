@@ -40,7 +40,7 @@ class HomeController extends BaseController {
       topType: 2
     }, 0, 2);
 
-    let articles = await service.article.find({}, pageNumber, pageSize);
+    let articles = await service.article.findForWeb({}, pageNumber, pageSize);
     let total = await service.article.count({});
 
     //分页算法

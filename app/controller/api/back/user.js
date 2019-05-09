@@ -4,11 +4,12 @@
 
 'use strict';
 
-const uuid = require('uuid');
-const _ = require('lodash');
-
 const BaseController = require('../base');
-let userModel = require('../../../model/proto/user');
+const _ = require('lodash');
+const uuid = require('uuid');
+
+const modelPath = `${process.cwd()}/app/model/proto`;
+let userModel = require(`${modelPath}/user`);
 
 /**
  * 用户相关的api接口
@@ -20,7 +21,7 @@ class UserController extends BaseController {
    */
   async show() {
     const {
-      ctx
+      service
     } = this;
     this.decorator({
       get: {
@@ -34,7 +35,7 @@ class UserController extends BaseController {
     });
 
     //获取该用户的数据
-    const user = await ctx.service.user.findOne({
+    const user = await service.api.back.user.findOne({
       _id: this.params.id
     });
 
@@ -50,11 +51,11 @@ class UserController extends BaseController {
    */
   async self() {
     const {
-      ctx
+      service
     } = this;
 
     //获取当前用户的数据
-    const findUser = await ctx.service.user.findOne({
+    const findUser = await service.api.back.user.findOne({
       _id: this.userId
     });
 
@@ -70,14 +71,14 @@ class UserController extends BaseController {
    */
   async create() {
     const {
-      ctx
+      service
     } = this;
     this.decorator({
       post: userModel
     });
 
     //判断用户是否已经被创建
-    const findUsers = await ctx.service.user.getUsersByQuery({
+    const findUsers = await service.api.back.user.getUsersByQuery({
       $or: [{
         email: this.params.email
       }]
@@ -85,13 +86,13 @@ class UserController extends BaseController {
     if (findUsers.length > 0) this.throwError('用户名或邮箱已被使用。');
 
     //获取用户总数
-    const count = await ctx.service.user.count({});
+    const count = await service.api.back.user.count({});
     if (!this.params.nickname) {
       this.params.nickname = '会员' + count;
     }
 
     //创建用户
-    const createUser = await ctx.service.user.create(this.params);
+    const createUser = await service.api.back.user.create(this.params);
 
     //如果用户添加成功
     if (createUser._id) {
@@ -119,7 +120,7 @@ class UserController extends BaseController {
       }
     });
 
-    const user = await service.user.findOne({
+    const user = await service.api.back.user.findOne({
       _id: this.params.id
     });
 
@@ -129,7 +130,7 @@ class UserController extends BaseController {
       this.throwError('不能删除超级管理员用户');
     }
 
-    const deleteRes = await service.user.remove({
+    const deleteRes = await service.api.back.user.remove({
       _id: this.params.id
     });
 
@@ -160,14 +161,14 @@ class UserController extends BaseController {
 
     //如果用户准备修改nickname，判断是否重复
     if (user.nickname) {
-      const findUser = await service.user.getUserByNickname(this.params.nickname)
+      const findUser = await service.api.back.user.getUserByNickname(this.params.nickname)
       if (findUser && String(findUser._id) !== String(this.params.id)) {
         this.throwError('昵称已被人使用');
       }
     }
 
     //更新用户信息
-    let updateRes = await service.user.update({
+    let updateRes = await service.api.back.user.update({
       _id: this.params.id
     }, this.params);
 
@@ -183,11 +184,11 @@ class UserController extends BaseController {
    */
   async list() {
     const {
-      ctx
+      service
     } = this;
 
     // 查找列表
-    const users = await ctx.service.user.find({});
+    const users = await service.api.back.user.find({});
 
     if (users) {
       this.throwCorrect(users);
@@ -231,7 +232,7 @@ class UserController extends BaseController {
     if (!this.userId) this.throwError('请先登陆后台', 403);
 
     // 获取当前用户信息
-    let user = await service.user.findOne({
+    let user = await service.api.back.user.findOne({
       _id: this.userId
     });
 
@@ -242,7 +243,7 @@ class UserController extends BaseController {
     if (!equal) this.throwError('旧密码不正确');
 
     // 修改密码
-    let updateRes = await service.user.update({
+    let updateRes = await service.api.back.user.update({
       _id: this.userId
     }, {
       password: ctx.helper.bhash(this.params.newpass)
@@ -260,7 +261,8 @@ class UserController extends BaseController {
    */
   async login() {
     const {
-      ctx
+      ctx,
+      service
     } = this;
     await this.decorator({
       post: {
@@ -286,7 +288,7 @@ class UserController extends BaseController {
     });
 
     //判断用户是否存在
-    const existUser = await ctx.service.user.getUserByMail(this.params.email);
+    const existUser = await service.api.back.user.getUserByMail(this.params.email);
 
     // 用户不存在
     if (!existUser) this.throwError('用户不存在');
@@ -304,13 +306,13 @@ class UserController extends BaseController {
     let accessToken = uuid.v4();
 
     //获取用户的token
-    let res = await ctx.service.token.getByUserId(existUser._id);
+    let res = await service.token.getByUserId(existUser._id);
 
     //更新用户的token，没有则自动创建。
     if (res) { //更新
       const now = (new Date()).getTime();
       const tomorrow = now + 1000 * 60 * 60 * 24;
-      res = await ctx.service.token.updateToken({
+      res = await service.token.updateToken({
         userId: existUser._id
       }, {
         token: accessToken,
@@ -318,7 +320,7 @@ class UserController extends BaseController {
         passwExpiry: tomorrow
       });
     } else { //创建
-      res = await ctx.service.token.create({
+      res = await service.token.create({
         userId: existUser._id,
         token: accessToken,
       });

@@ -156,8 +156,6 @@ class UserController extends BaseController {
       service
     } = this;
     this.decorator({
-      login: true,
-      powers: ['member'],
       get: {
         token: {
           n: 'token',
@@ -193,10 +191,6 @@ class UserController extends BaseController {
     const {
       ctx
     } = this;
-    this.decorator({
-      login: true,
-      powers: ['member']
-    });
 
     //获取当前用户的数据
     const findUser = await ctx.service.user.findOne({
@@ -217,10 +211,9 @@ class UserController extends BaseController {
     const {
       service
     } = this;
+    let user = _.cloneDeep(userModel);
     delete user.password;
     this.decorator({
-      login: true,
-      powers: ['member'],
       post: user
     });
 
@@ -253,7 +246,6 @@ class UserController extends BaseController {
       service
     } = this;
     this.decorator({
-      login: true,
       post: {
         oldpass: {
           n: '旧密码',

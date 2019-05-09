@@ -4,10 +4,11 @@
 
 'use strict';
 
+const BaseController = require('../base');
 const _ = require('lodash');
 
-const BaseController = require('../base');
-let cacheModel = require('../../../model/proto/cache');
+const modelPath = `${process.cwd()}/app/model/proto`;
+let cacheModel = require(`${modelPath}/cache`);
 
 class ArticleDraftController extends BaseController {
 
@@ -29,7 +30,7 @@ class ArticleDraftController extends BaseController {
     
     this.params.type = 'draftArticle';
 
-    const result = await service.cache.create(this.params);
+    const result = await service.api.back.cache.create(this.params);
 
     if (result) {
       this.throwCorrect(updateRes, '文章草稿创建成功');

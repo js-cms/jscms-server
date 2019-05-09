@@ -22,15 +22,16 @@ class SearchController extends BaseController {
       ctx,
       service
     } = this;
-    let pageNumber = this.ctx.query.pageNumber - 1;
+    let pageNumber = ctx.query.pageNumber - 1;
     pageNumber = isNaN(pageNumber) || pageNumber < 0 ? 0 : pageNumber;
 
     if (pageNumber < 0) {
       return this.notFound();
     }
 
-    let pageSize = 10;
-    let keyword = this.ctx.query.s;
+    const pageSize = 10;
+    const keyword = ctx.helper.filterSpecStr(ctx.query.s);
+    const displayKeyword = keyword;
 
     let {
       articles,
@@ -51,21 +52,21 @@ class SearchController extends BaseController {
       separator
     } = webConfig.site;
     this.setMeta({
-      title: `“${keyword}”的搜索结果${separator}${subtitle}`,
-      keywords: keyword,
-      description: `“${keyword}”的搜索结果${separator}${subtitle}`
+      title: `“${displayKeyword}”的搜索结果${separator}${subtitle}`,
+      keywords: displayKeyword,
+      description: `“${displayKeyword}”的搜索结果${separator}${subtitle}`
     });
 
     this.cache('RENDER_PARAM', {
       // 页面类型: String
       pageType: 'search' || 'unknown',
       // 搜索关键字：String
-      keyword: keyword || '',
+      keyword: displayKeyword || '',
       // 搜索结果文章列表：Array
       articles: articles || [],
       // 分页信息：Object
       pagination: {
-        prefix: `s?s=${keyword}`,
+        prefix: `s?s=${displayKeyword}`,
         start: 1,
         pages: pages,
         current: pageNumber + 1,

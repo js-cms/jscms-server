@@ -5,7 +5,9 @@
 'use strict';
 
 const BaseController = require('../base');
-const models = require('../../../model/proto/index');
+
+const modelPath = `${process.cwd()}/app/model/proto`;
+let models = require(`${modelPath}/index`);
 
 class ModelController extends BaseController {
 

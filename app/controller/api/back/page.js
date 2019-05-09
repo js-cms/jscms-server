@@ -4,10 +4,11 @@
 
 'use strict';
 
+const BaseController = require('../base');
 const _ = require('lodash');
 
-const BaseController = require('../base');
-let pageModel = require('../../../model/proto/page');
+const modelPath = `${process.cwd()}/app/model/proto`;
+let pageModel = require(`${modelPath}/page`);
 
 class PageController extends BaseController {
 
@@ -25,7 +26,7 @@ class PageController extends BaseController {
     let params = this.params;
 
     //查找同别名页面
-    let page = await service.page.findOne({
+    let page = await service.api.back.page.findOne({
       alias: params.alias
     });
 
@@ -35,7 +36,7 @@ class PageController extends BaseController {
     }
 
     //创建页面
-    let result = await service.page.create(params);
+    let result = await service.api.back.page.create(params);
 
     if (result._id) {
       this.throwCorrect(result, '页面创建完成');
@@ -62,7 +63,7 @@ class PageController extends BaseController {
       post: page
     });
 
-    const result = await service.page.update({
+    const result = await service.api.back.page.update({
       _id: this.params.id
     }, this.params);
 
@@ -91,7 +92,7 @@ class PageController extends BaseController {
       }
     });
 
-    const result = await service.page.remove({
+    const result = await service.api.back.page.remove({
       _id: this.params.id
     });
 
@@ -116,10 +117,10 @@ class PageController extends BaseController {
     } = ctx.helper.getPaging(ctx.query);
 
     //获取页面列表
-    const page = await service.page.find({}, pageNumber, pageSize);
+    const page = await service.api.back.page.find({}, pageNumber, pageSize);
 
     //获取文章总数
-    const total = await service.page.count({});
+    const total = await service.api.back.page.count({});
 
     //输出结果
     this.throwCorrect({
@@ -147,7 +148,7 @@ class PageController extends BaseController {
     });
 
     //获取文章
-    const page = await service.page.findOne({
+    const page = await service.api.back.page.findOne({
       _id: this.params.id
     });
 

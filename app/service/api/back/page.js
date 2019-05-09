@@ -1,8 +1,10 @@
 'use strict';
 
 const Service = require('egg').Service;
-const Db = require('./Db');
-const pageModel = require('../model/proto/page');
+
+const appPath = `${process.cwd()}/app`;
+const Db = require(`${appPath}/service/Db.js`);
+const pageModel = require(`${appPath}/model/proto/page`);
 
 class PageService extends Service {
 

@@ -125,7 +125,7 @@ class BaseController extends Controller {
       return res && res.info ? res.info : false;
     }
 
-    let categories = await service.category.listForWeb();
+    let categories = await service.category.findAllForWeb();
     let domains = await getWebConfig(config.constant.webConfigNames.DOMAIN_NAME);
     let site = await getWebConfig(config.constant.webConfigNames.SITE_NAME);
     let notices = await getWebConfig(config.constant.webConfigNames.NOT_NAME);
