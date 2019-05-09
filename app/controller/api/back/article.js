@@ -4,7 +4,6 @@
 
 'use strict';
 
-const path = require('path');
 const marked = require('marked');
 const _ = require('lodash');
 
@@ -45,10 +44,14 @@ class ArticleController extends BaseController {
    * @description 创建文章
    */
   async create() {
-    const { service } = this;
+    const {
+      service
+    } = this;
     this.decorator({
       post: articleModel,
-      toParams: { formField: true }
+      toParams: {
+        formField: true
+      }
     });
 
     this.params.userId = this.userId;
@@ -80,19 +83,29 @@ class ArticleController extends BaseController {
    * @description 更新文章
    */
   async update() {
-    const { service } = this;
-    let article = _.cloneDeep(articleModel); 
-    article.id = { type: 'ObjectId', f: true, r: true };
+    const {
+      service
+    } = this;
+    let article = _.cloneDeep(articleModel);
+    article.id = {
+      type: 'ObjectId',
+      f: true,
+      r: true
+    };
     this.decorator({
       post: article,
-      toParams: { formField: true }
+      toParams: {
+        formField: true
+      }
     });
-    
+
     //内容转换
     toContent(this.params);
 
     //更新文章
-    const updateRes = await service.article.update({ _id: this.params.id }, this.params);
+    const updateRes = await service.article.update({
+      _id: this.params.id
+    }, this.params);
 
     //更新标签列表
     await service.config.updateTagsForArticle(this.params);
@@ -108,26 +121,78 @@ class ArticleController extends BaseController {
    * @description 快速更新文章
    */
   async fastUpdate() {
-    const { service } = this;
+    const {
+      service
+    } = this;
     let article = {
-      id: { type: 'ObjectId', f: true, r: true }, // 文章id
-      topType: { n: '置顶方式', type: 'Number', f: true, t: true, r: true, d: 0, extra: {comType: 'select', options: '0:无置顶,1:主要置顶,2:次要置顶'}}, // 置顶方式 0、无置顶 1、主要置顶 2、次要置顶
-      categoryId: { n: '所属分类', type: 'ObjectId', f: true, t: true, r: true, ref: 'Category', extra: {displayField: 'name', comType: 'select', options: 'categories'}}, // 所属分类对象
-      title: { n: '文章标题', type: 'String', f: true, t: true, r: true, p: '文章的标题。' }, // 文章标题
-      createTime: { n: '创建时间', type: 'Timestamp', f: true, t: true, r: true }, // 创建时间
-      updateTime: { n: '更新时间', type: 'Timestamp', f: true, t: true, r: true } // 更新时间
+      id: {
+        type: 'ObjectId',
+        f: true,
+        r: true
+      }, // 文章id
+      topType: {
+        n: '置顶方式',
+        type: 'Number',
+        f: true,
+        t: true,
+        r: true,
+        d: 0,
+        extra: {
+          comType: 'select',
+          options: '0:无置顶,1:主要置顶,2:次要置顶'
+        }
+      }, // 置顶方式 0、无置顶 1、主要置顶 2、次要置顶
+      categoryId: {
+        n: '所属分类',
+        type: 'ObjectId',
+        f: true,
+        t: true,
+        r: true,
+        ref: 'Category',
+        extra: {
+          displayField: 'name',
+          comType: 'select',
+          options: 'categories'
+        }
+      }, // 所属分类对象
+      title: {
+        n: '文章标题',
+        type: 'String',
+        f: true,
+        t: true,
+        r: true,
+        p: '文章的标题。'
+      }, // 文章标题
+      createTime: {
+        n: '创建时间',
+        type: 'Timestamp',
+        f: true,
+        t: true,
+        r: true
+      }, // 创建时间
+      updateTime: {
+        n: '更新时间',
+        type: 'Timestamp',
+        f: true,
+        t: true,
+        r: true
+      } // 更新时间
     }
 
     this.decorator({
       post: article,
-      toParams: { formField: true }
+      toParams: {
+        formField: true
+      }
     });
-    
+
     //内容转换
     toContent(this.params);
 
     //更新文章
-    const updateRes = await service.article.update({ _id: this.params.id }, this.params);
+    const updateRes = await service.article.update({
+      _id: this.params.id
+    }, this.params);
 
     //更新标签列表
     await service.config.updateTagsForArticle(this.params);
@@ -143,14 +208,22 @@ class ArticleController extends BaseController {
    * @description 删除文章
    */
   async delete() {
-    const { service } = this;
+    const {
+      service
+    } = this;
     this.decorator({
       post: {
-        id: { type: 'ObjectId', f: true, r: true }
+        id: {
+          type: 'ObjectId',
+          f: true,
+          r: true
+        }
       }
     });
 
-    const deleteRes = await service.article.remove({ _id: this.params.id });
+    const deleteRes = await service.article.remove({
+      _id: this.params.id
+    });
 
     if (deleteRes) {
       this.throwCorrect({}, '文章删除成功');
@@ -163,18 +236,32 @@ class ArticleController extends BaseController {
    * @description 获取文章列表
    */
   async list() {
-    const { ctx, service } = this;
+    const {
+      ctx,
+      service
+    } = this;
     this.decorator({
       get: {
-        categoryId: { type: 'ObjectId', f: true, r: false },
-        keyword: { type: 'String', f: true, r: false }
+        categoryId: {
+          type: 'ObjectId',
+          f: true,
+          r: false
+        },
+        keyword: {
+          type: 'String',
+          f: true,
+          r: false
+        }
       }
     });
 
     let categoryId = this.params.categoryId || '';
     categoryId = categoryId.replace('null', '');
     const keyword = this.params.keyword;
-    const { pageSize, pageNumber } = ctx.helper.getPaging(ctx.query);
+    const {
+      pageSize,
+      pageNumber
+    } = ctx.helper.getPaging(ctx.query);
 
     let queryAnd = [];
     if (categoryId) {
@@ -182,9 +269,12 @@ class ArticleController extends BaseController {
         categoryId: categoryId
       }];
     }
-    
+
     //获取文章列表
-    const { list, total } = await service.article.searchForApi({
+    const {
+      list,
+      total
+    } = await service.article.searchForApi({
       and: queryAnd,
       keyword: keyword,
       pageNumber: pageNumber,
@@ -201,15 +291,23 @@ class ArticleController extends BaseController {
    * @description 获取单篇文章
    */
   async show() {
-    const { service } = this;
+    const {
+      service
+    } = this;
     this.decorator({
       get: {
-        id: { type: 'ObjectId', f: true, r: true }
+        id: {
+          type: 'ObjectId',
+          f: true,
+          r: true
+        }
       }
     });
 
     //查询文章
-    const findArticle = await service.article.findOne({ _id: this.params.id });
+    const findArticle = await service.article.findOne({
+      _id: this.params.id
+    });
 
     if (findArticle) {
       this.throwCorrect(findArticle);
