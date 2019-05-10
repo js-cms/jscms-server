@@ -58,9 +58,7 @@ class CaptchaController extends BaseController {
       ctx,
       service
     } = this;
-    let config = await service.config.findOne({
-      alias: 'site'
-    });
+    let config = await service.api.front.config.alias('site');
     let site = config.info;
     ctx.body = {
       code: 0,

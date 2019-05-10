@@ -26,13 +26,13 @@ class AuthorController extends BaseController {
       return this.notFound();
     }
 
-    let findUserRes = await service.user.findOne({nickname: nickname});
+    let findUserRes = await service.web.user.nickname(nickname);
     if (!findUserRes) {
       return this.notFound();
     }
 
-    let articles = await service.article.findForWeb({ userId: findUserRes._id }, pageNumber, pageSize);
-    let total = await service.article.count({ userId: findUserRes._id });
+    let articles = await service.web.article.list({ userId: findUserRes._id }, pageNumber, pageSize);
+    let total = await service.web.article.count({ userId: findUserRes._id });
 
     // 分页算法
     let pages = this.paging(

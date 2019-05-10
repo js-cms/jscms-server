@@ -39,8 +39,9 @@ class TagsController extends BaseController {
         }
       }
     };
-    let articles = await service.article.find(query, pageNumber, pageSize);
-    let total = await service.article.count(query);
+
+    let articles = await service.web.article.list(query, pageNumber, pageSize);
+    let total = await service.web.article.count(query);
 
     // 覆盖元信息
     let webConfig = this.cache('WEB_CONFIG');

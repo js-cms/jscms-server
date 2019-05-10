@@ -22,29 +22,19 @@ class ArticleController extends BaseController {
       ctx,
       service
     } = this;
-    let numberId = ctx.params[0];
+    const numberId = ctx.params[0];
 
     // 获取文章
-    let article = await service.article.findOneForWeb({
-      numberId
-    });
-    if (!article) {
-      return this.notFound();
-    }
+    const article = await service.web.article.numberId(numberId);
+
+    // 如果通过numberId找到文章，则返回404
+    if (!article) return this.notFound();
 
     // 获取文章评论
-    let comments = await service.comment.find({
-      articleId: article._id
-    });
+    const comments = await service.web.comment.articleId(article._id);
 
     // 更新文章浏览量
-    await service.article.update({
-      _id: article._id
-    }, {
-      $inc: {
-        'visTotal': Number(1)
-      }
-    });
+    await service.web.article.updateVis(article._id);
 
     // 元信息合并
     let webConfig = this.cache('WEB_CONFIG');
@@ -114,7 +104,7 @@ class ArticleController extends BaseController {
         '$or': whereOr
       }
     }
-    let articlesRes = await service.article.search(where);
+    let articlesRes = await service.web.article.search(where);
     return articlesRes;
   }
 

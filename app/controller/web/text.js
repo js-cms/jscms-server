@@ -13,7 +13,7 @@ class TextController extends Controller {
       service
     } = this;
     
-    const _articles = await service.article.findAll();
+    const _articles = await service.web.article.all();
     let articles = '';
     _articles.forEach((item, index) => {
       let url = ctx.origin + '/' + item.numberId + '.html';
@@ -33,12 +33,10 @@ class TextController extends Controller {
       service
     } = this;
 
-    const findRes = await service.config.findOne({
-      'alias': 'robots'
-    });
+    const robotsConfig = await service.web.config.alias('robots');
     ctx.response.set('cache-control', 'no-cache');
     ctx.response.set('content-type', 'text/plain; charset=utf-8');
-    ctx.body = findRes.info;
+    ctx.body = robotsConfig.info;
   }
 }
 

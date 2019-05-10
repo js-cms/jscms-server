@@ -4,11 +4,12 @@
 
 'use strict';
 
+const BaseController = require('../base');
 const uuid = require('uuid');
 const _ = require('lodash');
 
-const BaseController = require('../base');
-let userModel = require('../../../model/proto/user');
+const modelPath = `${process.cwd()}/app/model/proto`;
+let userModel = require(`${modelPath}/user`);
 
 class UserController extends BaseController {
 
@@ -17,7 +18,8 @@ class UserController extends BaseController {
    */
   async login() {
     const {
-      ctx
+      ctx,
+      service
     } = this;
     await this.decorator({
       captcha: true,
@@ -44,7 +46,7 @@ class UserController extends BaseController {
     });
 
     //判断用户是否存在
-    const existUser = await ctx.service.user.getUserByMail(this.params.email);
+    const existUser = await service.api.front.user.getUserByMail(this.params.email);
 
     // 用户不存在
     if (!existUser) this.throwError('用户不存在');
@@ -62,13 +64,13 @@ class UserController extends BaseController {
     let accessToken = uuid.v4();
 
     //获取用户的token
-    let res = await ctx.service.token.getByUserId(existUser._id);
+    let res = await service.token.getByUserId(existUser._id);
 
     //更新用户的token，没有则自动创建。
     if (res) { //更新
       const now = (new Date()).getTime();
       const tomorrow = now + 1000 * 60 * 60 * 24;
-      res = await ctx.service.token.updateToken({
+      res = await service.token.updateToken({
         userId: existUser._id
       }, {
         token: accessToken,
@@ -76,7 +78,7 @@ class UserController extends BaseController {
         passwExpiry: tomorrow
       });
     } else { //创建
-      res = await ctx.service.token.create({
+      res = await service.token.create({
         userId: existUser._id,
         token: accessToken,
       });
@@ -97,7 +99,8 @@ class UserController extends BaseController {
    */
   async register() {
     const {
-      ctx
+      ctx,
+      service
     } = this;
     await this.decorator({
       captcha: true,
@@ -124,7 +127,7 @@ class UserController extends BaseController {
     });
 
     //判断用户是否已经被创建
-    const findUsers = await ctx.service.user.getUsersByQuery({
+    const findUsers = await service.api.front.user.getUsersByQuery({
       $or: [{
         email: this.params.email
       }]
@@ -132,13 +135,13 @@ class UserController extends BaseController {
     if (findUsers.length > 0) this.throwError('用户名或邮箱已被使用。');
 
     //获取用户总数
-    const count = await ctx.service.user.count({});
+    const count = await service.api.front.user.count({});
     if (!this.params.nickname) {
       this.params.nickname = '会员' + count;
     }
 
     //创建用户
-    const createUser = await ctx.service.user.create(this.params);
+    const createUser = await service.api.front.user.create(this.params);
 
     //如果用户添加成功
     if (createUser._id) {
@@ -189,16 +192,14 @@ class UserController extends BaseController {
    */
   async getInfo() {
     const {
-      ctx
+      ctx,
+      service
     } = this;
+    
+    const user = await service.api.front.user.userId(this.userId);
 
-    //获取当前用户的数据
-    const findUser = await ctx.service.user.findOne({
-      _id: this.userId
-    });
-
-    if (findUser) {
-      this.throwCorrect(findUser);
+    if (user) {
+      this.throwCorrect(user);
     } else {
       this.throwError('没有找到该用户的信息');
     }
@@ -219,14 +220,14 @@ class UserController extends BaseController {
 
     //如果用户准备修改nickname，判断是否重复
     if (user.nickname) {
-      const findUser = await service.user.getUserByNickname(this.params.nickname)
+      const findUser = await service.api.front.user.getUserByNickname(this.params.nickname)
       if (findUser && String(findUser._id) !== String(this.userId)) {
         this.throwError('昵称已被人使用');
       }
     }
 
     //更新用户信息
-    let updateRes = await service.user.update({
+    let updateRes = await service.api.front.user.update({
       _id: this.userId
     }, this.params);
 
@@ -269,9 +270,7 @@ class UserController extends BaseController {
     });
 
     // 获取当前用户信息
-    let findUser = await service.user.findOne({
-      _id: this.userId
-    });
+    let findUser = await service.api.front.user.userId(this.userId);
 
     // 比较密码
     const equal = ctx.helper.bcompare(this.params.oldpass, findUser.password);
@@ -282,7 +281,7 @@ class UserController extends BaseController {
     }
 
     // 修改密码
-    let updateRes = await service.user.update({
+    let updateRes = await service.api.front.user.update({
       _id: this.userId
     }, {
       password: ctx.helper.bhash(this.params.newpass)

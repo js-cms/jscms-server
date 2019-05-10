@@ -28,22 +28,17 @@ class CategoryController extends BaseController {
     pageSize = isNaN(pageSize) ? 10 : pageSize;
     pageNumber = isNaN(pageNumber) ? 0 : pageNumber;
 
-    if (pageNumber < 0) {
-      return this.notFound();
-    }
+    if (pageNumber < 0) return this.notFound();
 
-    let category = await service.category.findOne({
-      alias: catAlias
-    });
+    let category = await service.web.category.alias(catAlias);
 
-    if (!category) {
-      return this.customRoute();
-    }
+    if (!category) return this.customRoute();
 
-    let articles = await service.article.findForWeb({
+    let articles = await service.web.article.list({
       categoryId: category._id
     }, pageNumber, pageSize);
-    let total = await service.article.count({
+
+    let total = await service.web.article.count({
       categoryId: category._id
     });
 

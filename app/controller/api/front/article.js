@@ -26,18 +26,12 @@ class ArticleController extends BaseController {
       }
     });
 
-    const article = await service.article.findOne({
-      _id: this.params.id
-    });
+    const article = await service.api.front.article.articleId(this.params.id);
+
+    if (!article) this.throwError('文章未找到');
 
     // 给文章增加点赞数
-    await service.article.updateOne({
-      _id: this.params.id
-    }, {
-      $inc: {
-        likeTotal: Number(1)
-      }
-    });
+    await service.api.front.article.updateLike(this.params.id);
 
     this.throwCorrect({
       count: article.likeTotal + 1

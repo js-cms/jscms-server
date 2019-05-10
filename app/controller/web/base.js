@@ -57,7 +57,7 @@ class BaseController extends Controller {
         info.params = ctx.request.body || {};
       }
       //将访问者信息插入log表
-      await service.log.create({
+      await service.web.log.create({
         type: 1,
         info: info
       });
@@ -74,15 +74,15 @@ class BaseController extends Controller {
     // 缓存渲染模版数据
     this.cache('RENDER_DATA', {
       // 最近三篇文章
-      recentArticles3: await service.article.find({}, 0, 3),
+      recentArticles3: await service.web.article.list({}, 0, 3),
       // 随机三篇文章
-      randomArticles3: await service.article.findRandom(3),
+      randomArticles3: await service.web.article.random(3),
       // 最近三条评论
-      recentComments3: await service.comment.find({}, 0, 3),
+      recentComments3: await service.web.comment.list({}, 0, 3),
       // 获取浏览量最多的5篇文章
-      hotArticles5: await service.article.findByHot({}, 0, 5),
+      hotArticles5: await service.web.article.visHot({}, 0, 5),
       // 获取评论量最多的5篇文章
-      commentTopArticles5: await service.article.findByComment({}, 0, 5)
+      commentTopArticles5: await service.web.article.commentHot({}, 0, 5)
     });
   }
 
@@ -119,13 +119,11 @@ class BaseController extends Controller {
 
     // 获取配置项
     async function getWebConfig(name) {
-      let res = await service.config.findOne({
-        alias: name
-      });
+      let res = await service.web.config.alias(name);
       return res && res.info ? res.info : false;
     }
 
-    let categories = await service.category.findAllForWeb();
+    let categories = await service.web.category.all();
     let domains = await getWebConfig(config.constant.webConfigNames.DOMAIN_NAME);
     let site = await getWebConfig(config.constant.webConfigNames.SITE_NAME);
     let notices = await getWebConfig(config.constant.webConfigNames.NOT_NAME);
@@ -252,7 +250,7 @@ class BaseController extends Controller {
     } = this;
     let route = ctx.params.route || ctx.path;
     route = route[0] === '/' ? route : '/' + route;
-    let findPageRes = await service.page.findOne({
+    let findPageRes = await service.web.page.route({
       route: route
     });
     if (!findPageRes) {
@@ -272,23 +270,15 @@ class BaseController extends Controller {
       service
     } = this;
     await this.init();
-    const findTagsRes = await service.config.findOne({
-      'alias': 'tags'
-    });
 
-    let tags = [];
-    findTagsRes.info.forEach((tag) => {
-      if (tag !== '' && tag !== ' ') {
-        tags.push(tag);
-      }
-    });
+    const tags = await service.web.config.tags();
 
     // 重新覆盖元信息
     let webConfig = this.cache('WEB_CONFIG');
     const {
       title,
-      subtitle,
-      separator
+      separator,
+      subtitle
     } = webConfig.site;
     this.setMeta({
       title: `页面未找到${separator}${subtitle}`,

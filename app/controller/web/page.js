@@ -25,12 +25,9 @@ class PageController extends BaseController {
     const pageAlias = ctx.params[0] || '';
 
     //获取页面信息
-    let findPageRes = await service.page.findOne({
-      alias: pageAlias
-    });
-    if (!findPageRes) {
-      return this.notFound();
-    }
+    let page = await service.web.page.alias(pageAlias);
+
+    if (!page) return this.notFound();
 
     // 覆盖元信息
     let webConfig = this.cache('WEB_CONFIG');
@@ -40,9 +37,9 @@ class PageController extends BaseController {
     } = webConfig.site;
     
     this.setMeta({
-      title: `${findPageRes.title}${separator}${subtitle}`,
-      keywords: findPageRes.keywords,
-      description: findPageRes.description
+      title: `${page.title}${separator}${subtitle}`,
+      keywords: page.keywords,
+      description: page.description
     });
 
     this.cache('RENDER_PARAM', {
@@ -51,7 +48,7 @@ class PageController extends BaseController {
       // 页面别名：String
       pageAlias: pageAlias || 'unknown',
       // 自定义页面对象: String
-      page: findPageRes || {}
+      page: page || {}
     });
 
     await this.render('/pages/page', {});

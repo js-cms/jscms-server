@@ -1,10 +1,14 @@
+/**
+ * 前台文章相关服务
+ */
+
 'use strict';
 
+const Service = require('egg').Service;
 const _ = require('lodash');
 
-const Service = require('egg').Service;
-const Db = require('./Db');
-const articleModel = require('../model/proto/article');
+const appPath = `${process.cwd()}/app`;
+const Db = require(`${appPath}/service/Db.js`);
 
 class ArticleService extends Service {
 
@@ -31,50 +35,35 @@ class ArticleService extends Service {
   }
 
   /**
-   * 创建文章
+   * 通过numberId查找一篇文章
    */
-  async create(data, isBreak) {
-    if (isBreak === true) {
-      const db = new Db(this.ctx.model.Article);
-      let newData = db.parseModelman(data.params, articleModel);
-      let createRes = db.create(newData);
-      if (!createRes) {
-        data.throwError('文章创建失败');
+  async numberId(numberId) {
+    let article = await this.ctx.model.Article.findOne({numberId})
+      .populate('userId')
+      .populate('categoryId')
+      .exec();
+    this.indepUser(article);
+    return article;
+  }
+
+  /**
+   * 更新文章访问量
+   */
+  async updateVis(articleId) {
+    const db = new Db(this.ctx.model.Article);
+    return db.updateOne({
+      _id: articleId
+    }, {
+      $inc: {
+        visTotal: 1
       }
-    } else {
-      const db = new Db(this.ctx.model.Article);
-      let newData = db.parseModelman(data, articleModel);
-      return db.create(newData);
-    }
+    });
   }
 
   /**
-   * 更新文章
+   * 查询符合条件的文章列表，带有分页选项
    */
-  async update(query, target) {
-    const db = new Db(this.ctx.model.Article);
-    return db.update(query, target);
-  }
-
-  /**
-   * 更新单个文章
-   */
-  async updateOne(query, target) {
-    return this.ctx.model.Article.updateOne(query, target).exec();
-  }
-
-  /**
-   * 删除文章
-   */
-  async remove(query) {
-    const db = new Db(this.ctx.model.Article);
-    return db.remove(query);
-  }
-
-  /**
-   * 查询符合条件的文章
-   */
-  async findForWeb(query, pageNumber = 0, pageSize = 10) {
+  async list(query, pageNumber = 0, pageSize = 10) {
     let articles = await this.ctx.model.Article.find(query)
       .populate('userId')
       .populate('categoryId')
@@ -91,7 +80,7 @@ class ArticleService extends Service {
   /**
    * 随机读取文章
    */
-  async findRandom(num) {
+  async random(num) {
     let total = await this.ctx.model.Article.count({}).exec(); //总数
     let promises = [];
     for (let i = 0; i < num; i++) {
@@ -105,7 +94,7 @@ class ArticleService extends Service {
   /**
    * 获取按浏览量排名的文章
    */
-  async findByHot(query, pageNumber = 0, pageSize = 10) {
+  async visHot(query, pageNumber = 0, pageSize = 10) {
     return this.ctx.model.Article.find(query)
       .sort({
         'visTotal': -1
@@ -118,7 +107,7 @@ class ArticleService extends Service {
   /**
    * 获取按评论量排名的文章
    */
-  async findByComment(query, pageNumber = 0, pageSize = 10) {
+  async commentHot(query, pageNumber = 0, pageSize = 10) {
     return this.ctx.model.Article.find(query)
       .sort({
         'commentTotal': -1
@@ -126,28 +115,6 @@ class ArticleService extends Service {
       .skip(pageNumber * pageSize)
       .limit(pageSize)
       .exec();
-  }
-
-  /**
-   * 查找一篇文章
-   */
-  async findOne(query) {
-    return this.ctx.model.Article.findOne(query)
-      .populate('userId')
-      .populate('categoryId')
-      .exec();
-  }
-
-  /**
-   * 查找一篇文章（网站使用）
-   */
-  async findOneForWeb(query) {
-    let article = await this.ctx.model.Article.findOne(query)
-      .populate('userId')
-      .populate('categoryId')
-      .exec();
-    this.indepUser(article);
-    return article;
   }
 
   /**
@@ -166,18 +133,9 @@ class ArticleService extends Service {
   }
 
   /**
-   * 模糊搜索接口
-   * @param {Object} options
-   */
-  async searchForApi(options) {
-    const db = new Db(this.ctx.model.Article);
-    return db.search(options, articleModel);
-  }
-
-  /**
    * 网站站内搜索封装
    */
-  async searchForWeb(keyword, pageNumber, pageSize) {
+  async websearch(keyword, pageNumber, pageSize) {
     let regKeyword = new RegExp(keyword, 'i'); //不区分大小写
     let whereOr = [];
     let where = {}
@@ -211,7 +169,7 @@ class ArticleService extends Service {
    * 
    * 查找所有文章
    */
-  async findAll() {
+  async all() {
     return this.ctx.model.Article.find({}).exec();
   }
 
@@ -221,6 +179,7 @@ class ArticleService extends Service {
   async count(query) {
     return this.ctx.model.Article.count(query).exec();
   }
+  
 }
 
 module.exports = ArticleService;

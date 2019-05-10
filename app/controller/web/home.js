@@ -20,28 +20,26 @@ class HomeController extends BaseController {
   async handler() {
     const {
       ctx,
-      service,
-      config
+      service
     } = this;
     let pageSize = 10;
     let pageNumber = ctx.params[0] ? ctx.params[0] - 1 : 0;
     pageSize = isNaN(pageSize) ? 10 : pageSize;
     pageNumber = isNaN(pageNumber) ? 0 : pageNumber;
 
-    if (pageNumber < 0) {
-      return this.notFound();
-    }
+    if (pageNumber < 0) return this.notFound();
 
-    let topMainArticles = await service.article.find({
+    let topMainArticles = await service.web.article.list({
       topType: 1
     }, 0, 3);
-
-    let topMinorArticles = await service.article.find({
+ 
+    let topMinorArticles = await service.web.article.list({
       topType: 2
     }, 0, 2);
 
-    let articles = await service.article.findForWeb({}, pageNumber, pageSize);
-    let total = await service.article.count({});
+    let articles = await service.web.article.list({}, pageNumber, pageSize);
+
+    let total = await service.web.article.count({});
 
     //分页算法
     let pages = this.paging(

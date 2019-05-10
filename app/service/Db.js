@@ -35,9 +35,21 @@ class Db {
   /**
    * 更新
    */
-  async update(query, target) {
-    target.updateTime = target.updateTime ? target.updateTime : now();
+  async update(query, target, noTime = false) {
+    if (!noTime) {
+      target.updateTime = target.updateTime ? target.updateTime : now();
+    }
     return this.Model.update(query, target).exec();
+  }
+
+  /**
+   * 更新单条数据
+   */
+  async updateOne(query, target, noTime = false) {
+    if (!noTime) {
+      target.updateTime = target.updateTime ? target.updateTime : now();
+    }
+    return this.Model.updateOne(query, target).exec();
   }
 
   /**

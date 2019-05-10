@@ -36,7 +36,7 @@ class SearchController extends BaseController {
     let {
       articles,
       total
-    } = await service.article.searchForWeb(keyword, pageNumber, pageSize);
+    } = await service.web.article.websearch(keyword, pageNumber, pageSize);
 
     //分页算法
     let pages = this.paging(
@@ -75,7 +75,7 @@ class SearchController extends BaseController {
     });
 
     // 将搜索者信息和搜索信息插入搜索结果表
-    await service.log.create({
+    await service.web.log.create({
       type: 2,
       info: {
         fullUrl: ctx.origin + ctx.url,
@@ -87,9 +87,7 @@ class SearchController extends BaseController {
     });
 
     // 将搜索关键词记录到搜索词统计
-    let searchKeywordsCountConfig = await service.config.findOne({
-      alias: 'searchKeywordsCount'
-    });
+    let searchKeywordsCountConfig = await service.web.config.alias('searchKeywordsCount');
     delete searchKeywordsCountConfig._id;
     let info = searchKeywordsCountConfig.info;
     if (info.keywords[keyword]) {
@@ -97,7 +95,8 @@ class SearchController extends BaseController {
     } else {
       info.keywords[keyword] = 1;
     }
-    await service.config.update({
+    
+    await service.web.config.update({
       alias: 'searchKeywordsCount'
     }, searchKeywordsCountConfig);
 
