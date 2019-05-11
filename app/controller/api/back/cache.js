@@ -15,7 +15,7 @@ class CacheController extends BaseController {
     const {
       service
     } = this;
-    this.decorator({
+    await this.decorator({
       get: {
         id: {
           n: '缓存id',

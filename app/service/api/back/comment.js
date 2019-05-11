@@ -35,32 +35,10 @@ class CommentService extends Service {
   }
 
   /**
-   * 查询评论（带分页选项）
-   */
-  async find(query, pageNumber = 0, pageSize = 10) {
-    return this.ctx.model.Comment.find(query)
-      .populate('articleId')
-      .populate('commentId')
-      .sort({
-        'createTime': -1
-      })
-      .skip(pageNumber * pageSize)
-      .limit(pageSize)
-      .exec();
-  }
-
-  /**
-   * 统计
-   */
-  async count(query) {
-    return this.ctx.model.Comment.count(query).exec();
-  }
-
-  /**
-   * 模糊搜索接口
+   * 后台模糊搜索接口
    * @param {Object} options
    */
-  async searchForApi(options) {
+  async search(options) {
     const db = new Db(this.ctx.model.Comment);
     return db.search(options, commentModel);
   }

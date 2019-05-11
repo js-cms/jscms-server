@@ -13,8 +13,9 @@ module.exports = function(app) {
   router.get('/api/back/article', powerAdmin, controller.api.back.article.show); // 获取单篇文章
 
   // 文章草稿相关
-  router.get('/api/back/article/draft/create', powerAdmin, controller.api.back.articleDraft.create); // 创建一篇文章草稿
-  router.get('/api/back/article/draft/update', powerAdmin, controller.api.back.articleDraft.update); // 更新一篇文章草稿
-  router.get('/api/back/article/draft/delete', powerAdmin, controller.api.back.articleDraft.delete); // 删除一篇文章草稿
+  router.post('/api/back/article/draft/create', powerAdmin, controller.api.back.articleDraft.create); // 创建一篇文章草稿
+  router.post('/api/back/article/draft/update', powerAdmin, controller.api.back.articleDraft.update); // 更新一篇文章草稿
+  router.post('/api/back/article/draft/delete', powerAdmin, controller.api.back.articleDraft.delete); // 删除一篇文章草稿
   router.get('/api/back/article/draft/list', powerAdmin, controller.api.back.articleDraft.list); // 获取文章草稿列表
+  router.get('/api/back/article/draft', powerAdmin, controller.api.back.articleDraft.show); // 获取单篇文章草稿
 }

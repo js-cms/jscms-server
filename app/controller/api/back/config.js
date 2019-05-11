@@ -19,7 +19,7 @@ class ConfigController extends BaseController {
     const {
       service
     } = this;
-    this.decorator({
+    await this.decorator({
       get: {
         alias: { // 英文别名
           n: '英文别名',
@@ -53,7 +53,7 @@ class ConfigController extends BaseController {
       f: true,
       r: true
     };
-    this.decorator({
+    await this.decorator({
       post: config,
       toParams: {
         formField: true

@@ -15,7 +15,7 @@ class ArticleController extends BaseController {
     const {
       service
     } = this;
-    this.decorator({
+    await this.decorator({
       post: {
         id: {
           n: '文章id',

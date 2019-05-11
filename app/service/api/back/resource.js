@@ -18,14 +18,6 @@ class ResourceService extends Service {
   }
 
   /**
-   * 更新资源
-   */
-  async update(query, target) {
-    const db = new Db(this.ctx.model.Resource);
-    return db.update(query, target);
-  }
-
-  /**
    * 删除资源
    */
   async remove(query) {

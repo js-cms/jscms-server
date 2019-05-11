@@ -29,7 +29,7 @@ class ResourceController extends BaseController {
       service,
       config
     } = this;
-    this.decorator({
+    await this.decorator({
       get: {
         type: {
           type: 'Number',
@@ -104,7 +104,7 @@ class ResourceController extends BaseController {
       service,
       config
     } = this;
-    this.decorator({
+    await this.decorator({
       post: {
         id: {
           n: '资源id',
@@ -148,15 +148,14 @@ class ResourceController extends BaseController {
   }
 
   /**
-   * 资源上传控制器 
+   * 资源处理器
    */
-  async uploader() {
+  async uploadHandler(file) {
     const {
       ctx,
       service,
       config
     } = this;
-    const file = ctx.request.files[0];
     const suffix = ctx.helper.getFileSuffix(file.filename);
     const nowTimestamp = (new Date()).getTime();
     const newFileName = `${nowTimestamp}.${suffix}`;
@@ -164,11 +163,14 @@ class ResourceController extends BaseController {
 
     //判断文件类型
     if (!whiteList.includes(suffix)) {
-      this.throwError('不允许上传此类型的文件');
+      return {
+        code: 1,
+        msg: '不允许上传此类型的文件'
+      }
     }
 
     //组装本地地址
-    let target = path.join(this.config.baseDir, `${config.constant.directory.JSCMS_UPLOAD}/${newFileName}`);
+    let target = path.join(config.baseDir, `${config.constant.directory.JSCMS_UPLOAD}/${newFileName}`);
 
     //将文件移动到本地地址
     const result = await new Promise((resolve, reject) => {
@@ -184,7 +186,10 @@ class ResourceController extends BaseController {
     //判断文章操作的结果
     if (result === false) {
       //失败，返回错误
-      this.throwError('上传失败，未知错误');
+      return {
+        code: 1,
+        msg: '上传失败，未知错误。'
+      }
     } else {
       //成功，删除临时文件
       fs.remove(file.filepath, err => {
@@ -202,14 +207,86 @@ class ResourceController extends BaseController {
       filename: newFileName,
       remarks: webUrl
     });
-
     if (createRessoureRes) {
-      this.throwCorrect({
-        filename: newFileName,
-        imageUrl: webUrl
-      }, '上传成功');
+      return {
+        code: 0,
+        msg: '上传成功',
+        data: {
+          filename: newFileName,
+          imageUrl: webUrl
+        }
+      }
     } else {
-      this.throwError('资源创建失败');
+      return {
+        code: 1,
+        msg: '资源创建失败'
+      }
+    }
+  }
+
+  /**
+   * 标准资源上传控制器 
+   */
+  async uploader() {
+    const {
+      ctx,
+      service,
+      config
+    } = this;
+    let files = ctx.request.files;
+    let errors = [];
+    let results = [];
+
+    for (const file of files) {
+      let result = await this.uploadHandler(file);
+      if (result.code === 1) {
+        errors.push(result);
+      } else {
+        results.push(result.data);
+      }
+    }
+
+    if (errors.length) {
+      this.throwError(errors[0].msg);
+    } else if (results.length) {
+      this.throwCorrect(results, '上传成功');
+    } else {
+      this.throwError('未知错误');
+    }
+  }
+
+  /**
+   * wangeditor资源上传控制器 
+   */
+  async wangeditorUploader() {
+    const {
+      ctx,
+      service,
+      config
+    } = this;
+    let files = ctx.request.files;
+    let errors = [];
+    let results = [];
+
+    for (const file of files) {
+      let result = await this.uploadHandler(file);
+      if (result.code === 1) {
+        errors.push(result);
+      } else {
+        results.push(result.data);
+      }
+    }
+
+    if (errors.length) {
+      this.throwError(errors[0].msg);
+    } else if (results.length) {
+      let urls = results.map(i => i.imageUrl);
+      ctx.body = {
+        errno: 0,
+        data: urls
+      };
+    } else {
+      this.throwError('未知错误');
     }
   }
 }

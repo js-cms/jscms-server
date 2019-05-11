@@ -22,12 +22,12 @@ module.exports = options => {
     if (prefix === "/api") {
       if (token) {
         //得到token是否存在
-        res = await ctx.service.token.getTokenByToken({
+        res = await ctx.service.api.back.token.getTokenByToken({
           token: token
         });
         if (res) {
           //得到用户信息
-          let user = await ctx.service.user.findOne({
+          let user = await ctx.service.api.back.user.findOne({
             _id: res.userId
           });
           if (user) {
@@ -35,7 +35,7 @@ module.exports = options => {
             //得到token是否过期
             if (currentTime > res.passwExpiry) { //如果已经过期
               //删除这个token
-              await ctx.service.token.removeByToken(token);
+              await ctx.service.api.back.token.removeByToken(token);
               currentUser.auth.isLogin = false;
               currentUser.auth.isExpired = true;
             } else {

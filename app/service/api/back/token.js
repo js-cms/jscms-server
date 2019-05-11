@@ -18,14 +18,6 @@ class TokenService extends Service {
   }
 
   /**
-   * 更新token
-   */
-  async update(query, target) {
-    const db = new Db(this.ctx.model.Token);
-    return db.update(query, target);
-  }
-
-  /**
    * 删除token
    */
   async remove(query) {

@@ -19,7 +19,7 @@ class PageController extends BaseController {
     const {
       service
     } = this;
-    this.decorator({
+    await this.decorator({
       post: pageModel
     });
 
@@ -59,7 +59,7 @@ class PageController extends BaseController {
       f: true,
       r: true
     };
-    this.decorator({
+    await this.decorator({
       post: page
     });
 
@@ -81,7 +81,7 @@ class PageController extends BaseController {
     const {
       service
     } = this;
-    this.decorator({
+    await this.decorator({
       post: {
         id: {
           n: '页面id',
@@ -136,7 +136,7 @@ class PageController extends BaseController {
     const {
       service
     } = this;
-    this.decorator({
+    await this.decorator({
       get: {
         id: {
           n: '页面id',

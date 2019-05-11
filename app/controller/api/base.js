@@ -69,9 +69,7 @@ class BaseController extends Controller {
 
     // 需要校验验证码
     if (options.captcha === true) {
-      let config = await service.config.findOne({
-        alias: 'site'
-      });
+      let config = await service.api.back.config.alias('site');
       let site = config.info;
       if (site.boolLoginVercode) {
         let uid = ctx.query.uid;
@@ -203,7 +201,7 @@ class BaseController extends Controller {
       info.params = ctx.request.body || {};
     }
     //将访问者信息插入log表
-    service.log.create({
+    service.api.back.log.create({
       type: 3,
       info: info
     }).then((res) => {});

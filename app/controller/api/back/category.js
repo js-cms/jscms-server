@@ -19,7 +19,7 @@ class CategoryController extends BaseController {
     const {
       service
     } = this;
-    this.decorator({
+    await this.decorator({
       post: categoryModel,
       toParams: {
         formField: true
@@ -63,7 +63,7 @@ class CategoryController extends BaseController {
       f: true,
       r: true
     };
-    this.decorator({
+    await this.decorator({
       post: category,
       toParams: {
         formField: true
@@ -119,7 +119,7 @@ class CategoryController extends BaseController {
       } //英文分类别名
     }
 
-    this.decorator({
+    await this.decorator({
       post: category,
       toParams: {
         formField: true
@@ -145,7 +145,7 @@ class CategoryController extends BaseController {
     const {
       service
     } = this;
-    this.decorator({
+    await this.decorator({
       post: {
         id: {
           n: '分类id',
@@ -213,7 +213,7 @@ class CategoryController extends BaseController {
     const {
       service
     } = this;
-    this.decorator({
+    await this.decorator({
       get: {
         id: {
           n: '分类id',

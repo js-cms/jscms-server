@@ -2,9 +2,12 @@
 
 const Service = require('egg').Service;
 
+const appPath = `${process.cwd()}/app`;
+const Db = require(`${appPath}/service/Db.js`);
+
 class ConfigService extends Service {
 
-  /**
+  /** 
    * 更新配置
    */
   async update(query, target) {
@@ -25,8 +28,8 @@ class ConfigService extends Service {
    * 获取全部的标签数据
    */
   async tags() {
-    return this.ctx.model.Config.findOne({
-      'alias': 'tags'
+    return this.ctx.model.Config.find({
+      alias: 'tags'
     }).exec();
   }
 

@@ -158,7 +158,7 @@ class UserController extends BaseController {
     const {
       service
     } = this;
-    this.decorator({
+    await this.decorator({
       get: {
         token: {
           n: 'token',
@@ -214,7 +214,7 @@ class UserController extends BaseController {
     } = this;
     let user = _.cloneDeep(userModel);
     delete user.password;
-    this.decorator({
+    await this.decorator({
       post: user
     });
 
@@ -246,7 +246,7 @@ class UserController extends BaseController {
       ctx,
       service
     } = this;
-    this.decorator({
+    await this.decorator({
       post: {
         oldpass: {
           n: '旧密码',

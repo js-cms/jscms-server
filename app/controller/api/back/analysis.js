@@ -15,7 +15,7 @@ class AnalysisController extends BaseController {
     const {
       service
     } = this;
-    this.decorator({
+    await this.decorator({
       get: {
         startTime: {
           n: '开始时间',
@@ -54,7 +54,7 @@ class AnalysisController extends BaseController {
     const {
       service
     } = this;
-    this.decorator({
+    await this.decorator({
       get: {
         startTime: {
           n: '开始时间',
@@ -93,7 +93,7 @@ class AnalysisController extends BaseController {
     const {
       service
     } = this;
-    this.decorator({
+    await this.decorator({
       get: {
         startTime: {
           n: '开始时间',

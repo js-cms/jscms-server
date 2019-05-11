@@ -48,7 +48,7 @@ class ArticleController extends BaseController {
     const {
       service
     } = this;
-    this.decorator({
+    await this.decorator({
       post: articleModel,
       toParams: {
         formField: true
@@ -62,19 +62,19 @@ class ArticleController extends BaseController {
     toContent(params);
 
     //numberId自增
-    await service.config.numberId(params);
+    await service.api.back.config.numberId(params);
 
     //如果有分类名称，就查分类，并带入id
-    await service.category.parseNameForArticle(params);
+    await service.api.back.category.parseNameForArticle(params);
 
     //创建文章
     await service.api.back.article.create(this, true);
 
     //给分类增加文章数量
-    await service.category.addNumForArticle(params);
+    await service.api.back.category.addNumForArticle(params);
 
     //更新标签列表
-    await service.config.updateTagsForArticle(params);
+    await service.api.back.config.updateTagsForArticle(params);
 
     //输出
     this.throwCorrect({}, '文章创建成功');
@@ -94,7 +94,7 @@ class ArticleController extends BaseController {
       f: true,
       r: true
     };
-    this.decorator({
+    await this.decorator({
       post: article,
       toParams: {
         formField: true
@@ -182,7 +182,7 @@ class ArticleController extends BaseController {
       } // 更新时间
     }
 
-    this.decorator({
+    await this.decorator({
       post: article,
       toParams: {
         formField: true
@@ -214,7 +214,7 @@ class ArticleController extends BaseController {
     const {
       service
     } = this;
-    this.decorator({
+    await this.decorator({
       post: {
         id: {
           n: '文章id',
@@ -244,7 +244,7 @@ class ArticleController extends BaseController {
       ctx,
       service
     } = this;
-    this.decorator({
+    await this.decorator({
       get: {
         categoryId: {
           n: '分类id',
@@ -279,7 +279,7 @@ class ArticleController extends BaseController {
     const {
       list,
       total
-    } = await service.api.back.article.searchForApi({
+    } = await service.api.back.article.search({
       and: queryAnd,
       keyword: keyword,
       pageNumber: pageNumber,
@@ -299,7 +299,7 @@ class ArticleController extends BaseController {
     const {
       service
     } = this;
-    this.decorator({
+    await this.decorator({
       get: {
         id: {
           n: '文章id',

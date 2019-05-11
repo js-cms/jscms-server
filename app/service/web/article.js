@@ -10,12 +10,14 @@ const _ = require('lodash');
 const appPath = `${process.cwd()}/app`;
 const Db = require(`${appPath}/service/Db.js`);
 
-class ArticleService extends Service {
-
+/**
+ * 文章处理
+ */
+const articleHandle = function (data) {
   /**
    * 覆盖原有发布者
    */
-  indepUser(data) {
+  function indepUser(data) {
     if (!data) return;
     const cover = function (article) {
       if (article.isIndepUser === true) {
@@ -33,16 +35,46 @@ class ArticleService extends Service {
       cover(data);
     }
   }
+  /**
+   * 检测分类
+   */
+  function checkCategory(data) {
+    if (!data) return;
+    const cover = function (article) {
+      if (!article.categoryId) {
+        article.categoryId = {
+          id: '',
+          alias: '404',
+          name: '无分类'
+        }
+      }
+    }
+    if (data.constructor === Array) {
+      data.forEach(i => {
+        cover(i)
+      });
+    } else {
+      cover(data);
+    }
+  }
+
+  indepUser(data);
+  checkCategory(data);
+}
+
+class ArticleService extends Service {
 
   /**
    * 通过numberId查找一篇文章
    */
   async numberId(numberId) {
-    let article = await this.ctx.model.Article.findOne({numberId})
+    let article = await this.ctx.model.Article.findOne({
+        numberId
+      })
       .populate('userId')
       .populate('categoryId')
       .exec();
-    this.indepUser(article);
+    articleHandle(article);
     return article;
   }
 
@@ -73,7 +105,7 @@ class ArticleService extends Service {
       .skip(pageNumber * pageSize)
       .limit(pageSize)
       .exec();
-    this.indepUser(articles);
+    articleHandle(articles);
     return articles;
   }
 
@@ -158,7 +190,7 @@ class ArticleService extends Service {
     }
     let articles = await this.search(where, pageNumber, pageSize);
     let total = await this.count(where);
-    this.indepUser(articles);
+    articleHandle(articles);
     return {
       articles,
       total
@@ -179,7 +211,7 @@ class ArticleService extends Service {
   async count(query) {
     return this.ctx.model.Article.count(query).exec();
   }
-  
+
 }
 
 module.exports = ArticleService;

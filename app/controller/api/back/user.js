@@ -23,7 +23,7 @@ class UserController extends BaseController {
     const {
       service
     } = this;
-    this.decorator({
+    await this.decorator({
       get: {
         id: {
           n: '用户id',
@@ -73,7 +73,7 @@ class UserController extends BaseController {
     const {
       service
     } = this;
-    this.decorator({
+    await this.decorator({
       post: userModel
     });
 
@@ -109,7 +109,7 @@ class UserController extends BaseController {
     const {
       service
     } = this;
-    this.decorator({
+    await this.decorator({
       post: {
         id: {
           n: '用户id',
@@ -155,7 +155,7 @@ class UserController extends BaseController {
       f: true,
       r: true
     };
-    this.decorator({
+    await this.decorator({
       post: user
     });
 
@@ -205,7 +205,7 @@ class UserController extends BaseController {
       ctx,
       service
     } = this;
-    this.decorator({
+    await this.decorator({
       post: {
         oldpass: { // 旧密码
           n: '旧密码',
@@ -265,6 +265,7 @@ class UserController extends BaseController {
       service
     } = this;
     await this.decorator({
+      captcha: true,
       post: {
         email: {
           n: '邮箱',
@@ -306,13 +307,13 @@ class UserController extends BaseController {
     let accessToken = uuid.v4();
 
     //获取用户的token
-    let res = await service.token.getByUserId(existUser._id);
+    let res = await service.api.back.token.getByUserId(existUser._id);
 
     //更新用户的token，没有则自动创建。
     if (res) { //更新
       const now = (new Date()).getTime();
       const tomorrow = now + 1000 * 60 * 60 * 24;
-      res = await service.token.updateToken({
+      res = await service.api.back.token.updateToken({
         userId: existUser._id
       }, {
         token: accessToken,
@@ -320,7 +321,7 @@ class UserController extends BaseController {
         passwExpiry: tomorrow
       });
     } else { //创建
-      res = await service.token.create({
+      res = await service.api.back.token.create({
         userId: existUser._id,
         token: accessToken,
       });
@@ -343,7 +344,7 @@ class UserController extends BaseController {
     const {
       service
     } = this;
-    this.decorator({
+    await this.decorator({
       get: {
         token: {
           n: 'token',
@@ -360,7 +361,7 @@ class UserController extends BaseController {
       }
     });
 
-    let removeResult = await service.token.remove({
+    let removeResult = await service.api.back.token.remove({
       token: this.params.token,
       userId: this.params.userId
     });

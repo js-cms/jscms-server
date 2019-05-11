@@ -11,7 +11,6 @@ module.exports = options => {
     } catch (err) {
       // 所有的异常都在 app 上触发一个 error 事件，框架会记录一条错误日志
       ctx.app.emit('error', err, ctx);
-
       // 如果是api的报错类型
       if (err.name === 'apierror') {
         ctx.response.set('content-type', 'application/json');
@@ -20,6 +19,7 @@ module.exports = options => {
           msg: err.message,
           code: err.code
         }
+        return;
       } else { // 其他报错类型
         const status = err.status || 500;
         // 生产环境时 500 错误的详细错误内容不返回给客户端，因为可能包含敏感信息
@@ -35,6 +35,7 @@ module.exports = options => {
           ctx.body.detail = err.errors;
         }
         ctx.status = status;
+        return;
       }
     }
   }

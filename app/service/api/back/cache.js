@@ -51,6 +51,23 @@ class CacheService extends Service {
   }
 
   /**
+   * 通过名称查找一个缓存
+   */
+  async byTypeName(type, name) {
+    return this.ctx.model.Cache.findOne({type, name})
+      .exec();
+  }
+
+  /**
+   * 后台模糊搜索接口
+   * @param {Object} options
+   */
+  async search(options) {
+    const db = new Db(this.ctx.model.Cache);
+    return db.search(options, cacheModel);
+  }
+
+  /**
    * 统计
    */
   async count(query) {

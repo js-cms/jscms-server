@@ -20,7 +20,7 @@ class CommentController extends BaseController {
     const {
       service
     } = this;
-    this.decorator({
+    await this.decorator({
       post: commentModel
     });
 

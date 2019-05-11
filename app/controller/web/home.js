@@ -38,7 +38,6 @@ class HomeController extends BaseController {
     }, 0, 2);
 
     let articles = await service.web.article.list({}, pageNumber, pageSize);
-
     let total = await service.web.article.count({});
 
     //分页算法

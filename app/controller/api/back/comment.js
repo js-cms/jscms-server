@@ -20,7 +20,7 @@ class CommentController extends BaseController {
     const {
       service
     } = this;
-    this.decorator({
+    await this.decorator({
       post: commentModel,
       toParams: {
         formField: true
@@ -73,7 +73,7 @@ class CommentController extends BaseController {
       f: true,
       r: true
     };
-    this.decorator({
+    await this.decorator({
       post: comment,
       toParams: {
         formField: true
@@ -112,7 +112,7 @@ class CommentController extends BaseController {
     const {
       service
     } = this;
-    this.decorator({
+    await this.decorator({
       post: {
         id: {
           n: '评论id',
@@ -142,7 +142,7 @@ class CommentController extends BaseController {
       ctx,
       service
     } = this;
-    this.decorator({
+    await this.decorator({
       get: {
         keyword: {
           type: 'String',
@@ -161,7 +161,7 @@ class CommentController extends BaseController {
     const {
       list,
       total
-    } = await service.api.back.comment.searchForApi({
+    } = await service.api.back.comment.search({
       and: [],
       keyword: keyword,
       pageNumber: pageNumber,
@@ -181,7 +181,7 @@ class CommentController extends BaseController {
     const {
       service
     } = this;
-    this.decorator({
+    await this.decorator({
       get: {
         id: {
           n: '评论id',
@@ -193,7 +193,7 @@ class CommentController extends BaseController {
     });
 
     //查询评论
-    const comment = await service.category.findOne({
+    const comment = await service.api.back.comment.findOne({
       _id: this.params.id
     });
 

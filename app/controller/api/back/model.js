@@ -15,7 +15,7 @@ class ModelController extends BaseController {
    * 获取数据模型
    */
   async index() {
-    this.decorator({
+    await this.decorator({
       get: {
         name: {
           type: 'Stirng',

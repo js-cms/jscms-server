@@ -92,7 +92,7 @@ class CategoryService extends Service {
       _id: params.categoryId
     }, {
       $inc: {
-        articleTotal: Number(1)
+        articleTotal: 1
       }
     });
   }

@@ -16,7 +16,7 @@ class LogController extends BaseController {
       ctx,
       service
     } = this;
-    this.decorator({
+    await this.decorator({
       get: {
         type: {
           n: '日志类型',
@@ -61,7 +61,7 @@ class LogController extends BaseController {
     const {
       service
     } = this;
-    this.decorator({
+    await this.decorator({
       post: {
         id: {
           n: '日志id',
