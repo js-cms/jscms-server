@@ -1,11 +1,16 @@
+/**
+ * 首页渲染器
+ */
+
 'use strict';
 
 const BaseController = require('./base');
+const fs = require('fs-extra');
 
 class HomeController extends BaseController {
 
   /**
-   * 首页
+   * 入口
    */
   async index() {
     // 初始化
@@ -32,7 +37,7 @@ class HomeController extends BaseController {
     let topMainArticles = await service.web.article.list({
       topType: 1
     }, 0, 3);
- 
+
     let topMinorArticles = await service.web.article.list({
       topType: 2
     }, 0, 2);
@@ -80,6 +85,8 @@ class HomeController extends BaseController {
         end: Math.ceil(total / pageSize)
       }
     });
+
+    // fs.writeFileSync('./home.json', JSON.stringify(this.cache('RENDER_PARAM'), null, 2));
 
     await this.render('pages/index', {});
   }

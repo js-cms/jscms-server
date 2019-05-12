@@ -4,7 +4,7 @@
             <div id="logo">
                 <span class="helper"></span>
                 <a href="/" class="custom-logo-link" rel="home" itemprop="url">
-                    <img width="129" height="60" src="<%-CONSTANT.THEME_STATIC%>/static/images/cropped-logo.png" class="custom-logo" alt="<%-WEB_CONFIG.site.subtitle%>"
+                    <img width="129" height="60" src="<%-CONSTANT.THEME_STATIC%>/images/cropped-logo.png" class="custom-logo" alt="<%-WEB_CONFIG.site.subtitle%>"
                         itemprop="logo">
                 </a>
             </div><!-- #logo -->
@@ -15,20 +15,23 @@
                     <li class="menu-item menu-item-type-custom menu-item-object-custom <% if ( RENDER_PARAM.pageType === 'home' ) { %>current-menu-item<% } %>">
                         <a class="top" href="/index.html">首页</a>
                     </li>
-                    <li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children <% if ( RENDER_PARAM.pageType === 'category' ) { %>current-menu-item current-menu-ancestor current-menu-parent<% } %>">
-                        <a class="top" href="/<%-WEB_CONFIG.categories[0].alias%>.html" class="sf-with-ul">信息分类</a>
+                    <% WEB_CONFIG.menus.forEach(function(menu, index) { %>
+                    <% if (menu.isValid) { %>
+                    <li class="menu-item menu-item-type-custom menu-item-object-custom <% if ( menu.isActive ) { %>current-menu-item<% } %>">
+                        <a class="top" href="<%-menu.link%>"><%-menu.name%></a>
+                        <% if (menu.hasChild) { %>
                         <ul class="sub-menu" style="display: none;">
-                            <% WEB_CONFIG.categories.forEach(function(cat, index) { %>
-                            <li class="menu-item menu-item-type-taxonomy menu-item-object-category <% if ( RENDER_PARAM.pageType === 'category' && RENDER_PARAM.catName === cat.alias ) { %>current-menu-item current-menu-ancestor current-menu-parent<% } %>">
-                                <a class="children" href="/<%-cat.alias%>.html"><%-cat.name%></a>
+                            <% menu.children.forEach(function(subMenu, index) { %>
+                            <% if (subMenu.isValid) { %>
+                            <li class="menu-item menu-item-type-custom menu-item-object-custom <% if ( subMenu.isActive ) { %>current-menu-item<% } %>">
+                                <a class="children" href="<%-subMenu.link%>"><%-subMenu.name%></a>
                             </li>
+                            <% } %>
                             <% }) %>
                         </ul>
+                        <% } %>
                     </li>
-                    <% WEB_CONFIG.menus.forEach(function(menu, index) { %>
-                        <li class="menu-item menu-item-type-custom menu-item-object-custom <% if ( menu.isActive ) { %>current-menu-item<% } %>">
-                            <a class="top" href="<%-menu.link%>"><%-menu.name%></a>
-                        </li>
+                    <% } %>
                     <% }) %>
                 </ul>
             </div>

@@ -1,12 +1,13 @@
+/**
+ * api基类控制器
+ */
+
 'use strict';
 
 const Controller = require('egg').Controller;
 const Model = require('modelman').Model;
 const is = require('ispro');
 
-/**
- * api基类控制器
- */
 class BaseController extends Controller {
 
   /**

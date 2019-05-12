@@ -1,3 +1,7 @@
+/**
+ * 作者页渲染器
+ */
+
 'use strict';
 
 const BaseController = require('./base');
@@ -5,7 +9,7 @@ const BaseController = require('./base');
 class AuthorController extends BaseController {
 
   /**
-   * 作者页
+   * 入口
    */
   async index() {
     // 初始化

@@ -1,11 +1,13 @@
+/**
+ * web渲染基类控制器
+ */
+
 'use strict';
 
 const path = require('path');
 const Controller = require('egg').Controller;
+const fs = require('fs-extra');
 
-/**
- * web渲染基类控制器
- */
 class BaseController extends Controller {
 
   /**
@@ -96,8 +98,18 @@ class BaseController extends Controller {
       config
     } = this;
 
-    // 判断是否激活菜单高亮
-    const isMenuActive = function (activeUrl, origin, path) {
+    /**
+     * 查询配置项
+     */
+    async function getWebConfig(name) {
+      let res = await service.web.config.alias(name);
+      return res && res.info ? res.info : false;
+    }
+
+    /**
+     * 判断是否激活菜单高亮
+     */
+    function isMenuActive(activeUrl, origin, path) {
       if (!activeUrl) return false;
       let activeUrls = activeUrl.split(',');
       let fullUrl = origin + path;
@@ -117,12 +129,62 @@ class BaseController extends Controller {
       return isActive;
     }
 
-    // 获取配置项
-    async function getWebConfig(name) {
-      let res = await service.web.config.alias(name);
-      return res && res.info ? res.info : false;
+    /**
+     * 菜单处理器
+     * @param {Array} menus 
+     */
+    async function menusHandle(menus) {
+      if (!menus || menus.length === 0) return;
+      let newMenus = [];
+
+      function checkValid(item) {
+        if (!item.type) return false;
+        if (item.type) {
+          if (item.type === 'link') {
+            if (!item.link) return false;
+          } else if (item.type === 'category') {
+            if (!item.categoryId) return false;
+          }
+        }
+        if (!item.name) return false;
+        if (!item.alias) return false;
+        return true;
+      }
+
+      async function eachHandle(menus) {
+        for (const item of menus) {
+          if (!checkValid(item)) {
+            item.isValid = false;
+            break;
+          }
+          if (item.type == 'category') {
+            let category = await service.api.back.category.id(item.categoryId);
+            if (!category) {
+              item.isValid = false;
+              break;
+            }
+            item.link = `/${category.alias}.html`;
+            item.activeUrl = '@' + item.link;
+          }
+          item.isActive = isMenuActive(item.activeUrl, ctx.origin, ctx.request.path);
+          item.hasChild = item.children && item.children.length > 0;
+          item.isValid = true;
+          if (item.hasChild === true) await eachHandle(item.children);
+        }
+      }
+
+      function eachSort(menus) {
+        menus = menus.sort((item1, item2) => {
+          if (item1.hasChild) eachSort(item1.children);
+          return item1.order - item2.order;
+        });
+      }
+
+      await eachHandle(menus);
+      eachSort(menus);
     }
 
+    // 获取各项配置
     let categories = await service.web.category.all();
     let domains = await getWebConfig(config.constant.webConfigNames.DOMAIN_NAME);
     let site = await getWebConfig(config.constant.webConfigNames.SITE_NAME);
@@ -132,10 +194,10 @@ class BaseController extends Controller {
     let links = await getWebConfig(config.constant.webConfigNames.LINK_NAME);
     let searchKeywordsCount = await getWebConfig(config.constant.webConfigNames.SKC_NAME);
 
-    menus ? menus.forEach(m => {
-      m.isActive = isMenuActive(m.activeUrl, ctx.origin, ctx.request.path);
-    }) : void(0);
+    // 菜单处理
+    await menusHandle(menus);
 
+    // 记入缓存
     this.cache('WEB_CONFIG', {
       categories: categories || [],
       domains: domains || {},
@@ -149,6 +211,8 @@ class BaseController extends Controller {
       path: ctx.request.path,
       query: ctx.query
     });
+
+    // fs.writeFileSync('./WEB_CONFIG.json', JSON.stringify(this.cache('WEB_CONFIG'), null, 2));
   }
 
   /**
@@ -192,8 +256,8 @@ class BaseController extends Controller {
       WEB_CONFIG: this.cache('WEB_CONFIG') || {},
       // 程序常量
       CONSTANT: {
-        //模版静态网址
-        THEME_STATIC: path.join(config.constant.directory.JSCMS_URL_THEME_STATIC, config.theme.THEME_NAME)
+        // 模版静态文件目录网址
+        THEME_STATIC: path.join(config.constant.directory.JSCMS_URL_THEME_STATIC, config.theme.THEME_NAME, 'static')
       }
     }
     await ctx.render(`/${config.theme.THEME_NAME}/view/${viewPath}`, Object.assign(commonData, data));

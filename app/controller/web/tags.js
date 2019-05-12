@@ -1,3 +1,7 @@
+/**
+ * 标签页渲染器
+ */
+
 'use strict';
 
 const BaseController = require('./base');
@@ -5,7 +9,7 @@ const BaseController = require('./base');
 class TagsController extends BaseController {
 
   /**
-   * 首页
+   * 入口
    */
   async index() {
     // 初始化

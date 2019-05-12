@@ -1,3 +1,7 @@
+/**
+ * 文本文件渲染器
+ */
+
 'use strict';
 
 const Controller = require('egg').Controller;
@@ -5,7 +9,7 @@ const Controller = require('egg').Controller;
 class TextController extends Controller {
 
   /**
-   * sitemap.txt
+   * 文件：sitemap.txt
    */
   async sitemap() {
     const {
@@ -25,7 +29,7 @@ class TextController extends Controller {
   }
 
   /**
-   * robots.txt
+   * 文件：robots.txt
    */
   async robots() {
     const {

@@ -41,10 +41,9 @@ module.exports = appInfo => {
       'http://127.0.0.1:9012'
     ]
   };
-  
+
   config.static = {
-    dir: [
-      {
+    dir: [{
         prefix: config.constant.directory.JSCMS_URL_MANAGEMENT,
         dir: path.join(appInfo.baseDir, config.constant.directory.JSCMS_MANAGEMENT)
       },

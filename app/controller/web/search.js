@@ -1,3 +1,7 @@
+/**
+ * 搜索页渲染器
+ */
+
 'use strict';
 
 const BaseController = require('./base');
@@ -5,7 +9,7 @@ const BaseController = require('./base');
 class SearchController extends BaseController {
 
   /**
-   * 搜索页
+   * 入口
    */
   async index() {
     // 初始化

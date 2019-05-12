@@ -47,6 +47,13 @@ class CategoryService extends Service {
   }
 
   /**
+   * 通过id查询一个分类
+   */
+  async id(_id) {
+    return this.ctx.model.Category.findOne({_id}).exec();
+  }
+
+  /**
    * 查询一个分类
    */
   async findOne(query) {

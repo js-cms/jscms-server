@@ -1,11 +1,15 @@
+/**
+ * 分类页渲染器
+ */
+
 'use strict';
 
 const BaseController = require('./base');
 
 class CategoryController extends BaseController {
-
+  
   /**
-   * 分类页
+   * 入口
    */
   async index() {
     // 初始化

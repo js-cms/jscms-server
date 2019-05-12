@@ -1,3 +1,7 @@
+/**
+ * 文章页渲染器
+ */
+
 'use strict';
 
 const BaseController = require('./base');
@@ -5,7 +9,7 @@ const BaseController = require('./base');
 class ArticleController extends BaseController {
 
   /**
-   * 文章页
+   * 入口
    */
   async index() {
     // 初始化
