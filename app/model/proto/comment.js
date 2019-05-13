@@ -1,8 +1,8 @@
-'use strict';
-
 /**
  * modelman model: 评论表
  */
+
+'use strict';
 
 module.exports = {
   commentId: { n: '所属评论', type: 'ObjectId', f: false, t: false, r: false, ref: 'Comment' }, //所属评论。

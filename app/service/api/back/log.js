@@ -1,3 +1,7 @@
+/**
+ * 后台API：日志相关数据服务
+ */
+
 'use strict';
 
 const Service = require('egg').Service;

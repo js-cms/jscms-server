@@ -110,7 +110,7 @@ class ArticleController extends BaseController {
     }, this.params);
 
     //更新标签列表
-    await service.config.updateTagsForArticle(this.params);
+    await service.api.back.config.updateTagsForArticle(this.params);
 
     if (updateRes) {
       this.throwCorrect(updateRes, '更新成功');
@@ -133,18 +133,30 @@ class ArticleController extends BaseController {
         f: true,
         r: true
       }, // 文章id
+      status: {
+        n: '文章状态',
+        type: 'Number',
+        f: true,
+        t: true,
+        r: true,
+        d: 1,
+        extra: {
+          comType: 'select',
+          options: '1:上线,2:下线'
+        }
+      }, // 文章状态 1:上线、2:下线
       topType: {
         n: '置顶方式',
         type: 'Number',
         f: true,
         t: true,
         r: true,
-        d: 0,
+        d: 1,
         extra: {
           comType: 'select',
-          options: '0:无置顶,1:主要置顶,2:次要置顶'
+          options: '1:无置顶,2:主要置顶,3:次要置顶'
         }
-      }, // 置顶方式 0、无置顶 1、主要置顶 2、次要置顶
+      }, // 置顶方式：1、无置顶 2、主要置顶 3、次要置顶
       categoryId: {
         n: '分类id',
         type: 'ObjectId',
@@ -198,7 +210,7 @@ class ArticleController extends BaseController {
     }, this.params);
 
     //更新标签列表
-    await service.config.updateTagsForArticle(this.params);
+    await service.api.back.config.updateTagsForArticle(this.params);
 
     if (updateRes) {
       this.throwCorrect(updateRes, '更新成功');
@@ -243,7 +255,7 @@ class ArticleController extends BaseController {
     const {
       ctx,
       service
-    } = this; 
+    } = this;
     await this.decorator({
       get: {
         categoryId: {
@@ -252,12 +264,20 @@ class ArticleController extends BaseController {
           f: true,
           r: false
         },
-        topType: {
-          n: '分类id',
+        status: {
+          n: '文章状态',
           type: 'Number',
           f: true,
+          t: true,
           r: false
-        },
+        }, // 文章状态 1:上线、2:下线
+        topType: {
+          n: '置顶方式',
+          type: 'Number',
+          f: true,
+          t: true,
+          r: false
+        }, // 置顶方式：1、无置顶 2、主要置顶 3、次要置顶
         keyword: {
           type: 'String',
           f: true,
@@ -265,33 +285,26 @@ class ArticleController extends BaseController {
         }
       }
     });
-
-    let categoryId = this.params.categoryId || '';
-    let topType = this.params.topType || '';
-    categoryId = categoryId.replace('null', '');
-    topType = topType.replace('null', '');
-    const keyword = this.params.keyword;
+    
     const {
       pageSize,
       pageNumber
     } = ctx.helper.getPaging(ctx.query);
-    let queryAnd = [];
-    if (categoryId) {
-      queryAnd = [{
-        categoryId
-      }];
-    }
-    if (topType) {
-      queryAnd.push({
-        topType
-      });
-    }
+    const keyword = this.params.keyword || '';
+    const categoryId = (this.params.categoryId || '').replace('null', '');
+    const topType = Number(this.params.topType);
+    const status = Number(this.params.status);
+    let qAnd = [];
+    if (categoryId) qAnd.push({categoryId});
+    if (topType) qAnd.push({topType});
+    if (status) qAnd.push({status});
+
     //获取文章列表
     const {
       list,
       total
     } = await service.api.back.article.search({
-      and: queryAnd,
+      and: qAnd,
       keyword: keyword,
       pageNumber: pageNumber,
       pageSize: pageSize

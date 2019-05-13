@@ -1,3 +1,7 @@
+/**
+ * web端：评论相关服务
+ */
+
 'use strict';
 
 const Service = require('egg').Service;

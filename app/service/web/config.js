@@ -1,3 +1,7 @@
+/**
+ * web端：配置相关服务
+ */
+
 'use strict';
 
 const Service = require('egg').Service;

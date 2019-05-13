@@ -30,7 +30,7 @@ class CommentController extends BaseController {
     let params = this.params;
 
     //查找所属文章
-    let article = await service.article.findOne({
+    let article = await service.api.back.article.findOne({
       numberId: params.articleNumberId
     });
     if (!article) this.throwError('文章不存在');
@@ -46,7 +46,7 @@ class CommentController extends BaseController {
 
     if (createRes._id) {
       //给文章增加评论数
-      await service.article.update({
+      await service.api.back.article.update({
         _id: article._id
       }, {
         $inc: {
@@ -83,7 +83,7 @@ class CommentController extends BaseController {
     let params = this.params;
 
     //查找所属文章
-    let article = await service.article.findOne({
+    let article = await service.api.back.article.findOne({
       numberId: params.articleNumberId
     });
     if (!article) this.throwError('文章不存在');

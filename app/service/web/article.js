@@ -1,5 +1,5 @@
 /**
- * 前台文章相关服务
+ * web端：文章相关服务
  */
 
 'use strict';
@@ -96,6 +96,7 @@ class ArticleService extends Service {
    * 查询符合条件的文章列表，带有分页选项
    */
   async list(query, pageNumber = 0, pageSize = 10) {
+    query.status = 1;
     let articles = await this.ctx.model.Article.find(query)
       .populate('userId')
       .populate('categoryId')
@@ -148,7 +149,7 @@ class ArticleService extends Service {
   /**
    * 根据条件搜索文章
    */
-  async search(query, pageNumber = 0, pageSize = 10) {
+  async search(query = {}, pageNumber = 0, pageSize = 10) {
     return this.ctx.model.Article.find(query)
       .populate('userId')
       .populate('categoryId')
@@ -204,7 +205,7 @@ class ArticleService extends Service {
   /**
    * 统计
    */
-  async count(query) {
+  async count(query = {}) {
     return this.ctx.model.Article.count(query).exec();
   }
 

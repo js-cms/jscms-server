@@ -1,3 +1,7 @@
+/**
+ * 后台API：缓存相关数据服务
+ */
+
 'use strict';
 
 const Service = require('egg').Service;
@@ -59,7 +63,7 @@ class CacheService extends Service {
   }
 
   /**
-   * 后台模糊搜索接口
+   * 后台API：模糊搜索接口
    * @param {Object} options
    */
   async search(options) {

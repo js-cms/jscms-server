@@ -1,8 +1,8 @@
-'use strict';
-
 /**
  * modelman model: 用户表
  */
+
+'use strict';
 
 module.exports = {
   phone: { n: '手机号', type: 'Number', f: true, t: false, r: false }, //手机号

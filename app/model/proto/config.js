@@ -1,8 +1,8 @@
-'use strict';
-
 /**
  * modelman model: 站点配置表
  */
+
+'use strict';
 
 module.exports = {
   name: { n: '配置名称', type: 'String', f: false, t: false, d: '默认配置' }, //配置名称。

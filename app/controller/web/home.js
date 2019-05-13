@@ -34,11 +34,11 @@ class HomeController extends BaseController {
     if (pageNumber < 0) return this.notFound();
 
     let topMainArticles = await service.web.article.all({
-      topType: 1
+      topType: 2
     });
 
     let topMinorArticles = await service.web.article.all({
-      topType: 2
+      topType: 3
     });
 
     let articles = await service.web.article.list({}, pageNumber, pageSize);

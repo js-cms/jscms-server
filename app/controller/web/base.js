@@ -106,6 +106,17 @@ class BaseController extends Controller {
     }
 
     /**
+     * 排序函数
+     * @param {Object} object 
+     */
+    function eachSort(object) {
+      object = object.sort((item1, item2) => {
+        if (item1.hasChild) eachSort(item1.children);
+        return item1.order - item2.order;
+      });
+    }
+
+    /**
      * 判断是否激活菜单高亮
      */
     function isMenuActive(activeUrl, origin, path) {
@@ -172,15 +183,15 @@ class BaseController extends Controller {
         }
       }
 
-      function eachSort(menus) {
-        menus = menus.sort((item1, item2) => {
-          if (item1.hasChild) eachSort(item1.children);
-          return item1.order - item2.order;
-        });
-      }
-
       await eachHandle(menus);
       eachSort(menus);
+    }
+
+    /**
+     * 链接处理
+     */
+    function linksHandle(links) {
+      eachSort(links);
     }
 
     // 获取各项配置
@@ -195,6 +206,9 @@ class BaseController extends Controller {
 
     // 菜单处理
     await menusHandle(menus);
+
+    // 链接处理
+    linksHandle(links);
 
     // 记入缓存
     this.cache('WEB_CONFIG', {

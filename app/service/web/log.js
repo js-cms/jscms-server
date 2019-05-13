@@ -1,3 +1,7 @@
+/**
+ * web端：日志相关服务
+ */
+
 'use strict';
 
 const Service = require('egg').Service;

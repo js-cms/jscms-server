@@ -1,8 +1,8 @@
-'use strict';
-
 /**
  * modelman model: 资源表
  */
+
+'use strict';
 
 module.exports = {
   type: { n: '资源类型', type: 'Number', t: false, f: false, d: 1, extra: {options: '1:图片,2:音频,3:视频,4:文件'}}, //资源类型：1:图片,2:音频,3:视频,4:文件

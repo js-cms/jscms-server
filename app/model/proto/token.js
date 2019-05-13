@@ -1,8 +1,8 @@
-'use strict';
-
 /**
  * modelman model: 用户token表
  */
+
+'use strict';
 
 module.exports = {
   token: { type: 'String' },

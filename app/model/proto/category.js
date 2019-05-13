@@ -1,8 +1,8 @@
-'use strict';
-
 /**
  * modelman model: 分类表
  */
+
+'use strict';
 
 module.exports = {
   isIndepMeta: { n: '开启独立元信息', type: 'Boolean', f: true, t: false, r: true, d: false }, // 是否需要独立元信息

@@ -1,3 +1,7 @@
+/**
+ * 前台API：评论相关数据服务
+ */
+
 'use strict';
 
 const Service = require('egg').Service;

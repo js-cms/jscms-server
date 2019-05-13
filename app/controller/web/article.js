@@ -5,6 +5,7 @@
 'use strict';
 
 const BaseController = require('./base');
+const _ = require('lodash');
 
 class ArticleController extends BaseController {
 
@@ -28,8 +29,30 @@ class ArticleController extends BaseController {
     } = this;
     const numberId = ctx.params[0];
 
+    /**
+     * 获取该文章的邻居
+     */
+    async function getNeighbor(article) {
+      let articles = await service.web.article.all();
+      let prevArticle = '';
+      let nextArticle = '';
+      for (let index = 0; index < articles.length; index++) {
+        const item = articles[index];
+        if (String(article._id) === String(item._id)) {
+          prevArticle = index > 0 ? articles[index-1]._doc : '';
+          nextArticle = index < (articles.length-1) ? articles[index+1]._doc : '';
+        }
+      }
+      return {
+        prevArticle,
+        nextArticle
+      }
+    }
+
     // 获取文章
     const article = await service.web.article.numberId(numberId);
+
+    const { prevArticle, nextArticle } = await getNeighbor(article);
 
     // 如果通过numberId找到文章，则返回404
     if (!article) return this.notFound();
@@ -69,8 +92,12 @@ class ArticleController extends BaseController {
       pageType: 'article' || 'unknown',
       // 文章数字id: Number
       numberId: numberId || 0,
+      // 上一篇文章: Object
+      prevArticle,
+      // 下一篇文章：Object
+      nextArticle,
       // 文章对象: Object
-      article: article || [],
+      article: article || {},
       // 该文章的评论: Array
       comments: comments || [],
       // 相关文章: Array

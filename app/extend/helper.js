@@ -1,3 +1,7 @@
+/**
+ * 应用程序内部工具库
+ */
+
 'use strict';
 
 const moment = require('moment');
@@ -17,6 +21,8 @@ const utils = module.exports = {
       return moment(time).format('YYYY-MM-DD');
     } else if (type === 3) {
       return moment(time).format('YYYY年MM月DD日');
+    } else if (type === 4) {
+      return moment(time).format('YYYY年MM月DD日 HH:mm');
     }
   },
 

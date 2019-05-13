@@ -1,8 +1,8 @@
-'use strict';
-
 /**
  * modelman model: 页面表
  */
+
+'use strict';
 
 module.exports = {
   title: { n: '页面标题', type: 'String', f: true, t: true, r: true, p: '元信息标题，必填' }, //页面标题

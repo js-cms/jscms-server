@@ -159,7 +159,7 @@ class ResourceController extends BaseController {
     const suffix = ctx.helper.getFileSuffix(file.filename);
     const nowTimestamp = (new Date()).getTime();
     const newFileName = `${nowTimestamp}.${suffix}`;
-    const whiteList = ['png', 'jpg', 'jpeg', 'git', 'bmp'];
+    const whiteList = ['png', 'jpg', 'jpeg', 'git', 'bmp', 'ico'];
 
     //判断文件类型
     if (!whiteList.includes(suffix)) {
@@ -249,7 +249,7 @@ class ResourceController extends BaseController {
     if (errors.length) {
       this.throwError(errors[0].msg);
     } else if (results.length) {
-      this.throwCorrect(results, '上传成功');
+      this.throwCorrect(results[0], '上传成功');
     } else {
       this.throwError('未知错误');
     }

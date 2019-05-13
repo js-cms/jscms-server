@@ -1,3 +1,7 @@
+/**
+ * web端：自定义页面相关服务
+ */
+
 'use strict';
 
 const Service = require('egg').Service;

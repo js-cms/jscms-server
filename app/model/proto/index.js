@@ -1,6 +1,7 @@
 /**
  * 导出模型
  */
+
 module.exports = {
   article: require('./article'),
   category: require('./category'),

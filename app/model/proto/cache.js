@@ -1,8 +1,8 @@
-'use strict';
-
 /**
  * modelman model: 硬盘缓存数据表
  */
+
+'use strict';
 
 module.exports = {
   type: { n: '缓存类型', type: 'String', f: false, t: false, r: true, d: '_default_' }, // 缓存类型
