@@ -5,7 +5,6 @@
 'use strict';
 
 const BaseController = require('./base');
-const fs = require('fs-extra');
 
 class HomeController extends BaseController {
 
@@ -34,13 +33,13 @@ class HomeController extends BaseController {
 
     if (pageNumber < 0) return this.notFound();
 
-    let topMainArticles = await service.web.article.list({
+    let topMainArticles = await service.web.article.all({
       topType: 1
-    }, 0, 3);
+    });
 
-    let topMinorArticles = await service.web.article.list({
+    let topMinorArticles = await service.web.article.all({
       topType: 2
-    }, 0, 2);
+    });
 
     let articles = await service.web.article.list({}, pageNumber, pageSize);
     let total = await service.web.article.count({});
@@ -85,8 +84,6 @@ class HomeController extends BaseController {
         end: Math.ceil(total / pageSize)
       }
     });
-
-    // fs.writeFileSync('./home.json', JSON.stringify(this.cache('RENDER_PARAM'), null, 2));
 
     await this.render('pages/index', {});
   }

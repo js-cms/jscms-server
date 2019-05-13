@@ -1,8 +1,8 @@
 <aside id="secondary" class="widget-area sidebar">
     <div id="zimeiti_1-views-2" class="widget widget-zimeiti_1-views widget_posts_thumbnail">
         <h2 class="widget-title">浏览最多的文章</h2>
-        <ul>
-            <% RENDER_DATA.hotArticles5.forEach(function(article, index) { %>
+        <ul> 
+            <% RENDER_DATA.hotArticles.splice(0, 5).forEach(function(article, index) { %>
             <li class="clear">
                 <a href="/<%-article.numberId%>.html" rel="bookmark">
                     <div class="thumbnail-wrap">
@@ -26,7 +26,7 @@
     <div id="zimeiti_1-popular-2" class="widget widget-zimeiti_1-popular widget_posts_thumbnail">
         <h2 class="widget-title">评论最多的文章</h2>
         <ul>
-            <% RENDER_DATA.commentTopArticles5.forEach(function(article, index) { %>
+            <% RENDER_DATA.commentTopArticles.splice(0, 5).forEach(function(article, index) { %>
             <li class="clear">
                 <a href="/<%-article.numberId%>.html" rel="bookmark">
                     <div class="thumbnail-wrap">

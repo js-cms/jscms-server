@@ -126,26 +126,22 @@ class ArticleService extends Service {
   /**
    * 获取按浏览量排名的文章
    */
-  async visHot(query, pageNumber = 0, pageSize = 10) {
+  async visHot(query = {}) {
     return this.ctx.model.Article.find(query)
       .sort({
         'visTotal': -1
       })
-      .skip(pageNumber * pageSize)
-      .limit(pageSize)
       .exec();
   }
 
   /**
    * 获取按评论量排名的文章
    */
-  async commentHot(query, pageNumber = 0, pageSize = 10) {
+  async commentHot(query = {}) {
     return this.ctx.model.Article.find(query)
       .sort({
         'commentTotal': -1
       })
-      .skip(pageNumber * pageSize)
-      .limit(pageSize)
       .exec();
   }
 
@@ -201,8 +197,8 @@ class ArticleService extends Service {
    * 
    * 查找所有文章
    */
-  async all() {
-    return this.ctx.model.Article.find({}).exec();
+  async all(query = {}) {
+    return this.ctx.model.Article.find(query).exec();
   }
 
   /**

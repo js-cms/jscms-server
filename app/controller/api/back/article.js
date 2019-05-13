@@ -243,12 +243,18 @@ class ArticleController extends BaseController {
     const {
       ctx,
       service
-    } = this;
+    } = this; 
     await this.decorator({
       get: {
         categoryId: {
           n: '分类id',
           type: 'ObjectId',
+          f: true,
+          r: false
+        },
+        topType: {
+          n: '分类id',
+          type: 'Number',
           f: true,
           r: false
         },
@@ -261,20 +267,25 @@ class ArticleController extends BaseController {
     });
 
     let categoryId = this.params.categoryId || '';
+    let topType = this.params.topType || '';
     categoryId = categoryId.replace('null', '');
+    topType = topType.replace('null', '');
     const keyword = this.params.keyword;
     const {
       pageSize,
       pageNumber
     } = ctx.helper.getPaging(ctx.query);
-
     let queryAnd = [];
     if (categoryId) {
       queryAnd = [{
-        categoryId: categoryId
+        categoryId
       }];
     }
-
+    if (topType) {
+      queryAnd.push({
+        topType
+      });
+    }
     //获取文章列表
     const {
       list,

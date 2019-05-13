@@ -19,7 +19,7 @@ module.exports = {
   categoryId: { n: '所属分类', type: 'ObjectId', f: true, t: true, ref: 'Category', extra: {displayField: 'name', comType: 'select', options: 'categories'} }, // 所属分类对象
   userId: { n: '发布用户', type: 'ObjectId', f: false, t: true, ref: 'User', extra: {displayField: 'nickname'}}, // 发布用户
   type: { n: '文章类型', type: 'Number', f: true, r: true, d: 1, extra: {comType: 'select', options: '1:单封面文章'}}, // 文章类型：1.单封面文章
-  topType: { n: '置顶方式', type: 'Number', f: true, r: true, d: 0, extra: {comType: 'select', options: '0:无置顶,1:主要置顶,2:次要置顶'}}, // 置顶方式 0、无置顶 1、主要置顶 2、次要置顶
+  topType: { n: '置顶方式', type: 'Number', f: true, t: true, r: true, d: 0, extra: {comType: 'select', options: '0:无置顶,1:主要置顶,2:次要置顶'}}, // 置顶方式 0、无置顶 1、主要置顶 2、次要置顶
   keywords: { n: '文章关键字', type: 'Array', f: true, r: true, d: [], extra: {comType: 'tagInput'}}, //文章关键字
   description: { n: '文章摘要', type: 'String', f: true, r: true, p: '文章的摘要，用于元信息或页面头部渲染。', min: 10, max: 200, extra: {comType: 'textarea'} }, // 文章摘要
   poster: { n: '文章封面', type: 'Url', f: true, r: true, p: '图片的网址。' }, //文章封面

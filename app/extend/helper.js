@@ -15,6 +15,8 @@ const utils = module.exports = {
       return moment(time).format('YYYY-MM-DD HH:mm');
     } else if (type === 2) {
       return moment(time).format('YYYY-MM-DD');
+    } else if (type === 3) {
+      return moment(time).format('YYYY年MM月DD日');
     }
   },
 

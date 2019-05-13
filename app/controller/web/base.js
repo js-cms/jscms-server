@@ -6,7 +6,6 @@
 
 const path = require('path');
 const Controller = require('egg').Controller;
-const fs = require('fs-extra');
 
 class BaseController extends Controller {
 
@@ -82,11 +81,11 @@ class BaseController extends Controller {
       // 最近三条评论
       recentComments3: await service.web.comment.list({}, 0, 3),
       // 获取浏览量最多的5篇文章
-      hotArticles5: await service.web.article.visHot({}, 0, 5),
+      hotArticles: await service.web.article.visHot(), 
       // 获取评论量最多的5篇文章
-      commentTopArticles5: await service.web.article.commentHot({}, 0, 5)
+      commentTopArticles: await service.web.article.commentHot()
     });
-  }
+  } 
 
   /**
    * 加载web配置
@@ -211,8 +210,6 @@ class BaseController extends Controller {
       path: ctx.request.path,
       query: ctx.query
     });
-
-    // fs.writeFileSync('./WEB_CONFIG.json', JSON.stringify(this.cache('WEB_CONFIG'), null, 2));
   }
 
   /**
