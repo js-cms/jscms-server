@@ -14,6 +14,13 @@ class PageService extends Service {
   async alias(alias) {
     return this.ctx.model.Page.findOne({alias}).exec();
   }
+
+  /**
+   * 查询一个自定义页面
+   */
+  async route(route) {
+    return this.ctx.model.Page.findOne({route}).exec();
+  }
 }
 
 module.exports = PageService;

@@ -12,10 +12,17 @@ const Db = require(`${appPath}/service/Db.js`);
 class ArticleService extends Service {
 
   /**
-   * 查找一篇文章
+   * 通过文章id查找一篇文章
    */
   async articleId(articleId) {
     return this.ctx.model.Article.findOne({ _id: articleId }).exec();
+  }
+
+  /**
+   * 通过文章numberId查找一篇文章
+   */
+  async numberId(numberId) {
+    return this.ctx.model.Article.findOne({numberId}).exec();
   }
 
   /**

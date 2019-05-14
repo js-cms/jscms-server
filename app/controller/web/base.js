@@ -327,14 +327,12 @@ class BaseController extends Controller {
     } = this;
     let route = ctx.params.route || ctx.path;
     route = route[0] === '/' ? route : '/' + route;
-    let findPageRes = await service.web.page.route({
-      route: route
-    });
-    if (!findPageRes) {
+    let page = await service.web.page.route(route);
+    if (!page) {
       return this.notFound();
     }
-    let contentType = findPageRes.contentType || 'text/html; charset=utf-8';
-    let content = findPageRes.html;
+    let contentType = page.contentType || 'text/html; charset=utf-8';
+    let content = page.html;
     ctx.response.set('content-type', contentType);
     ctx.body = content;
   }

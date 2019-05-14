@@ -17,21 +17,21 @@ class ArticleController extends BaseController {
     } = this;
     await this.decorator({
       post: {
-        id: {
-          n: '文章id',
-          type: 'ObjectId',
+        numberId: {
+          n: '文章NumberId',
+          type: 'Number',
           f: true,
           r: true
         }
       }
     });
 
-    const article = await service.api.front.article.articleId(this.params.id);
+    const article = await service.api.front.article.numberId(this.params.numberId);
 
     if (!article) this.throwError('文章未找到');
 
     // 给文章增加点赞数
-    await service.api.front.article.updateLike(this.params.id);
+    await service.api.front.article.updateLike(article._id);
 
     this.throwCorrect({
       count: article.likeTotal + 1
