@@ -1,12 +1,14 @@
 module.exports = function(app) {
   [ 
-    'defalut',
     'article',
-    'author', 
+    'author',
+    'categories',
     'category',
+    'default',
+    'latest',
+    'page',
     'search',
     'tags',
-    'text',
-    'page'
+    'text'
   ].map(m => require(`./${m}.js`)(app));
 };

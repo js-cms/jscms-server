@@ -83,9 +83,11 @@ class BaseController extends Controller {
       // 获取浏览量最多的5篇文章
       hotArticles: await service.web.article.visHot(), 
       // 获取评论量最多的5篇文章
-      commentTopArticles: await service.web.article.commentHot()
+      commentTopArticles: await service.web.article.commentHot(),
+      // 获取热搜词
+      hotSearchKeywords: await service.web.config.keywords()
     });
-  } 
+  }
 
   /**
    * 加载web配置

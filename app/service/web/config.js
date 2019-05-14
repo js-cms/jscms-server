@@ -29,6 +29,27 @@ class ConfigService extends Service {
   }
 
   /**
+   * 获取搜索关键词（按搜索次数排序）
+   */
+  async keywords() {
+    let keywordsConfig = await this.ctx.model.Config.findOne({
+      alias: 'searchKeywordsCount'
+    }).exec();
+    let object = keywordsConfig.info.keywords;
+    let keywords = [];
+    for (const key in object) {
+      if (object.hasOwnProperty(key)) {
+        const time = object[key];
+        keywords.push({
+          keyword: key,
+          time
+        });
+      }
+    }
+    return keywords.sort((i, i2) => i2.time - i.time);
+  }
+
+  /**
    * 获取全部的标签数据
    */
   async tags() {
