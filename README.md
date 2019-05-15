@@ -4,6 +4,10 @@ jscms-server，jscms服务端，基于阿里的 [eggjs](https://github.com/eggjs
 
 ## TODO
 
+1. 替换 www.zhutibaba.com 网址。（未完成
+1. 网站配置增加站长信息（个人二维码、微信公众号二维码，联系方式等）。（未完成
+1. 完善主题未完成功能。（未完成
+
 1. API 相关控制器代码优化（完成
 1. 验证码系统（完成
 1. 网站公告（完成
