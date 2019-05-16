@@ -21,6 +21,13 @@ module.exports = {
   avatar: { n: '头像地址', type: 'Url', f: true, t: false, r: false }, //头像
   about: { n: '关于', type: 'String', f: true, t: false, r: false, extra: {comType: 'textarea'}}, //关于用户
 
+  // 二维码设置
+  qrWx: { n: '用户的微信二维码', type: 'String', f: true, t: false, r: false, p: '用户微信二维码的图片地址'}, // 用户微信二维码的图片地址
+  qrWxpay: { n: '微信收款二维码', type: 'String', f: true, t: false, r: false, p: '微信收款二维码的图片地址'}, // 微信收款二维码的图片地址
+  qrWxpub: { n: '微信公众号二维码', type: 'String', f: true, t: false, r: false, p: '微信公众号二维码的图片地址'}, // 微信公众号二维码的图片地址
+  qrAlipay: { n: '支付宝收款二维码', type: 'String', f: true, t: false, r: false, p: '支付宝收款二维码的图片地址'}, // 支付宝收款二维码的图片地址
+  qrUnionpay: { n: '银联云闪付收款二维码', type: 'String', f: true, t: false, r: false, p: '银联云闪付收款二维码的图片地址'}, // 银联云闪付收款二维码的图片地址
+
   powers: { n: '权限', type: 'Array', f: true, t: false, r: false, d: [] }, //权限
   score: { n: '积分', type: 'Number', f: true, t: true, r: false, d: 0 }, //积分
   active: { n: '激活状态', type: 'Boolean', f: true, t: true, r: false, default: true }, //是否已经激活

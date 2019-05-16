@@ -14,7 +14,10 @@ module.exports = {
   indepUserNickname: { n: '发布者昵称', type: 'String', f: true, t: false, r: false }, // 独立发布者昵称
   indepUserAbout: { n: '发布者介绍', type: 'String', f: true, t: false, r: false }, // 独立发布者介绍
 
-  isSource: { n: '需要填写来源', type: 'Boolean', f: true, t: false, r: true, d: false , extra: {comType: 'radio', options: 'true:需要,false:不需要'} }, // 需要填写来源
+  isReward: { n: '显示收款二维码', type: 'Boolean', f: true, t: false, r: true, d: false, extra: {comType: 'radio', options: 'true:显示,false:不显示'}}, // 是否显示收款二维码
+  isWxpub: { n: '显示微信公众号', type: 'Boolean', f: true, t: false, r: true, d: false, extra: {comType: 'radio', options: 'true:显示,false:不显示'}}, // 是否显示微信公众号
+  isAbout: { n: '显示关于作者', type: 'Boolean', f: true, t: false, r: true, d: false, extra: {comType: 'radio', options: 'true:显示,false:不显示'} }, // 是否显示关于作者
+  isSource: { n: '需要填写来源', type: 'Boolean', f: true, t: false, r: true, d: false, extra: {comType: 'radio', options: 'true:需要,false:不需要'} }, // 是否需要填写来源
   sourceName: { n: '来源名称', type: 'String', f: true, t: false, r: false, p: '例如：新浪' }, // 来源名称
   sourceUrl: { n: '来源链接', type: 'String', f: true, t: false, r: false, p: '填写原文链接' }, // 来源链接
 
