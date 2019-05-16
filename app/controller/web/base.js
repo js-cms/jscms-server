@@ -147,7 +147,6 @@ class BaseController extends Controller {
      */
     async function menusHandle(menus) {
       if (!menus || menus.length === 0) return;
-      let newMenus = [];
 
       function checkValid(item) {
         if (!item.type) return false;
@@ -185,8 +184,10 @@ class BaseController extends Controller {
         }
       }
 
-      await eachHandle(menus);
-      eachSort(menus);
+      await eachHandle(menus.top);
+      await eachHandle(menus.bottom);
+      eachSort(menus.top);
+      eachSort(menus.bottom);
     }
 
     /**

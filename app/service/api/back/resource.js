@@ -30,6 +30,14 @@ class ResourceService extends Service {
   }
 
   /**
+   * 通过文件名删除资源数据
+   */
+  async removeByFilename(filename) {
+    const db = new Db(this.ctx.model.Resource);
+    return db.remove({filename});
+  }
+
+  /**
    * 根据条件查询资源（带分页功能）
    */
   async find(query, pageNumber = 0, pageSize = 8) {

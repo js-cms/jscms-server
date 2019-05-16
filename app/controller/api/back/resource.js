@@ -148,6 +148,33 @@ class ResourceController extends BaseController {
   }
 
   /**
+   * 模糊删除
+   */
+  async fuzzyDelete(url) {
+    const {
+      service,
+      config
+    } = this;
+    const filename = path.basename(url);
+    let msg = '';
+
+    //本地地址
+    let target = path.join(config.baseDir, `${config.constant.directory.JSCMS_UPLOAD}/${filename}`);
+
+    //删除文件
+    if (!fs.existsSync(target)) {
+      msg = '，资源文件不存在';
+    } else {
+      fs.removeSync(target);
+    }
+
+    //删除数据库记录
+    const result = await service.api.back.resource.removeByFilename(filename);
+
+    return Boolean(result);
+  }
+
+  /**
    * 资源处理器
    */
   async uploadHandler(file) {
@@ -228,11 +255,8 @@ class ResourceController extends BaseController {
    * 标准资源上传控制器 
    */
   async uploader() {
-    const {
-      ctx,
-      service,
-      config
-    } = this;
+    const { ctx } = this;
+    let originalImageUrl = ctx.request.body.originalImageUrl;
     let files = ctx.request.files;
     let errors = [];
     let results = [];
@@ -249,6 +273,9 @@ class ResourceController extends BaseController {
     if (errors.length) {
       this.throwError(errors[0].msg);
     } else if (results.length) {
+      let deleteRes = '';
+      if (originalImageUrl) deleteRes = await this.fuzzyDelete(originalImageUrl);
+      console.log('deleteRes', deleteRes);
       this.throwCorrect(results[0], '上传成功');
     } else {
       this.throwError('未知错误');
@@ -259,11 +286,7 @@ class ResourceController extends BaseController {
    * wangeditor资源上传控制器 
    */
   async wangeditorUploader() {
-    const {
-      ctx,
-      service,
-      config
-    } = this;
+    const { ctx } = this;
     let files = ctx.request.files;
     let errors = [];
     let results = [];
