@@ -76,6 +76,8 @@ class BaseController extends Controller {
     this.cache('RENDER_DATA', {
       // 最近三篇文章
       recentArticles3: await service.web.article.list({}, 0, 3),
+      // 最近十篇文章
+      recentArticles10: await service.web.article.list({}, 0, 10),
       // 随机三篇文章
       randomArticles3: await service.web.article.random(3),
       // 最近三条评论
