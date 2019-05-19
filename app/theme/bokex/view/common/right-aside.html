@@ -1,0 +1,95 @@
+<aside id="secondary" class="widget-area sidebar">
+  <div class="sidebar__inner">
+    <div id="boke_x-views-2" class="widget widget-boke-x-views widget_posts_thumbnail">
+      <h2 class="widget-title">浏览最多的文章</h2>
+      <ul>
+        <li class="clear">
+          <a href="/<%-RENDER_DATA.hotArticles[0].numberId%>.html" rel="bookmark">
+            <div class="thumbnail-wrap aside-thumbnail">
+              <img width="300" height="150" src="<%-RENDER_DATA.hotArticles[0].poster%>"
+                class="attachment-boke_x_widget_thumb size-boke_x_widget_thumb wp-post-image"
+                alt="<%-RENDER_DATA.hotArticles[0].title%>" />
+            </div>
+          </a>
+          <div class="entry-wrap">
+            <a href="/<%-RENDER_DATA.hotArticles[0].numberId%>.html"
+              rel="bookmark"><%-RENDER_DATA.hotArticles[0].title%></a>
+          </div>
+        </li>
+        <% RENDER_DATA.hotArticles.splice(1, 5).forEach(function(article, index) { %>
+        <li class="post-list">
+          <span><%-index+1%></span>
+          <a href="/<%-article.numberId%>.html" rel="bookmark"><%-article.title%></a>
+        </li>
+        <% }) %>
+      </ul>
+    </div>
+
+    <div id="boke_x-popular-2" class="widget widget-boke-x-popular widget_posts_thumbnail">
+      <h2 class="widget-title">评论最多的文章</h2>
+      <ul>
+        <li class="clear">
+          <a href="/<%-RENDER_DATA.commentTopArticles[0].numberId%>.html" rel="bookmark">
+            <div class="thumbnail-wrap aside-thumbnail">
+              <img width="300" height="150" src="<%-RENDER_DATA.commentTopArticles[0].poster%>"
+                class="attachment-boke_x_widget_thumb size-boke_x_widget_thumb wp-post-image"
+                alt="<%-RENDER_DATA.commentTopArticles[0].title%>" />
+            </div>
+          </a>
+          <div class="entry-wrap">
+            <a href="/<%-RENDER_DATA.commentTopArticles[0].numberId%>.html"
+              rel="bookmark"><%-RENDER_DATA.commentTopArticles[0].title%></a>
+          </div>
+        </li>
+        <% RENDER_DATA.commentTopArticles.splice(1, 5).forEach(function(article, index) { %>
+        <li class="post-list">
+          <span><%-index+1%></span>
+          <a href="/<%-article.numberId%>.html" rel="bookmark"><%-article.title%></a>
+        </li>
+        <% }) %>
+      </ul>
+    </div>
+
+    <% if (RENDER_PARAM.pageType==='article') { %>
+    <div id="post-nav" class="clear">
+      <% if (RENDER_PARAM.prevArticle) { %>
+      <div class="post-previous">
+        <a class="previous" href="/<%-RENDER_PARAM.prevArticle.numberId%>.html">
+          <span>
+            <i class="fa fa-angle-left"></i> 上一篇
+          </span>
+          <div class="thumbnail-wrap thumbnail-right-aside-post">
+            <img width="300" height="150" src="<%-RENDER_PARAM.prevArticle.poster%>" class="attachment-boke_x_widget_thumb size-boke_x_widget_thumb wp-post-image" alt="<%-RENDER_PARAM.prevArticle.title%>" />
+          </div>
+          <h4>
+            <%-RENDER_PARAM.prevArticle.title%>
+          </h4>
+          <small>
+            <%- helper.toDate(RENDER_PARAM.prevArticle.createTime, 4) %>
+          </small>
+          <div class="gradient"></div>
+        </a>
+      </div>
+      <% } %>
+      <% if (RENDER_PARAM.nextArticle) { %>
+      <div class="post-next">
+        <a class="next" href="/<%-RENDER_PARAM.nextArticle.numberId%>.html">
+          <span> 下一篇 <i class="fa fa-angle-right"></i>
+          </span>
+          <div class="thumbnail-wrap thumbnail-right-aside-post">
+            <img width="300" height="150" src="<%-RENDER_PARAM.nextArticle.poster%>" class="attachment-boke_x_widget_thumb size-boke_x_widget_thumb wp-post-image" alt="<%-RENDER_PARAM.nextArticle.title%>" />
+          </div>
+          <h4>
+            <%-RENDER_PARAM.nextArticle.title%>
+          </h4>
+          <small>
+            <%- helper.toDate(RENDER_PARAM.nextArticle.createTime, 4) %>
+          </small>
+          <div class="gradient"></div>
+        </a>
+      </div>
+      <% } %>
+    </div>
+    <% } %>
+  </div>
+</aside>

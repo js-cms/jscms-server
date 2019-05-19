@@ -1,0 +1,29 @@
+<meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="HandheldFriendly" content="true">
+  <link rel="profile" href="http://gmpg.org/xfn/11">
+  <link type="text/css" media="all" href="<%-CONSTANT.THEME_STATIC%>/lib/autoptimize.css" rel="stylesheet" />
+  <title><%- WEB_CONFIG.site.title %></title>
+  <meta name="keywords" content="<%- WEB_CONFIG.site.keywords %>" />
+  <meta name="description" content="<%- WEB_CONFIG.site.description %>" />
+  <meta name='robots' content='noindex,follow' />
+  <link rel="icon" href="<%-WEB_CONFIG.site.favicon%>" type="image/png">
+  <link rel='dns-prefetch' href='//s.w.org' />
+  <script type='text/javascript' src='<%-CONSTANT.THEME_STATIC%>/lib/jquery.js'></script>
+  <script type='text/javascript'>
+    (function (window) {
+      window.usp_custom_field = "usp_custom_field";
+      window.usp_custom_checkbox = "usp_custom_checkbox";
+      window.usp_case_sensitivity = "false";
+      window.usp_challenge_response = "2";
+      window.usp_min_images = 0;
+      window.usp_max_images = 1;
+      window.usp_parsley_error = "\u9a8c\u8bc1\u9519\u8bef";
+
+      if (!window.__JSCMS_CONSTANT__) window.__JSCMS_CONSTANT__ = {};
+      window.__JSCMS_CONSTANT__.CONSTANT = {
+        THEME_STATIC: <%-JSON.stringify(CONSTANT.THEME_STATIC)%>
+      };
+    })(window);
+  </script>

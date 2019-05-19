@@ -1,0 +1,11 @@
+@media screen and (min-width: 1160px) {
+  .thumbnail-category img
+  {
+    object-fit: cover;
+  }
+
+  .thumbnail-category img {
+    width: 800px !important;
+    height: 300px !important;
+  }
+}

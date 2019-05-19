@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <% include ../common/head.html %>
+</head>
+
+<body class="archive tag tag-28 wp-custom-logo hfeed">
+  <div id="page" class="site">
+
+    <% include ../common/top-menu.html %>
+
+    <div id="content" class="site-content site_container container clear">
+      <div id="primary" class="content-area clear">
+        <main id="main" class="site-main clear">
+          <div class="breadcrumbs clear">
+            <h1>
+              <span class="title">
+                标签：<%-RENDER_PARAM.tagName%>
+              </span>
+            </h1>
+          </div>
+          <div id="recent-content" class="content-list">
+            <% RENDER_PARAM.articles.forEach(function(article, index) { %>
+            <div id="post-<%-article.numberId%>"
+              class="clear post-<%-article.numberId%> post type-post status-publish format-standard has-post-thumbnail hentry category-finance">
+              <a class="thumbnail-link" href="/<%-article.numberId%>.html">
+                <div class="thumbnail-wrap">
+                  <img width="243" height="156" src="<%-article.poster%>"
+                    class="attachment-boke_x_list_thumb size-boke_x_list_thumb wp-post-image"
+                    alt="<%-article.title%>" />
+                </div>
+              </a>
+              <h2 class="entry-title">
+                <a href="/<%-article.numberId%>.html"><%-article.title%></a>
+              </h2>
+              <div class="entry-overview 	">
+                <div class="entry-summary">
+                  <p><%-article.description%></p>
+                </div>
+                <div class="entry-meta">
+                  <span class="entry-category">
+                    <a href="/<%-article.categoryId.alias%>.html"><%-article.categoryId.name%></a>
+                    <span class="sep">&bullet;</span>
+                  </span>
+                  <span class="entry-date"> <%-helper.toDate(article.createTime, 3)%> </span>
+                  <span class="entry-like">
+                    <span class="sl-wrapper">
+                      <a href="javascript:void(0);" class="btn-like" data-number-id="<%-article.numberId%>"
+                        title="点赞这篇文章">
+                        <span class="sl-count"><i class="fa fa-thumbs-o-up"></i> <span
+                            id="likeTotal"><%-article.likeTotal%></span><em>赞</em></span>
+                      </a>
+                      <span class="sl-loader"></span>
+                    </span>
+                  </span>
+                  <span class="entry-views">
+                    <a href="/<%-article.numberId%>.html">
+                      <i class="flaticon-eye"></i> <%-article.visTotal%><em>阅读</em>
+                    </a>
+                  </span>
+                  <span class="entry-comment">
+                    <a href="/<%-article.numberId%>.html#respond" class="comments-link">
+                      <i class="flaticon-chat-comment-oval-speech-bubble-with-text-lines"></i>
+                      <%-article.commentTotal%><em>评论</em>
+                    </a>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <% }) %>
+          </div>
+        </main>
+        
+        <nav class="navigation pagination" role="navigation">
+          <h2 class="screen-reader-text">文章导航</h2>
+          <div class="nav-links">
+            <% if ( RENDER_PARAM.pagination.current > RENDER_PARAM.pagination.start ) { %>
+            <a class="next page-numbers"
+              href="/<%-RENDER_PARAM.pagination.prefix%>-<%-RENDER_PARAM.pagination.start%>.html">首页</a>
+            <% } else { %>
+            <a class="next page-numbers invalid" href="javascript:void(0);">首页</a>
+            <% } %>
+            <% RENDER_PARAM.pagination.pages.forEach(function(page, index) { %>
+            <% if ( page.isCurrent ) { %>
+            <span aria-current="page" class="page-numbers current">
+              <%-page.num%></span>
+            <% } else { %>
+            <a class="page-numbers" href="/<%-RENDER_PARAM.pagination.prefix%>-<%-page.num%>.html">
+              <%-page.num%></a>
+            <% } %>
+            <% }) %>
+            <% if ( RENDER_PARAM.pagination.current < RENDER_PARAM.pagination.end ) { %>
+            <a class="next page-numbers"
+              href="/<%-RENDER_PARAM.pagination.prefix%>-<%-RENDER_PARAM.pagination.end%>.html">尾页</a>
+            <% } else { %>
+            <a class="next page-numbers invalid" href="javascript:void(0);">尾页</a>
+            <% } %>
+          </div>
+        </nav>
+      </div>
+
+      <% include ../common/right-aside.html %>
+    </div>
+
+    <% include ../common/foot.html %>
+
+  </div>
+
+  <% include ../common/bottom-right.html %>
+
+  <% include ../common/common-script.html %>
+</body>
+
+</html>

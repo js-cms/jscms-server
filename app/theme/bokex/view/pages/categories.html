@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <% include ../common/head.html %>
+  <link type="text/css" media="all" href="<%-CONSTANT.THEME_STATIC%>/css/categories.css" rel="stylesheet" />
+</head>
+
+<body
+  class="page-template page-template-page-templates page-template-page-zhuanti-full page-template-page-templatespage-zhuanti-full-php page page-id-674 wp-custom-logo">
+  <div id="page" class="site">
+
+    <% include ../common/top-menu.html %>
+
+    <div id="content" class="site-content site_container container clear">
+      <div id="primary" class="content-area <% if (RENDER_PARAM.widthType === 'full') { %>full-width<% } %>">
+        <main id="main" class="site-main">
+          <article class="page type-page status-publish hentry">
+            <header class="entry-header">
+              <h1 class="page-title">
+                全宽专题分类列表
+              </h1>
+            </header>
+            <div class="entry-content">
+              <div class="zhuanti-list clear">
+                <% RENDER_PARAM.categories.forEach(function(cat, index) { %>
+                <div class="zhuanti-block <% if (RENDER_PARAM.widthType === 'full') { %>ht_grid_1_3<% } else { %>ht_grid_1_2<% } %>">
+                  <a class="thumbnail-link" href="/<%-cat.alias%>.html">
+                    <div class="thumbnail-wrap thumbnail-category">
+                      <img src="<%-cat.poster%>" alt="<%-cat.name%>" />
+                    </div>
+                  </a>
+                  <h3 class="zhuanti-title">
+                    <a href="/<%cat.alias%>.html"> <%-cat.name%> </a>
+                  </h3>
+                  <div class="zhuanti-desc">
+                    <%-cat.intro%>
+                  </div>
+                  <ul>
+                    <% cat.articles.splice(0, 5).forEach(function(article, index) { %>
+                    <li>
+                      <a href="/<%-article.numberId%>.html" target="_blank">
+                        <%-article.title%>
+                      </a>
+                    </li>
+                    <% }) %>
+                  </ul>
+                </div>
+                <% }) %>
+              </div>
+            </div>
+          </article>
+        </main>
+      </div>
+
+      <% if (RENDER_PARAM.widthType !== 'full') { %>
+      <% include ../common/right-aside.html %>
+      <% } %>
+    </div>
+
+    <% include ../common/foot.html %>
+
+  </div>
+
+  <% include ../common/bottom-right.html %>
+
+  <% include ../common/common-script.html %>
+</body>
+
+</html>

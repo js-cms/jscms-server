@@ -1,0 +1,52 @@
+.menu-primary-container .current-menu-item a {
+  color: #037ef3 !important; 
+}
+
+.footer-partners .partners-item img {
+  transition: all 0.4s;
+}
+
+.footer-partners .partners-item img:hover{
+  transform: scale(1.1);
+}
+
+.btn-primary {
+  border: 1px solid #037ef3;
+  color: #037ef3;
+  border-radius: 5px;
+  display: inline-block;
+  cursor: pointer;
+  background-color: #fff;
+  margin-left: 2px;
+  margin-right: 2px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.btn-primary.liked {
+  background-color: gray;
+  color: #fff;
+  border-color: gray;
+}
+
+.btn-primary.liked:hover {
+  background-color: gray;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background-color: #037ef3;
+  color: #fff;
+}
+
+#searchform input {
+  height: 38px;
+  line-height: 38px;
+  padding: 0 10px;
+  font-size: 15px;
+  font-weight: 400;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  outline: none;
+  color: #333;
+}

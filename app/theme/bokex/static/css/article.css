@@ -1,0 +1,17 @@
+@media screen and (min-width: 1160px) {
+  .thumbnail-right-aside-post img,
+  .thumbnail-related-article img
+  {
+    object-fit: cover !important;
+  }
+
+  .thumbnail-right-aside-post img {
+    width: 300px !important;
+    height: 150px !important;
+  }
+
+  .thumbnail-related-article img {
+    width: 100% !important;
+    height: 160.22px !important;
+  }
+}

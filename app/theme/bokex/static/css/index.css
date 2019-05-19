@@ -1,0 +1,39 @@
+@media screen and (min-width: 1160px) {
+  .bx-wrapper {
+    width: 640px;
+    height: 350px !important;
+  }
+
+  .primary-thumbnail img,
+  .small-thumbnail img,
+  .home-categories-thumbnail img,
+  .aside-thumbnail img,
+  .article-thumbnail img
+  {
+    object-fit: cover;
+  }
+
+  .primary-thumbnail img {
+    height: 350px !important;
+  }
+
+  .small-thumbnail img {
+    height: 110px;
+    width: 190px;
+  }
+
+  .home-categories-thumbnail img {
+    width: 188px !important;
+    height: 119px !important;
+  }
+
+  .aside-thumbnail img {
+    width: 260px !important;
+    height: 130px !important;
+  }
+
+  .article-thumbnail img {
+    width: 243px;
+    height: 156px;
+  }
+}

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <% include ../common/head.html %>
+</head>
+
+<body class="search search-results wp-custom-logo hfeed">
+  <div id="page" class="site">
+
+    <% include ../common/top-menu.html %>
+
+    <div id="content" class="site-content site_container container clear">
+      <div id="primary" class="content-area">
+        <main id="main" class="site-main clear">
+          <div class="breadcrumbs clear">
+            <h1> <span class="title"> &quot;<span> <%-RENDER_PARAM.keyword%> </span>&quot; 的搜索结果 </span></h1>
+          </div>
+          <div id="recent-content" class="content-search content-list">
+            <% RENDER_PARAM.articles.forEach(function(article, index) { %>
+            <div id="post-<%-article.numberId%>"
+              class="clear post-<%-article.numberId%> post type-post status-publish format-standard has-post-thumbnail hentry category-finance">
+              <a class="thumbnail-link" href="/<%-article.numberId%>.html">
+                <div class="thumbnail-wrap">
+                  <img width="243" height="156" src="<%-article.poster%>" alt="<%-article.title%>" />
+                </div>
+              </a>
+              <h2 class="entry-title">
+                <a href="/<%-article.numberId%>.html">
+                  <%-article.title%>
+                </a>
+              </h2>
+              <div class="entry-overview">
+                <div class="entry-summary">
+                  <p><%-article.description%></p>
+                </div>
+                <div class="entry-meta">
+                  <span class="entry-category">
+                    <a href="/<%-article.categoryId.alias%>.html"><%-article.categoryId.name%></a>
+                    <span class="sep">&bullet;</span>
+                  </span>
+                  <span class="entry-date"> <%-helper.toDate(article.createTime, 3)%> </span>
+                  <span class="entry-like">
+                    <span class="sl-wrapper">
+                      <a href="javascript:viod(0);" class="btn-like" data-number-id="<%-article.numberId%>" title="点赞这篇文章">
+                        <span class="sl-count">
+                          <i class="fa fa-thumbs-o-up"></i> <span id="likeTotal"><%-article.likeTotal%></span> <em>赞</em>
+                        </span>
+                      </a>
+                      <span class="sl-loader"></span>
+                    </span>
+                  </span>
+                  <span class="entry-views">
+                    <a href="/<%-article.numberId%>.html">
+                      <i class="flaticon-eye"></i> <%-article.visTotal%><em>阅读</em>
+                    </a>
+                  </span>
+                  <span class="entry-comment">
+                    <a href="/<%-article.numberId%>.html#respond" class="comments-link">
+                      <i class="flaticon-chat-comment-oval-speech-bubble-with-text-lines"></i>
+                      <%-article.commentTotal%><em>评论</em>
+                    </a>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <% }) %>
+            <% if (RENDER_PARAM.articles.length === 0) { %>
+            <section class="no-results not-found">
+              <header class="page-header">
+                <h1 class="page-title">找不到相关结果</h1>
+              </header>
+              <div class="page-content">
+                <p>您输入的关键字无相关结果，请尝试其他关键字。</p>
+              </div>
+            </section>
+            <% } %>
+          </div>
+        </main>
+      </div>
+
+      <% include ../common/right-aside.html %>
+
+    </div>
+
+    <% include ../common/foot.html %>
+
+  </div>
+
+  <% include ../common/bottom-right.html %>
+
+  <% include ../common/common-script.html %>
+</body>
+
+</html>

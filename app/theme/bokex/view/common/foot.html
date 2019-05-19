@@ -1,0 +1,78 @@
+<footer id="colophon" class="site-footer">
+  <div class="clear"></div>
+  <% if (RENDER_PARAM.pageType==='home') { %>
+  <div class="container">
+    <div class="footer-content">
+      <% if (WEB_CONFIG.links.filter(i => i.logo).length) { %>
+      <div class="footer-partners clear">
+        <div class="partner-title clear"> <strong>合作伙伴</strong> <span class="partner-desc">logo友情链接</span> <span
+            class="partner-link"> <a href="https://www.zhutibaba.com/contact" target="_blank"> 联系我们 <i
+                class="fa fa-angle-right"></i> </a></span>
+        </div>
+        <div class="partner-wrap">
+          <% WEB_CONFIG.links.filter(i => i.logo).forEach(function(link, index) { %>
+          <div id="media_image-<%-index%>" class="partner-image widget_media_image" title="<%-link.name%>">
+            <a class="partners-item" href="<%-link.url%>" target="_blank">
+              <img width="200" height="66" src="<%-link.logo%>" class="image wp-image-<%-index%>  attachment-full size-full" alt="<%-link.name%>" style="max-width: 100%; height: auto;" />
+            </a>
+          </div>
+          <% }) %>
+        </div>
+      </div>
+      <% } %>
+      <div class="clear"></div>
+      <% if (WEB_CONFIG.links.filter(i => !i.logo).length) { %>
+      <div class="friend clear">
+        <div class="friend-title clear">
+          <h3>友情链接</h3> <span class="friend-desc">文字友情链接</span> <span class="friend-link"> <a
+              href="https://www.zhutibaba.com/contact" target="_blank"> 交换链接 <i class="fa fa-angle-right"></i>
+            </a>
+          </span>
+        </div>
+        <div class="menu-footer-container">
+          <ul id="friend-menu" class="friend-nav">
+            <% WEB_CONFIG.links.filter(i => !i.logo).forEach(function(link, index) { %>
+            <li id="menu-item-<%-index%>" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-<%-index%>">
+              <a target="_blank" href="<%-link.url%>"><%-link.name%></a>
+            </li>
+            <% }) %>
+          </ul>
+        </div>
+      </div>
+      <% } %>
+    </div>
+  </div>
+  <% } %>
+  <div id="site-bottom" class="clear">
+    <div class="container">
+      <div class="footer-left">
+        <div class="footer-logo">
+          <img src="<%-WEB_CONFIG.site.logo%>" alt="<%-WEB_CONFIG.site.subtitle%>" />
+        </div>
+        <div class="menu-posts-container">
+          <ul id="footer-menu" class="footer-nav">
+            <% WEB_CONFIG.menus.bottom.forEach(function(menu, index) { %>
+            <li class="menu-item menu-item-type-post_type menu-item-object-page">
+              <a href="<%-menu.link%>"><%-menu.name%></a>
+            </li>
+            <% }) %>
+          </ul>
+        </div>
+        <div class="site-info"><%- WEB_CONFIG.site.footHTML %></div>
+      </div>
+      <div class="footer-search">
+        <form id="footer-searchform" method="get" action="/s">
+          <input type="search" name="s" class="search-input" placeholder="请输入关键词" autocomplete="off">
+          <button type="submit" class="search-submit">搜索</button>
+        </form>
+        <div class="popular-search"> 热搜: 
+          <% RENDER_DATA.hotSearchKeywords.splice(0, 5).forEach(function(item, index) { %>
+          <a href="/s?s=<%-encodeURIComponent(item.keyword)%>" class="tag-cloud-link" style="font-size: 13px;">
+            <%-item.keyword%>
+          </a>
+          <% }) %>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>

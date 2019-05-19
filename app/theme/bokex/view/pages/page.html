@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <% include ../common/head.html %>
+</head>
+
+<body class="error404 wp-custom-logo hfeed">
+  <div id="page" class="site">
+    
+    <% include ../common/top-menu.html %>
+
+    <div id="content" class="site-content site_container container clear">
+      <div id="primary" class="content-area">
+        <main id="main" class="site-main">
+          <section class="error-404">
+            <header class="page-header">
+              <h1 class="page-title">
+                <%-RENDER_PARAM.page.name%>
+              </h1>
+            </header>
+            <div class="entry-content">
+              <%-RENDER_PARAM.page.html%>
+            </div>
+          </section>
+        </main>
+      </div>
+      
+      <% include ../common/right-aside.html %>
+    </div>
+
+    <% include ../common/foot.html %>
+  </div>
+
+  <% include ../common/bottom-right.html %>
+
+  <% include ../common/common-script.html %>
+</body>
+
+</html>

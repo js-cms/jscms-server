@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <% include ../common/head.html %>
+  <link rel="canonical" href="/latest/<%-RENDER_PARAM.pageSize%>.html" />
+  <link rel='shortlink' href='/latest/<%-RENDER_PARAM.pageSize%>.html' />
+  <link type="text/css" media="all" href="<%-CONSTANT.THEME_STATIC%>/css/latest.css" rel="stylesheet" />
+</head>
+
+<body class="page-template page-template-page-templates page wp-custom-logo">
+  <div class="mini-page">
+    <div class="mini-header">
+      <div class="mini-branding">
+        <div id="logo">
+          <span class="helper">
+          </span>
+          <a href="/" class="custom-logo-link" rel="home" itemprop="url">
+            <img width="190" height="110"
+              src="<%-WEB_CONFIG.site.logo%>"
+              class="custom-logo" alt="<%-WEB_CONFIG.site.subtitle%>" itemprop="logo" />
+          </a>
+        </div>
+      </div>
+    </div>
+    <ul>
+      <% RENDER_PARAM.articles.forEach(function(article, index) { %>
+      <li>
+        <a target="_blank" href="/<%-article.numberId%>.html" title="<%-article.title%>">
+          <%-article.title%>
+        </a>
+        <em><%-helper.toDate(article.createTime, 3)%></em>
+      </li>
+      <% }) %>
+    </ul>
+    <div class="mini-footer"><%- WEB_CONFIG.site.footHTML %></div>
+  </div>
+</body>
+
+</html>

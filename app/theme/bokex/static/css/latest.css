@@ -1,0 +1,13 @@
+@media screen and (max-width: 600px) {
+  .mini-page {
+    width: 100%;
+    margin: 0px auto;
+    padding: 10px;
+    box-sizing: border-box;
+  }
+
+  .mini-page .mini-header {
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
