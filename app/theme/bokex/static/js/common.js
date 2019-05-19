@@ -28,7 +28,7 @@
           desc: '',
         }]
       };
-      jscmssdk.dialogQrcode.show(options);
+      jscmssdk.dialog.qrcode.show(options);
     });
 
     // 查看收款二维码
