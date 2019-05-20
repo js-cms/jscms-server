@@ -14,6 +14,38 @@ let commentModel = require(`${modelPath}/comment`);
 class CommentController extends BaseController {
 
   /**
+   * 获取评论列表
+   */
+  async list() {
+    const { ctx, service } = this;
+    await this.decorator({
+      post: {
+        numberId: {
+          n: '文章NumberId',
+          type: 'Number',
+          f: true,
+          r: true
+        }
+      }
+    });
+    const {
+      pageSize,
+      pageNumber
+    } = ctx.helper.getPaging(ctx.query);
+
+    //获取评论的列表
+    const {
+      list,
+      total
+    } = await service.api.front.comment.list({articleId: this.params.articleId}, pageNumber, pageSize);
+
+    this.throwCorrect({
+      list: list,
+      total: total
+    });
+  }
+
+  /**
    * 新增评论
    */
   async create() {

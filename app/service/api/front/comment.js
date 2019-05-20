@@ -15,6 +15,7 @@ class CommentService extends Service {
     return this.ctx.model.Comment.find(query)
       .populate('articleId')
       .populate('commentId')
+      .populate('userId')
       .sort({
         'createTime': -1
       })
