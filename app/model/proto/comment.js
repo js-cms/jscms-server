@@ -14,7 +14,6 @@ module.exports = {
   htContent: { n: 'html代码', type: 'String', f: false, t: false }, // 评论的html代码
   likeTotal: { n: '点赞数量', type: 'Number', default: 0 }, // 点赞数量
   replyTotal: { n: '回复数量', type: 'Number', default: 0 }, // 回复数量
-  commentTotal: { n: '回复评论数量', type: 'Number', default: 0 }, // 回复评论数量
   createTime: { n: '创建时间', type: 'Timestamp', t: true, f: false }, // 创建时间
   updateTime: { n: '更新时间', type: 'Timestamp', t: true, f: false } // 更新时间
 }
