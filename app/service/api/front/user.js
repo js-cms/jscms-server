@@ -50,7 +50,7 @@ class UserService extends Service {
    * 通过userid查找一名用户
    */
   async userId(userId) {
-    return this.ctx.model.User.findOne({userId}).exec();
+    return this.ctx.model.User.findOne({_id: userId}).exec();
   }
 
   /**

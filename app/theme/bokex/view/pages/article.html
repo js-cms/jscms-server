@@ -162,6 +162,8 @@
     (function (window) {
       if (!window.__JSCMS_CONSTANT__) window.__JSCMS_CONSTANT__ = {};
       window.__JSCMS_CONSTANT__.article = {
+        id: <%-JSON.stringify(RENDER_PARAM.article._id) %>,
+        numberId: <%-JSON.stringify(RENDER_PARAM.article.numberId) %>,
         user: {
           "qrWx": <%-JSON.stringify(RENDER_PARAM.article.userId.qrWx) %> ,
           "qrWxpay": <%-JSON.stringify(RENDER_PARAM.article.userId.qrWxpay) %> ,

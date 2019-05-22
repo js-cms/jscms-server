@@ -6,7 +6,20 @@
 
 const Service = require('egg').Service;
 
+const appPath = `${process.cwd()}/app`;
+const Db = require(`${appPath}/service/Db.js`);
+const commentModel = require(`${appPath}/model/proto/comment`);
+
 class CommentService extends Service {
+
+  /**
+   * 创建评论
+   */
+  async create(data) {
+    const db = new Db(this.ctx.model.Comment);
+    let newData = db.parseModelman(data, commentModel);
+    return db.create(newData);
+  }
 
   /**
    * 查询评论（带分页选项）
@@ -14,7 +27,6 @@ class CommentService extends Service {
   async list(query, pageNumber = 0, pageSize = 10) {
     return this.ctx.model.Comment.find(query)
       .populate('articleId')
-      .populate('commentId')
       .populate('userId')
       .sort({
         'createTime': -1
@@ -30,11 +42,17 @@ class CommentService extends Service {
   async articleId(articleId) {
     return this.ctx.model.Comment.find({articleId})
       .populate('articleId')
-      .populate('commentId')
       .sort({
         'createTime': -1
       })
       .exec();
+  }
+
+  /**
+   * 统计评论总数
+   */
+  async count(query) {
+    return this.ctx.model.Comment.count(query).exec();
   }
   
 }

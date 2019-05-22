@@ -19,7 +19,7 @@ class CommentController extends BaseController {
   async list() {
     const { ctx, service } = this;
     await this.decorator({
-      post: {
+      get: {
         numberId: {
           n: '文章NumberId',
           type: 'Number',
@@ -28,16 +28,15 @@ class CommentController extends BaseController {
         }
       }
     });
+    
     const {
       pageSize,
       pageNumber
     } = ctx.helper.getPaging(ctx.query);
 
     //获取评论的列表
-    const {
-      list,
-      total
-    } = await service.api.front.comment.list({articleId: this.params.articleId}, pageNumber, pageSize);
+    const list = await service.api.front.comment.list({articleNumberId: this.params.numberId}, pageNumber, pageSize);
+    const total = await service.api.front.comment.count({articleNumberId: this.params.numberId});
 
     this.throwCorrect({
       list: list,
@@ -53,24 +52,36 @@ class CommentController extends BaseController {
       service
     } = this;
     await this.decorator({
-      post: commentModel
+      post: {
+        userId: { n: '发布用户', type: 'ObjectId', f: false, t: true }, // 发布用户
+        articleNumberId: { n: '所属文章序号', type: 'Number', f: true, t: true, r: true }, // 所属文章序号
+        mdContent: { n: '评论内容', type: 'String', f: true, t: false, r: true } // 评论的markdown内容
+      }
     });
 
+    let userId = this.userId;
     let config = await service.api.front.config.alias('site');
     let site = config.info;
     if (site.boolCommentLogin) {
-      if (!this.userId) this.throwError('请登陆后再评论');
+      if (!userId) this.throwError('请登陆后再评论');
+    } else {
+      userId = this.params.userId;
     }
 
     let params = this.params;
+    
+    console.log('userId', userId);
+
+    // 查找用户
+    let user = await service.api.front.user.userId(userId);
+    if (!user) this.throwError('用户不存在');
 
     // 查找所属文章
-    let article = await service.api.front.article.articleId(params.articleId);
-
+    let article = await service.api.front.article.numberId(params.articleNumberId);
     if (!article) this.throwError('文章不存在');
 
-    // 赋值numberId
-    params.articleNumberId = article.numberId;
+    // 赋值articleId
+    params.articleId = article._id;
 
     // 转化markdown代码
     if (params.mdContent) params.htContent = marked(params.mdContent);

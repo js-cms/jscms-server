@@ -18,7 +18,6 @@ class CommentService extends Service {
   async list(query, pageNumber = 0, pageSize = 10) {
     return this.ctx.model.Comment.find(query)
       .populate('articleId')
-      .populate('commentId')
       .sort({
         'createTime': -1
       })
@@ -33,7 +32,6 @@ class CommentService extends Service {
   async articleId(articleId) {
     return this.ctx.model.Comment.find({articleId})
       .populate('articleId')
-      .populate('commentId')
       .sort({
         'createTime': -1
       })
