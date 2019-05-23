@@ -53,24 +53,21 @@ class CommentController extends BaseController {
     } = this;
     await this.decorator({
       post: {
-        userId: { n: '发布用户', type: 'ObjectId', f: false, t: true }, // 发布用户
         articleNumberId: { n: '所属文章序号', type: 'Number', f: true, t: true, r: true }, // 所属文章序号
         mdContent: { n: '评论内容', type: 'String', f: true, t: false, r: true } // 评论的markdown内容
       }
     });
 
-    let userId = this.userId;
+    let userId = this.userId; 
     let config = await service.api.front.config.alias('site');
     let site = config.info;
     if (site.boolCommentLogin) {
       if (!userId) this.throwError('请登陆后再评论');
     } else {
-      userId = this.params.userId;
+      if (!userId) userId = '5c9648d94a4cf500067b6770';
     }
 
     let params = this.params;
-    
-    console.log('userId', userId);
 
     // 查找用户
     let user = await service.api.front.user.userId(userId);
@@ -80,8 +77,9 @@ class CommentController extends BaseController {
     let article = await service.api.front.article.numberId(params.articleNumberId);
     if (!article) this.throwError('文章不存在');
 
-    // 赋值articleId
+    // 赋值
     params.articleId = article._id;
+    params.userId = userId;
 
     // 转化markdown代码
     if (params.mdContent) params.htContent = marked(params.mdContent);
