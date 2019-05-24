@@ -38,7 +38,7 @@ module.exports = appInfo => {
       'http://localhost:9012',
       'http://127.0.0.1:8080',
       'http://127.0.0.1:8081',
-      'http://127.0.0.1:9012'
+      'http://127.0.0.1:8082'
     ]
   };
 

@@ -4,6 +4,8 @@
 
 'use strict';
 
+const _ = require('lodash');
+
 const Controller = require('egg').Controller;
 const Model = require('modelman').Model;
 const is = require('ispro');
@@ -132,6 +134,24 @@ class BaseController extends Controller {
       data: data
     };
     return true;
+  }
+
+  /**
+   * 获取当前用户可展示数据
+   */
+  async uinfo(isReturnAnonymous = false) {
+    const { ctx, service, config } = this;
+    let user = _.cloneDeep(ctx.locals.currentUser.user);
+    if (!user._id) {
+      if (isReturnAnonymous === true) {
+        let _user = await service.api.back.user.findOne({_id: config.constant.anonymousUserId});
+        user = _user._doc;
+      }
+    }
+    delete user._id;
+    delete user.password;
+    user.token = ctx.locals.currentUser.token;
+    return user;
   }
 
   /**

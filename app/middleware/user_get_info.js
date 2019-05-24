@@ -13,6 +13,7 @@ module.exports = options => {
     let res = null;
     let currentUser = {
       user: {},
+      token: token,
       auth: {
         isLogin: false,
         isExpired: true
