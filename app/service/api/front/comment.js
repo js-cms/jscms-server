@@ -22,11 +22,25 @@ class CommentService extends Service {
   }
 
   /**
-   * 查询评论（带分页选项）
+   * 查询全部评论（带分页选项）
    */
   async list(query, pageNumber = 0, pageSize = 10) {
     return this.ctx.model.Comment.find(query)
-      .populate('articleId')
+      .populate('userId')
+      .sort({
+        'createTime': 1
+      })
+      .skip(pageNumber * pageSize)
+      .limit(pageSize)
+      .exec();
+  }
+
+  /**
+   * 查询一级评论（带分页选项）
+   */
+  async firstLevelList(query, pageNumber = 0, pageSize = 10) {
+    query.commentId = '';
+    return this.ctx.model.Comment.find(query)
       .populate('userId')
       .sort({
         'createTime': -1
@@ -49,9 +63,40 @@ class CommentService extends Service {
   }
 
   /**
+   * 给父评论增加评论回复数
+   */
+  async updateReplyTotal(commentId) {
+    const db = new Db(this.ctx.model.Comment);
+    return db.updateOne({
+      _id: commentId
+    }, {
+      $inc: {
+        replyTotal: 1
+      }
+    });
+  }
+
+  /**
    * 统计评论总数
    */
   async count(query) {
+    return this.ctx.model.Comment.count(query).exec();
+  }
+
+
+  /**
+   * 查找某条符合条件的评论
+   */
+  async findOne(query) {
+    return this.ctx.model.Comment.findOne(query)
+      .exec();
+  }
+
+  /**
+   * 统计一级评论总数
+   */
+  async firstLevelCount(query) {
+    query.commentId = '';
     return this.ctx.model.Comment.count(query).exec();
   }
   

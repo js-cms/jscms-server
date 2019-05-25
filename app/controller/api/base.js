@@ -148,7 +148,6 @@ class BaseController extends Controller {
         user = _user._doc;
       }
     }
-    delete user._id;
     delete user.password;
     user.token = ctx.locals.currentUser.token;
     return user;
