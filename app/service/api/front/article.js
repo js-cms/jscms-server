@@ -42,7 +42,7 @@ class ArticleService extends Service {
   /**
    * 增加文章的评论数
    */
-  async updateComment(articleId) {
+  async updateCommentTotal(articleId) {
     const db = new Db(this.ctx.model.Article);
     return db.updateOne({
       _id: articleId

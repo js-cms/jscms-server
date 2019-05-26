@@ -67,6 +67,7 @@ class CommentController extends BaseController {
       service
     } = this;
     let comment = _.cloneDeep(commentModel);
+    delete comment.articleId;
     comment.id = {
       n: '评论id',
       type: 'ObjectId',

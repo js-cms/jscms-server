@@ -79,6 +79,59 @@ class CommentController extends BaseController {
   }
 
   /**
+   * 点赞评论
+   */
+  async like() {
+    const { ctx, service } = this;
+    await this.decorator({
+      get: {
+        commentId: { n: '评论Id', type: 'String', f: true, t: true, r: true }, // 评论Id
+      }
+    });
+    if (!this.userId) this.throwError('请先登陆');
+    let comment = await service.api.front.comment.findOne({_id: this.params.commentId});
+    if (!comment) this.throwError('评论不存在');
+    let likeUserIds = comment.likeUserIds;
+    likeUserIds.push(String(this.userId));
+    likeUserIds = Array.from(new Set(likeUserIds));
+    let updateResult = await service.api.front.comment.updateLikeUsers(comment._id, likeUserIds);
+    if (updateResult) {
+      this.throwCorrect({
+        likeUserIds: likeUserIds,
+        total: likeUserIds.length
+      }, '点赞成功');
+    } else {
+      this.throwError('点赞失败');
+    }
+  }
+
+  /**
+   * 取消点赞评论
+   */
+  async unlike() {
+    const { ctx, service } = this;
+    await this.decorator({
+      get: {
+        commentId: { n: '评论Id', type: 'String', f: true, t: true, r: true }, // 评论Id
+      }
+    });
+    if (!this.userId) this.throwError('请先登陆');
+    let comment = await service.api.front.comment.findOne({_id: this.params.commentId});
+    if (!comment) this.throwError('评论不存在');
+    let likeUserIds = comment.likeUserIds;
+    likeUserIds = _.pull(likeUserIds, String(this.userId));
+    let updateResult = await service.api.front.comment.updateLikeUsers(comment._id, likeUserIds);
+    if (updateResult) {
+      this.throwCorrect({
+        likeUserIds: likeUserIds,
+        total: likeUserIds.length
+      }, '取消点赞成功');
+    } else {
+      this.throwError('取消点赞失败');
+    }
+  }
+
+  /**
    * 获取子评论列表
    */
   async childlist() {
@@ -170,6 +223,7 @@ class CommentController extends BaseController {
       let comment = await service.api.front.comment.findOne({_id: params.commentId});
       if (comment.commentId) {
         params.commentId = comment.commentId;
+        params.userReplied.commentNumberId = comment.numberId;
       } else {
         params.userReplied = {};
       }
@@ -201,7 +255,7 @@ class CommentController extends BaseController {
 
     if (createRes._id) {
       // 给文章增加评论数 
-      await service.api.front.article.updateComment(article._id);
+      await service.api.front.article.updateCommentTotal(article._id);
       // 给父评论增加评论回复数
       if (params.commentId) await service.api.front.comment.updateReplyTotal(params.commentId);
       this.throwCorrect(createRes, '评论成功');

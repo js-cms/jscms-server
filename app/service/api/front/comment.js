@@ -77,6 +77,18 @@ class CommentService extends Service {
   }
 
   /**
+   * 更新点赞用户数组
+   */
+  async updateLikeUsers(commentId, userIds) {
+    const db = new Db(this.ctx.model.Comment);
+    return db.updateOne({
+      _id: commentId
+    }, {
+      likeUserIds: userIds
+    });
+  }
+
+  /**
    * 统计评论总数
    */
   async count(query) {
