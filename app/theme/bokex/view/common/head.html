@@ -23,7 +23,8 @@
 
       if (!window.__JSCMS_CONSTANT__) window.__JSCMS_CONSTANT__ = {};
       window.__JSCMS_CONSTANT__.CONSTANT = {
-        THEME_STATIC: <%-JSON.stringify(CONSTANT.THEME_STATIC)%>
+        THEME_STATIC: <%-JSON.stringify(CONSTANT.THEME_STATIC)%>,
+        SUBTITLE: <%-JSON.stringify(WEB_CONFIG.site.subtitle)%>
       };
     })(window);
   </script>
