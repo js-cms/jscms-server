@@ -74,9 +74,6 @@
   }
 
   $(document).ready(function () {
-    // 初始化jscmssdk
-    window.jscmssdk = new JscmsSdk();
-    window.jscmssdk.init();
     // 初始化dom
     initDom();
     // 绑定事件

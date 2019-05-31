@@ -22,7 +22,6 @@ class UserController extends BaseController {
       service
     } = this;
     await this.decorator({
-      captcha: true,
       post: {
         email: {
           n: '邮箱',
@@ -64,13 +63,13 @@ class UserController extends BaseController {
     let accessToken = uuid.v4();
 
     //获取用户的token
-    let res = await service.token.getByUserId(existUser._id);
+    let res = await service.api.front.token.getByUserId(existUser._id);
 
     //更新用户的token，没有则自动创建。
     if (res) { //更新
       const now = (new Date()).getTime();
       const tomorrow = now + 1000 * 60 * 60 * 24;
-      res = await service.token.updateToken({
+      res = await service.api.front.token.updateToken({
         userId: existUser._id
       }, {
         token: accessToken,
@@ -78,16 +77,17 @@ class UserController extends BaseController {
         passwExpiry: tomorrow
       });
     } else { //创建
-      res = await service.token.create({
+      res = await service.api.front.token.create({
         userId: existUser._id,
         token: accessToken,
       });
     }
-
+    let user = existUser._doc;
+    delete user.password;
     if (res) {
       this.throwCorrect({
         token: accessToken,
-        userInfo: existUser
+        userInfo: user
       }, '登录成功');
     } else {
       this.throwError('登录失败');
