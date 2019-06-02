@@ -18,14 +18,31 @@ class CommentController extends BaseController {
    * 获取评论配置
    */
   async conf() {
-    const { service } = this;
+    const { service, config } = this;
     const comment = await service.api.front.config.alias('comment');
     const site = await service.api.front.config.alias('site');
-    let config = Object.assign(comment.info, {
+    let currentUser = await this.uinfo(true);
+    let boolCommentLogin = site.info.boolCommentLogin;
+    let isAnonymous = true;
+    let isLogin = false;
+    let isShowUser = false;
+    if (String(currentUser._id) == config.constant.anonymousUserId) {
+      isAnonymous = true;
+      isLogin = false;
+      isShowUser = boolCommentLogin === true ? false : true;
+    } else {
+      isAnonymous = false;
+      isLogin = true;
+      isShowUser = true;
+    }
+    let commentConfig = Object.assign(comment.info, {
+      isShowUser,
+      isAnonymous,
+      isLogin,
       boolCommentLogin: site.info.boolCommentLogin,
       currentUser: await this.uinfo(true)
     });
-    this.throwCorrect(config);
+    this.throwCorrect(commentConfig);
   }
 
   /**
