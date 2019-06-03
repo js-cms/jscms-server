@@ -273,9 +273,7 @@ class ResourceController extends BaseController {
     if (errors.length) {
       this.throwError(errors[0].msg);
     } else if (results.length) {
-      let deleteRes = '';
-      if (originalImageUrl) deleteRes = await this.fuzzyDelete(originalImageUrl);
-      console.log('deleteRes', deleteRes);
+      if (originalImageUrl) this.fuzzyDelete(originalImageUrl);
       this.throwCorrect(results[0], '上传成功');
     } else {
       this.throwError('未知错误');

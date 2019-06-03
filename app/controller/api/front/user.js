@@ -103,7 +103,6 @@ class UserController extends BaseController {
       service
     } = this;
     await this.decorator({
-      captcha: true,
       post: {
         email: {
           n: '邮箱',
@@ -122,6 +121,15 @@ class UserController extends BaseController {
           extra: {
             errorMsg: '密码格式不正确'
           }
+        },
+        vercode: {
+          n: '验证码',
+          type: 'vercode',
+          f: true,
+          r: false,
+          extra: {
+            errorMsg: '验证码不正确'
+          }
         }
       }
     });
@@ -133,21 +141,30 @@ class UserController extends BaseController {
       }]
     });
     if (findUsers.length > 0) this.throwError('用户名或邮箱已被使用。');
+    
+    // 获取网站配置信息
+    const site = await service.api.front.config.alias('site');
+    let boolWebRegEmailActive = site.info.boolWebRegEmailActive;
 
-    //获取用户总数
+    // 获取用户总数
     const count = await service.api.front.user.count({});
-    if (!this.params.nickname) {
-      this.params.nickname = '会员' + count;
+
+    let user = {
+      nickname: `会员${count}`,
+      email: this.params.email,
+      password: this.params.password,
+      powers: ['member'],
+      active: boolWebRegEmailActive ? false : true
     }
 
     //创建用户
-    const createUser = await service.api.front.user.create(this.params);
+    const createUser = await service.api.front.user.create(user);
 
     //如果用户添加成功
     if (createUser._id) {
-      this.throwCorrect({}, '用户创建成功');
+      this.throwCorrect({}, '注册成功');
     } else {
-      this.throwError('用户创建失败')
+      this.throwError('注册失败 请联系管理员')
     }
   }
 

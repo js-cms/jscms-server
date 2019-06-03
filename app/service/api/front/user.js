@@ -8,7 +8,7 @@ const Service = require('egg').Service;
 
 const appPath = `${process.cwd()}/app`;
 const Db = require(`${appPath}/service/Db.js`);
-const cacheModel = require(`${appPath}/model/proto/cache`);
+const userModel = require(`${appPath}/model/proto/user`);
 
 class UserService extends Service {
 

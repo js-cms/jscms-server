@@ -76,7 +76,8 @@ class BaseController extends Controller {
       let site = config.info;
       if (site.boolLoginVercode) {
         let uid = ctx.query.uid;
-        let vercode = ctx.query.vercode.toLowerCase();
+        let vercode = ctx.query.vercode || '';
+        vercode = vercode.toLowerCase();
         let sourceVercode = app.cache(uid) ? app.cache(uid).vercode.toLowerCase() : '';
         if (!vercode) {
           this.throwError('请输入验证码');

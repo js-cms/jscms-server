@@ -49,7 +49,6 @@ module.exports = options => {
       }
     }
     ctx.locals.currentUser = currentUser;
-    console.log('ctx.locals.currentUser', ctx.locals.currentUser);
     await next();
   };
 };
