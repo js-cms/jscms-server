@@ -49,6 +49,20 @@
       };
       jscmssdk.dialog.qrcode.show(options);
     });
+
+    // 登陆
+    $('.header-login').on('click', function(e) {
+      jscmssdk.dialog.auth.show(1, function(result) {
+
+      });
+    });
+
+    // 注册
+    $('.header-register').on('click', function(e) {
+      jscmssdk.dialog.auth.show(2, function(result) {
+
+      });
+    });
   }
 
   // 初始化dom
